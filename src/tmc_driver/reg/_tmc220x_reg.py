@@ -125,6 +125,18 @@ class TStep(TmcReg):
         super().__init__(0x12, "TSTEP", tmc_com, reg_map)
 
 
+class TPwmThrs(TmcReg):
+    """TPWMTHRS register class"""
+
+    def __init__(self, tmc_com: TmcCom):
+        """constructor"""
+
+        reg_map = [
+            ["tpwmthrs",             0,  0xFFFFF, int, None, ""]
+        ]
+        super().__init__(0x13, "TPWMTHRS", tmc_com, reg_map)
+
+
 class VActual(TmcReg):
     """VACTUAL register class"""
 

@@ -102,6 +102,7 @@ class Tmc220x(TmcStepperDriver):
                 IHoldIRun,
                 TPowerDown,
                 TStep,
+                TPwmThrs,
                 VActual,
                 MsCnt,
                 ChopConf,
