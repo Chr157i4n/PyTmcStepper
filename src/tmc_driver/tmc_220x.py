@@ -588,7 +588,7 @@ class Tmc220x(TmcStepperDriver):
         Args:
             tpwmthrs (int): value for tpwmthrs
         """
-        self.tpwmthrs = tpwmthrs
+        self.tpwmthrs.tpwmthrs = tpwmthrs
         self.tpwmthrs.write_check()
 
 
