@@ -582,6 +582,15 @@ class Tmc220x(TmcStepperDriver):
         return self.chopconf.tstep
 
 
+    def set_tpwmthrs(self, tpwmthrs: int):
+        """sets the current tpwmthrs
+
+        Args:
+            tpwmthrs (int): value for tpwmthrs
+        """
+        self.tpwmthrs = tpwmthrs
+        self.tpwmthrs.write_check()
+
 
     def set_vactual(self, vactual:int):
         """sets the register bit "VACTUAL" to to a given value
