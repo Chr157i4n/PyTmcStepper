@@ -195,6 +195,23 @@ class ChopConf(TmcReg):
         mres_bit = 8 - mres_bit
         self.mres = mres_bit
 
+class PwmConf(TmcReg):
+    """PWMCONF register class"""
+
+    def __init__(self, tmc_com: TmcCom):
+        """constructor"""
+
+        reg_map = [
+            ["pwm_lim",             28, 0xF,  int, None, ""],
+            ["pwm_reg",             24, 0xF,  int, None, ""],
+            ["freewheel",           20, 0x3,  int, None, ""],
+            ["pwm_autograd",        19, 0x1, bool, None, ""],
+            ["pwm_autoscale",       18, 0x1, bool, None, ""],
+            ["pwm_freq",            16, 0x3,  int, None, ""],
+            ["pwm_grad",            8,  0xFF, int, None, ""],
+            ["pwm_ofs",             0,  0xFF, int, None, ""]
+        ]
+        super().__init__(0x70, "PWMCONF", tmc_com, reg_map)
 
 class DrvStatus(TmcReg):
     """DRVSTATUS register class"""

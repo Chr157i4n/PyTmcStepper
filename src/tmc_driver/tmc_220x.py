@@ -106,6 +106,7 @@ class Tmc220x(TmcStepperDriver):
                 VActual,
                 MsCnt,
                 ChopConf,
+                PwmConf,
                 DrvStatus
             }
 
