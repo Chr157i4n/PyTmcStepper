@@ -102,6 +102,7 @@ class Tmc220x(TmcStepperDriver):
                 IHoldIRun,
                 TPowerDown,
                 TStep,
+                TPwmThrs,
                 VActual,
                 MsCnt,
                 ChopConf,
@@ -580,6 +581,15 @@ class Tmc220x(TmcStepperDriver):
         self.chopconf.read()
         return self.chopconf.tstep
 
+
+    def set_tpwmthrs(self, tpwmthrs: int):
+        """sets the current tpwmthrs
+
+        Args:
+            tpwmthrs (int): value for tpwmthrs
+        """
+        self.tpwmthrs.tpwmthrs = tpwmthrs
+        self.tpwmthrs.write_check()
 
 
     def set_vactual(self, vactual:int):
