@@ -140,9 +140,9 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             # Setup Registers
             self.tmc_com.tmc_registers = self.tmc_registers
 
+            self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
-            self.clear_gstat()
             self.tmc_com.flush_serial_buffer()
 
 
@@ -220,11 +220,9 @@ class Tmc2240(TmcStepperDriver, StallGuard):
     def clear_gstat(self):
         """clears the "GSTAT" register"""
         self.tmc_logger.log("clearing GSTAT", Loglevel.INFO)
-        self.gstat.read()
 
-        self.gstat.reset = True
-        self.gstat.drv_err = True
-        self.gstat.uv_cp = True
+        for reg in self.gstat.reg_map:
+            setattr(self.gstat, reg[0], True)
 
         self.gstat.write_check()
 
