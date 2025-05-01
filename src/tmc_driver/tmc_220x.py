@@ -22,7 +22,6 @@ import typing
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_uart import TmcComUart
-from .com._tmc_com_spi import TmcComSpi
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
@@ -128,9 +127,9 @@ class Tmc220x(TmcStepperDriver):
             # Setup Registers
             self.tmc_com.tmc_registers = self.tmc_registers
 
+            self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
-            self.clear_gstat()
             self.tmc_com.flush_serial_buffer()
 
 
@@ -208,11 +207,9 @@ class Tmc220x(TmcStepperDriver):
     def clear_gstat(self):
         """clears the "GSTAT" register"""
         self.tmc_logger.log("clearing GSTAT", Loglevel.INFO)
-        self.gstat.read()
 
-        self.gstat.reset = True
-        self.gstat.drv_err = True
-        self.gstat.uv_cp = True
+        for reg in self.gstat.reg_map:
+            setattr(self.gstat, reg[0], True)
 
         self.gstat.write_check()
 

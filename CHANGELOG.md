@@ -1,5 +1,11 @@
 # Changelog
 
+## version 0.7.5
+
+- removed spidev dependency from TMC220X
+- added TPwmThrs reg
+- fixed gstat Exception on TMC2240
+
 ## version 0.7.4
 
 - added custom exceptions
