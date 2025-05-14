@@ -144,7 +144,7 @@ class VActual(TmcReg):
         """constructor"""
 
         reg_map = [
-            ["vactual",             0,  0x1FFFFF, int, None, ""]
+            ["vactual",             0,  0xFFFFFF, int, None, ""]
         ]
         super().__init__(0x22, "VACTUAL", tmc_com, reg_map)
 
