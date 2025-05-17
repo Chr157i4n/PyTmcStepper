@@ -76,9 +76,10 @@ class Tmc220x(TmcStepperDriver):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        super().__init__(tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter)
+        if logprefix is None:
+            logprefix = f"TMC2209 {driver_address}"
 
-        self.tmc_logger.set_logprefix(f"TMC2209 {driver_address}")
+        super().__init__(tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter)
 
         if tmc_com is not None:
             self.tmc_com = tmc_com

@@ -1,5 +1,13 @@
 # Changelog
 
+## version 0.7.6
+
+- added PwmConf reg
+- added initial value to gpio_setup when using gpiozero (RPi5)
+- fixed driver addr in demo/demo_script_06_multiple_drivers.py
+- fixed doubled log output when using multiple drivers
+- fixed VActual bit mask
+
 ## version 0.7.5
 
 - removed spidev dependency from TMC220X
