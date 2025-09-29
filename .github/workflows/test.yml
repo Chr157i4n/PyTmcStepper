@@ -79,7 +79,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install gpiozero
         pip install RPi.GPIO
-        pip install git+https://github.com/Chr157i4n/Mock.GPIO
+        pip install Mock.GPIO
         pip install pyserial
         pip install spidev
     - name: Run unittests
