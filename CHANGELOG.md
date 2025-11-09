@@ -1,5 +1,9 @@
 # Changelog
 
+## version 0.7.7
+
+- fixed wrong reg adress of IOIN for TMC220X
+
 ## version 0.7.6
 
 - added PwmConf reg
