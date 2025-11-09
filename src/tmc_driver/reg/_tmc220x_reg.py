@@ -84,7 +84,7 @@ class Ioin(TmcReg):
             ["ms1",                 2,  0x1, bool, None, ""],
             ["enn",                 0,  0x1, bool, None, ""]
         ]
-        super().__init__(0x3, "IOIN", tmc_com, reg_map)
+        super().__init__(0x6, "IOIN", tmc_com, reg_map)
 
 
 class IHoldIRun(TmcReg):
