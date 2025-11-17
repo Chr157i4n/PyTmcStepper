@@ -32,6 +32,10 @@ class TmcEnableControlPin(TmcEnableControl):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self._pin_en is not None:
             tmc_gpio.gpio_cleanup(self._pin_en)

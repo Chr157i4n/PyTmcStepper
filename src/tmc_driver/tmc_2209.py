@@ -75,13 +75,17 @@ class Tmc2209(Tmc220x, StallGuard):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self._deinit_finished is False:
             if self._pin_stallguard is not None:
                 tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
                 tmc_gpio.gpio_cleanup(self._pin_stallguard)
 
-        super().__del__()
+        super().deinit()
 
 
 

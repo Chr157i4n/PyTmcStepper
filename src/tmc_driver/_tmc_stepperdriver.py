@@ -94,6 +94,11 @@ class TmcStepperDriver:
 
 
     def __del__(self):
+        self.deinit()
+
+
+
+    def deinit(self):
         """destructor"""
         if self._deinit_finished is False:
             self.tmc_logger.log("Deinit", Loglevel.INFO)
@@ -105,11 +110,9 @@ class TmcStepperDriver:
         else:
             self.tmc_logger.log("Deinit already finished", Loglevel.INFO)
         if self.tmc_ec is not None:
-            del self.tmc_ec
+            self.tmc_ec.deinit()
         if self.tmc_mc is not None:
-            del self.tmc_mc
-        if self.tmc_logger is not None:
-            del self.tmc_logger
+            self.tmc_mc.deinit()
 
 
 # TmcEnableControl Wrapper

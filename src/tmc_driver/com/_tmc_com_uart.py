@@ -86,6 +86,10 @@ class TmcComUart(TmcCom):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self.ser is not None and isinstance(self.ser, serial.Serial):
             self.ser.close()

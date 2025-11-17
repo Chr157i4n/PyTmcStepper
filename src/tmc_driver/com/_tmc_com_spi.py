@@ -85,6 +85,10 @@ class TmcComSpi(TmcCom):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
 
 

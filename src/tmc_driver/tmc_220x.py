@@ -141,12 +141,15 @@ class Tmc220x(TmcStepperDriver):
         self.tmc_logger.log("TMC220x Init finished", Loglevel.INFO)
 
 
-
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self.tmc_com is not None:
-            del self.tmc_com
-        super().__del__()
+            self.tmc_com.deinit()
+        super().deinit()
 
 
 
