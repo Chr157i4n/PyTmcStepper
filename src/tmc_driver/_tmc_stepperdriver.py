@@ -113,6 +113,8 @@ class TmcStepperDriver:
             self.tmc_ec.deinit()
         if self.tmc_mc is not None:
             self.tmc_mc.deinit()
+        if self.tmc_logger is not None:
+            self.tmc_logger.deinit()
 
 
 # TmcEnableControl Wrapper
