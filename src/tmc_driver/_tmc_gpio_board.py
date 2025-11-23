@@ -235,16 +235,20 @@ class GpiozeroWrapper(BaseGPIOWrapper):
     def gpio_setup(self, pin:int, mode:GpioMode, initial:Gpio=Gpio.LOW, pull_up_down:GpioPUD=GpioPUD.PUD_OFF):
         """setup GPIO pin"""
         if mode == GpioMode.OUT:
-            self._gpios[pin] = self.gpiozero.DigitalOutputDevice(pin, initial_value =bool(initial))
+            if self._gpios[pin] is None or self._gpios[pin].closed:
+                self._gpios[pin] = self.gpiozero.DigitalOutputDevice(pin, initial_value =bool(initial))
         else:
-            self._gpios[pin] = self.gpiozero.DigitalInputDevice(pin)
+            if self._gpios[pin] is None or self._gpios[pin].closed:
+                self._gpios[pin] = self.gpiozero.DigitalInputDevice(pin)
 
     def gpio_cleanup(self, pin:int):
         """cleanup GPIO pin"""
         if self._gpios[pin] is not None:
             self._gpios[pin].close()
+            self._gpios[pin] = None
         if self._gpios_pwm[pin] is not None:
             self._gpios_pwm[pin].close()
+            self._gpios_pwm[pin] = None
 
     def gpio_input(self, pin:int) -> int:
         """read GPIO pin"""
@@ -315,7 +319,9 @@ class peripheryWrapper(BaseGPIOWrapper):
 
     def gpio_cleanup(self, pin:int):
         """cleanup GPIO pin"""
-        self._gpios[pin].close()
+        if self._gpios[pin] is not None:
+            self._gpios[pin].close()
+            self._gpios[pin] = None
 
     def gpio_input(self, pin:int) -> int:
         """read GPIO pin"""

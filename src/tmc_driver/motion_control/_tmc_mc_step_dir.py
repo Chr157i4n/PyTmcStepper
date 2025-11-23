@@ -139,8 +139,10 @@ class TmcMotionControlStepDir(TmcMotionControl):
         """destructor"""
         if self._pin_step is not None:
             tmc_gpio.gpio_cleanup(self._pin_step)
+            self._pin_step = None
         if self._pin_dir is not None:
             tmc_gpio.gpio_cleanup(self._pin_dir)
+            self._pin_dir = None
 
 
     def make_a_step(self):

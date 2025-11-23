@@ -50,6 +50,7 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         """destructor"""
         if self._pin_step is not None:
             tmc_gpio.gpio_cleanup(self._pin_step)
+            self._pin_step = None
 
 
     def set_direction(self, direction:Direction):
