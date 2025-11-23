@@ -19,6 +19,7 @@ class TmcEnableControlPin(TmcEnableControl):
 
     def __init__(self, pin_en:int = None):
         """constructor"""
+        super().__init__()
         self._pin_en = pin_en
 
 

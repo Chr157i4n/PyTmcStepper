@@ -24,6 +24,7 @@ class TmcEnableControlToff(TmcEnableControl):
 
     def __init__(self):
         """constructor"""
+        super().__init__()
         self._tmc_com:TmcCom = None
         self._default_toff = 3
 
