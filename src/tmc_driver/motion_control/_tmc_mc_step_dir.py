@@ -127,8 +127,9 @@ class TmcMotionControlStepDir(TmcMotionControl):
         self._tmc_logger.log(f"STEP Pin: {self._pin_step}", Loglevel.DEBUG)
         tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
 
-        self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
-        tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
+        if self._pin_dir is not None:
+            self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
+            tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
 
 
     def __del__(self):

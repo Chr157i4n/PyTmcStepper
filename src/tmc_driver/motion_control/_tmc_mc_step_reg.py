@@ -28,7 +28,6 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
     def __init__(self, pin_step:int):
         """constructor"""
         super().__init__(pin_step, None)
-        del self._pin_dir
         self._tmc_com:TmcCom = None
 
 
