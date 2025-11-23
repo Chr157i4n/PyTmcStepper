@@ -36,15 +36,6 @@ def compute_crc8_atm(datagram, initial_value=0):
 class TmcCom:
     """TmcCom
     """
-    _tmc_logger:TmcLogger = None
-    _tmc_registers = None
-
-    mtr_id:int = 0
-    r_frame:List[int]
-    w_frame:List[int]
-    communication_pause:int = 0
-    error_handler_running:bool = False
-
     @property
     def tmc_logger(self):
         """get the tmc_logger"""
@@ -69,7 +60,7 @@ class TmcCom:
 
     def __init__(self,
                  mtr_id:int = 0,
-                 tmc_logger = None
+                 tmc_logger:TmcLogger = None
                  ):
         """constructor
 
@@ -79,6 +70,13 @@ class TmcCom:
         """
         self._tmc_logger = tmc_logger
         self.mtr_id = mtr_id
+        self._tmc_registers = None
+
+        self.mtr_id:int = 0
+        # self.r_frame:List[int]
+        # self.w_frame:List[int]
+        self.communication_pause:int = 0
+        self.error_handler_running:bool = False
 
 
     # def init(self):

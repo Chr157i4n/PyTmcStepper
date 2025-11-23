@@ -29,11 +29,24 @@ class StallGuard():
     This class is used to control the stallguard feature of the TMC stepper driver.
     The drivers class needs to inherit from this class to use the stallguard feature (mixin).
     """
-    tmc_com:TmcCom = None
 
-    _pin_stallguard:int = None
-    _sg_callback:types.FunctionType = None
+    def __init__(self):
+        """initialize StallGuard instance variables"""
+        self._pin_stallguard:int = None
+        self._sg_callback:types.FunctionType = None
 
+
+    def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
+        """destructor"""
+        if self._deinit_finished is False:
+            if self._pin_stallguard is not None:
+                tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
+                tmc_gpio.gpio_cleanup(self._pin_stallguard)
+                self._pin_stallguard = None
 
 
     def set_stallguard_callback(self, pin_stallguard, threshold, callback,

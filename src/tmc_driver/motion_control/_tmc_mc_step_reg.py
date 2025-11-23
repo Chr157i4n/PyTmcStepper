@@ -13,8 +13,6 @@ from .._tmc_gpio_board import tmc_gpio, Gpio, GpioMode
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
     """STEP/REG Motion Control class"""
 
-    _tmc_com:TmcCom = None
-
 
     @property
     def tmc_com(self):
@@ -31,6 +29,7 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         """constructor"""
         super().__init__(pin_step, None)
         del self._pin_dir
+        self._tmc_com:TmcCom = None
 
 
     def init(self, tmc_logger:TmcLogger):

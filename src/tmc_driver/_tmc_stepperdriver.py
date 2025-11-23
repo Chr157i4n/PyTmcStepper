@@ -30,15 +30,6 @@ class TmcStepperDriver:
     2. move the motor via STEP/DIR pins
     """
 
-    BOARD:Board = BOARD
-    tmc_mc:TmcMotionControl = None
-    tmc_ec:TmcEnableControl = None
-    tmc_logger:TmcLogger = None
-
-
-    _deinit_finished:bool = False
-
-
 
 # Constructor/Destructor
 # ----------------------------
@@ -69,6 +60,13 @@ class TmcStepperDriver:
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
+        self.BOARD:Board = BOARD
+        self.tmc_mc:TmcMotionControl = None
+        self.tmc_ec:TmcEnableControl = None
+        self.tmc_logger:TmcLogger = None
+
+        self._deinit_finished:bool = False
+
         if logprefix is None:
             logprefix = "StepperDriver"
         self.tmc_logger = TmcLogger(loglevel, logprefix, log_handlers, log_formatter)

@@ -17,10 +17,6 @@ from .. import _tmc_math as tmc_math
 class TmcMotionControlVActual(TmcMotionControl):
     """VActual Motion Control class"""
 
-    _tmc_com:TmcCom = None
-
-    _starttime:int = 0
-
 
     @property
     def tmc_com(self):
@@ -32,6 +28,12 @@ class TmcMotionControlVActual(TmcMotionControl):
         """set the tmc_logger"""
         self._tmc_com = tmc_com
 
+
+    def __init__(self):
+        """constructor"""
+        super().__init__()
+        self._tmc_com:TmcCom = None
+        self._starttime:int = 0
 
 
     def make_a_step(self):

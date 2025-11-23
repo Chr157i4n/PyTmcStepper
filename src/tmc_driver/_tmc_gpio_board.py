@@ -117,7 +117,9 @@ class BaseGPIOWrapper:
 class BaseRPiGPIOWrapper(BaseGPIOWrapper):
     """RPI.GPIO base wrapper"""
 
-    _gpios_pwm = [None] * 200
+    def __init__(self):
+        """constructor"""
+        self._gpios_pwm = [None] * 200
 
     def init(self, gpio_mode=None):
         """initialize GPIO library"""
@@ -215,11 +217,10 @@ class OPiGPIOWrapper(BaseRPiGPIOWrapper):
 class GpiozeroWrapper(BaseGPIOWrapper):
     """gpiozero GPIO wrapper"""
 
-    _gpios = [None] * 200
-    _gpios_pwm = [None] * 200
-
     def __init__(self):
         """constructor, imports gpiozero"""
+        self._gpios = [None] * 200
+        self._gpios_pwm = [None] * 200
         self.gpiozero = import_module('gpiozero')
         dependencies_logger.log("using gpiozero for GPIO control", Loglevel.INFO)
 

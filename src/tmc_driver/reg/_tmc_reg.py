@@ -12,13 +12,6 @@ from ..com._tmc_com import TmcCom
 class TmcReg():
     """Register class"""
 
-    _addr: hex
-    _name: str
-    _tmc_com: TmcCom
-    _reg_map: typing.List
-    _data_int: int
-    _flags: typing.Dict
-
 
     @property
     def addr(self) -> hex:
@@ -48,6 +41,9 @@ class TmcReg():
 
     def __init__(self, address:hex, name:str, tmc_com:TmcCom, reg_map:typing.List):
         """Constructor"""
+        self._data_int: int
+        self._flags: typing.Dict
+
         self._addr = address
         self._name = name
         self._tmc_com = tmc_com

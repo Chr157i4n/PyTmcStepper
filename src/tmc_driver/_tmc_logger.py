@@ -27,9 +27,6 @@ class TmcLogger:
     log messages from the Tmc2209 lib
     """
 
-    _loglevel: Loglevel = Loglevel.INFO
-
-
     @property
     def loglevel(self):
         """get the loglevel"""
@@ -55,6 +52,8 @@ class TmcLogger:
             handlers (list): list of logging handlers, see logging.handlers (default: None)
             formatter (logging.Formatter): formatter for the log messages (default: None)
         """
+        self._loglevel: Loglevel = Loglevel.INFO
+
         if logprefix is None:
             logprefix = "TMC2209"
 
