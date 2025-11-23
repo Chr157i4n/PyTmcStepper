@@ -179,6 +179,11 @@ class TmcMotionControl():
         self.acceleration_fullstep = 100
 
 
+    def deinit(self):
+        """destructor"""
+        pass
+
+
     def make_a_step(self):
         """make a Step"""
         raise NotImplementedError
