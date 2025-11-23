@@ -1,5 +1,10 @@
 # Changelog
 
+## version 0.7.8
+
+- fixed RPi4 using wrong gpio lib
+- changed init/deinit of classes
+
 ## version 0.7.7
 
 - fixed wrong reg adress of IOIN for TMC220X
