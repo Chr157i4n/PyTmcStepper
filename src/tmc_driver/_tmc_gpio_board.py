@@ -376,16 +376,15 @@ def handle_import_error(err, board_name, module_name, install_link):
         Loglevel.ERROR)
     raise err
 
-def initialize_gpio():
+def initialize_gpio(force_lib:Board = None) -> tuple[BaseGPIOWrapper, Board]:
     """initialize GPIO"""
     model = get_board_model_name()
     dependencies_logger.log(f"Board model: {model}", Loglevel.INFO)
     if model == "mock":
         return MockGPIOWrapper(), Board.UNKNOWN
 
-
     for key, (wrapper_class, board_enum, module_name, install_link) in board_mapping.items():
-        if key in model:
+        if (key in model and force_lib is None) or (force_lib == module_name):
             try:
                 return wrapper_class(), board_enum
             except ModuleNotFoundError as err:
