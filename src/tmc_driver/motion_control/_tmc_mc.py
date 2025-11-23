@@ -1,4 +1,5 @@
 #pylint: disable=too-many-instance-attributes
+#pylint: disable=unnecessary-pass
 """
 Motion Control base module
 """
@@ -37,30 +38,6 @@ class StopMode(Enum):
 
 class TmcMotionControl():
     """Motion Control base class"""
-
-    _tmc_logger:TmcLogger
-
-    _direction:Direction = Direction.CW
-
-    _stop:StopMode = StopMode.NO
-
-    _current_pos:int = 0                # current position of stepper in steps
-    _target_pos:int = 0                 # the target position in steps
-
-    _speed:int = 0                      # the current speed in steps per second
-
-    _max_speed:int = 1                  # the maximum speed in steps per second
-    _max_speed_homing:int = 200         # the maximum speed in steps per second for homing
-    _acceleration:int = 1               # the acceleration in steps per second per second
-    _acceleration_homing:int = 10000    # the acceleration in steps per second per second for homing
-
-    _mres:int = 2                       # microstepping resolution
-    _steps_per_rev:int = 400            # microsteps per revolution
-    _fullsteps_per_rev:int = 200        # fullsteps per revolution
-
-    _movement_abs_rel:MovementAbsRel = MovementAbsRel.ABSOLUTE
-    _movement_phase:MovementPhase = MovementPhase.STANDSTILL
-
 
     @property
     def current_pos(self):
@@ -170,12 +147,42 @@ class TmcMotionControl():
         self.acceleration = acceleration_fullstep * self.mres
 
 
+    def __init__(self):
+        """constructor"""
+        self._tmc_logger:TmcLogger
+
+        self._direction:Direction = Direction.CW
+
+        self._stop:StopMode = StopMode.NO
+
+        self._current_pos:int = 0                # current position of stepper in steps
+        self._target_pos:int = 0                 # the target position in steps
+
+        self._speed:int = 0                      # the current speed in steps per second
+
+        self._max_speed:int = 1                  # the maximum speed in steps per second
+        self._max_speed_homing:int = 200         # the maximum speed in steps per second for homing
+        self._acceleration:int = 1               # the acceleration in steps per second per second
+        self._acceleration_homing:int = 10000    # the acceleration in steps per second per second for homing
+
+        self._mres:int = 2                       # microstepping resolution
+        self._steps_per_rev:int = 400            # microsteps per revolution
+        self._fullsteps_per_rev:int = 200        # fullsteps per revolution
+
+        self._movement_abs_rel:MovementAbsRel = MovementAbsRel.ABSOLUTE
+        self._movement_phase:MovementPhase = MovementPhase.STANDSTILL
+
 
     def init(self, tmc_logger:TmcLogger):
         """init: called by the Tmc class"""
         self._tmc_logger = tmc_logger
         self.max_speed_fullstep = 100
         self.acceleration_fullstep = 100
+
+
+    def deinit(self):
+        """destructor"""
+        pass
 
 
     def make_a_step(self):

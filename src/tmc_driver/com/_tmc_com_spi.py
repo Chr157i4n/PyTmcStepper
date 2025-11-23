@@ -37,16 +37,13 @@ class TmcComSpi(TmcCom):
     like the current or the microsteppingmode
     """
 
-    spi = spidev.SpiDev()
-    _spi_bus: int
-    _spi_dev: int
-    _spi_speed: int
+
 
 
 
     def __init__(self,
-                 spi_bus,
-                 spi_dev,
+                 spi_bus:int,
+                 spi_dev:int,
                  spi_speed:int = 8000000,
                  mtr_id:int = 0,
                  tmc_logger = None
@@ -58,6 +55,8 @@ class TmcComSpi(TmcCom):
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
         super().__init__(mtr_id, tmc_logger)
+
+        self.spi = spidev.SpiDev()
 
         self._spi_bus = spi_bus
         self._spi_dev = spi_dev
@@ -85,6 +84,10 @@ class TmcComSpi(TmcCom):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
 
 

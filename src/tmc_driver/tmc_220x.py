@@ -42,9 +42,6 @@ class Tmc220x(TmcStepperDriver):
     2. move the motor via STEP/DIR pins
     """
 
-    tmc_com:TmcComUart = None
-
-
 
 # Constructor/Destructor
 # ----------------------------
@@ -76,6 +73,8 @@ class Tmc220x(TmcStepperDriver):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
+        self.tmc_com:TmcComUart = None
+
         if logprefix is None:
             logprefix = f"TMC2209 {driver_address}"
 
@@ -141,12 +140,15 @@ class Tmc220x(TmcStepperDriver):
         self.tmc_logger.log("TMC220x Init finished", Loglevel.INFO)
 
 
-
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self.tmc_com is not None:
-            del self.tmc_com
-        super().__del__()
+            self.tmc_com.deinit()
+        super().deinit()
 
 
 

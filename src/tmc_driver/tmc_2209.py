@@ -49,6 +49,7 @@ class Tmc2209(Tmc220x, StallGuard):
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
         super().__init__(tmc_ec, tmc_mc, tmc_com, driver_address, gpio_mode, loglevel, logprefix, log_handlers, log_formatter)
+        StallGuard.__init__(self)
 
         if tmc_com is not None:
 
@@ -75,13 +76,14 @@ class Tmc2209(Tmc220x, StallGuard):
 
 
     def __del__(self):
-        """destructor"""
-        if self._deinit_finished is False:
-            if self._pin_stallguard is not None:
-                tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
-                tmc_gpio.gpio_cleanup(self._pin_stallguard)
+        self.deinit()
 
-        super().__del__()
+
+
+    def deinit(self):
+        """destructor"""
+        super().deinit()
+        StallGuard.deinit(self)
 
 
 

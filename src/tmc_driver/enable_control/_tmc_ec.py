@@ -8,8 +8,10 @@ from .._tmc_logger import TmcLogger
 class TmcEnableControl():
     """Enable Control base class"""
 
-    _tmc_logger:TmcLogger
 
+    def __init__(self):
+        """constructor"""
+        self._tmc_logger:TmcLogger = None
 
 
     def init(self, tmc_logger: TmcLogger):

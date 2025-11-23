@@ -117,7 +117,9 @@ class BaseGPIOWrapper:
 class BaseRPiGPIOWrapper(BaseGPIOWrapper):
     """RPI.GPIO base wrapper"""
 
-    _gpios_pwm = [None] * 200
+    def __init__(self):
+        """constructor"""
+        self._gpios_pwm = [None] * 200
 
     def init(self, gpio_mode=None):
         """initialize GPIO library"""
@@ -185,6 +187,7 @@ class MockGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports Mock.GPIO"""
+        super().__init__()
         self.GPIO = import_module('Mock.GPIO')
         dependencies_logger.log("using Mock.GPIO for GPIO mocking", Loglevel.INFO)
 
@@ -193,6 +196,7 @@ class RPiGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports RPi.GPIO"""
+        super().__init__()
         self.GPIO = import_module('RPi.GPIO')
         dependencies_logger.log("using RPi.GPIO for GPIO control", Loglevel.INFO)
 
@@ -201,6 +205,7 @@ class JetsonGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports Jetson.GPIO"""
+        super().__init__()
         self.GPIO = import_module('Jetson.GPIO')
         dependencies_logger.log("using Jetson.GPIO for GPIO control", Loglevel.INFO)
 
@@ -209,17 +214,17 @@ class OPiGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports OPi.GPIO"""
+        super().__init__()
         self.GPIO = import_module('OPi.GPIO')
         dependencies_logger.log("using OPi.GPIO for GPIO control", Loglevel.INFO)
 
 class GpiozeroWrapper(BaseGPIOWrapper):
     """gpiozero GPIO wrapper"""
 
-    _gpios = [None] * 200
-    _gpios_pwm = [None] * 200
-
     def __init__(self):
         """constructor, imports gpiozero"""
+        self._gpios = [None] * 200
+        self._gpios_pwm = [None] * 200
         self.gpiozero = import_module('gpiozero')
         dependencies_logger.log("using gpiozero for GPIO control", Loglevel.INFO)
 
@@ -234,16 +239,20 @@ class GpiozeroWrapper(BaseGPIOWrapper):
     def gpio_setup(self, pin:int, mode:GpioMode, initial:Gpio=Gpio.LOW, pull_up_down:GpioPUD=GpioPUD.PUD_OFF):
         """setup GPIO pin"""
         if mode == GpioMode.OUT:
-            self._gpios[pin] = self.gpiozero.DigitalOutputDevice(pin, initial_value =bool(initial))
+            if self._gpios[pin] is None or self._gpios[pin].closed:
+                self._gpios[pin] = self.gpiozero.DigitalOutputDevice(pin, initial_value =bool(initial))
         else:
-            self._gpios[pin] = self.gpiozero.DigitalInputDevice(pin)
+            if self._gpios[pin] is None or self._gpios[pin].closed:
+                self._gpios[pin] = self.gpiozero.DigitalInputDevice(pin)
 
     def gpio_cleanup(self, pin:int):
         """cleanup GPIO pin"""
         if self._gpios[pin] is not None:
             self._gpios[pin].close()
+            self._gpios[pin] = None
         if self._gpios_pwm[pin] is not None:
             self._gpios_pwm[pin].close()
+            self._gpios_pwm[pin] = None
 
     def gpio_input(self, pin:int) -> int:
         """read GPIO pin"""
@@ -314,7 +323,9 @@ class peripheryWrapper(BaseGPIOWrapper):
 
     def gpio_cleanup(self, pin:int):
         """cleanup GPIO pin"""
-        self._gpios[pin].close()
+        if self._gpios[pin] is not None:
+            self._gpios[pin].close()
+            self._gpios[pin] = None
 
     def gpio_input(self, pin:int) -> int:
         """read GPIO pin"""
@@ -327,7 +338,7 @@ class peripheryWrapper(BaseGPIOWrapper):
 
 board_mapping = {
     "raspberry pi 5": (GpiozeroWrapper, Board.RASPBERRY_PI5, "gpiozero", "https://gpiozero.readthedocs.io/en/stable/installing.html"),
-    "raspberry": (GpiozeroWrapper, Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
+    "raspberry": (RPiGPIOWrapper, Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
     "jetson": (JetsonGPIOWrapper, Board.NVIDIA_JETSON, "jetson-gpio", "https://github.com/NVIDIA/jetson-gpio"),
     "luckfox": (peripheryWrapper, Board.LUCKFOX_PICO, "periphery", "https://github.com/vsergeev/python-periphery"),
     "orange": (OPiGPIOWrapper, Board.ORANGE_PI, "OPi.GPIO", "https://github.com/rm-hull/OPi.GPIO")
@@ -365,16 +376,15 @@ def handle_import_error(err, board_name, module_name, install_link):
         Loglevel.ERROR)
     raise err
 
-def initialize_gpio():
+def initialize_gpio(force_lib:Board = None) -> tuple[BaseGPIOWrapper, Board]:
     """initialize GPIO"""
     model = get_board_model_name()
     dependencies_logger.log(f"Board model: {model}", Loglevel.INFO)
     if model == "mock":
         return MockGPIOWrapper(), Board.UNKNOWN
 
-
     for key, (wrapper_class, board_enum, module_name, install_link) in board_mapping.items():
-        if key in model:
+        if (key in model and force_lib is None) or (force_lib == module_name):
             try:
                 return wrapper_class(), board_enum
             except ModuleNotFoundError as err:

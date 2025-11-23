@@ -18,20 +18,6 @@ from .. import _tmc_math as tmc_math
 class TmcMotionControlStepDir(TmcMotionControl):
     """STEP/DIR Motion Control class"""
 
-    _pin_step:int = None
-    _pin_dir:int = None
-
-    _movement_thread:threading.Thread = None
-
-    _sqrt_twoa:float = 1.0              # Precomputed sqrt(2*_acceleration)
-    _step_interval:int = 0              # the current interval between two steps
-    _min_pulse_width:int = 1            # minimum allowed pulse with in microseconds
-    _last_step_time:int = 0             # The last step time in microseconds
-    _n:int = 0                          # step counter
-    _c0:int = 0                         # Initial step size in microseconds
-    _cn:int = 0                         # Last step size in microseconds
-    _cmin:int = 0                       # Min step size in microseconds based on maxSpeed
-
 
     @property
     def max_speed(self):
@@ -119,8 +105,20 @@ class TmcMotionControlStepDir(TmcMotionControl):
 
     def __init__(self, pin_step:int, pin_dir:int):
         """constructor"""
+        super().__init__()
         self._pin_step = pin_step
         self._pin_dir = pin_dir
+
+        self._movement_thread:threading.Thread = None
+
+        self._sqrt_twoa:float = 1.0              # Precomputed sqrt(2*_acceleration)
+        self._step_interval:int = 0              # the current interval between two steps
+        self._min_pulse_width:int = 1            # minimum allowed pulse with in microseconds
+        self._last_step_time:int = 0             # The last step time in microseconds
+        self._n:int = 0                          # step counter
+        self._c0:int = 0                         # Initial step size in microseconds
+        self._cn:int = 0                         # Last step size in microseconds
+        self._cmin:int = 0                       # Min step size in microseconds based on maxSpeed
 
 
     def init(self, tmc_logger:TmcLogger):
@@ -129,16 +127,23 @@ class TmcMotionControlStepDir(TmcMotionControl):
         self._tmc_logger.log(f"STEP Pin: {self._pin_step}", Loglevel.DEBUG)
         tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
 
-        self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
-        tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
+        if self._pin_dir is not None:
+            self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
+            tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self._pin_step is not None:
             tmc_gpio.gpio_cleanup(self._pin_step)
+            self._pin_step = None
         if self._pin_dir is not None:
             tmc_gpio.gpio_cleanup(self._pin_dir)
+            self._pin_dir = None
 
 
     def make_a_step(self):

@@ -10,8 +10,6 @@ from .._tmc_logger import TmcLogger, Loglevel
 class TmcEnableControlPin(TmcEnableControl):
     """Enable Control base class"""
 
-    _pin_en:int = None
-
 
     @property
     def pin_en(self):
@@ -21,6 +19,7 @@ class TmcEnableControlPin(TmcEnableControl):
 
     def __init__(self, pin_en:int = None):
         """constructor"""
+        super().__init__()
         self._pin_en = pin_en
 
 
@@ -32,9 +31,14 @@ class TmcEnableControlPin(TmcEnableControl):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self._pin_en is not None:
             tmc_gpio.gpio_cleanup(self._pin_en)
+            self._pin_en = None
 
 
     def set_motor_enabled(self, en):

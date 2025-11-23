@@ -44,13 +44,6 @@ class Tmc2240(TmcStepperDriver, StallGuard):
     2. move the motor via STEP/DIR pins
     """
 
-    tmc_com:TmcComSpi = None
-
-    _pin_stallguard:int = None
-    _sg_callback:types.FunctionType = None
-    _sg_threshold:int = 100             # threshold for stallguard
-
-
 
 # Constructor/Destructor
 # ----------------------------
@@ -82,9 +75,16 @@ class Tmc2240(TmcStepperDriver, StallGuard):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
+        self.tmc_com:TmcComSpi = None
+        self._pin_stallguard:int = None
+        self._sg_callback:types.FunctionType = None
+        self._sg_threshold:int = 100             # threshold for stallguard
+
+        if logprefix is None:
+            logprefix = f"TMC2240 {driver_address}"
+
         super().__init__(tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter)
 
-        self.tmc_logger.set_logprefix(f"TMC2240 {driver_address}")
 
         if tmc_com is not None:
             self.tmc_com = tmc_com
@@ -154,10 +154,14 @@ class Tmc2240(TmcStepperDriver, StallGuard):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self.tmc_com is not None:
-            del self.tmc_com
-        super().__del__()
+            self.tmc_com.deinit()
+        super().deinit()
 
 
 

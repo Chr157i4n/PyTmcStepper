@@ -30,15 +30,6 @@ class TmcStepperDriver:
     2. move the motor via STEP/DIR pins
     """
 
-    BOARD:Board = BOARD
-    tmc_mc:TmcMotionControl = None
-    tmc_ec:TmcEnableControl = None
-    tmc_logger:TmcLogger = None
-
-
-    _deinit_finished:bool = False
-
-
 
 # Constructor/Destructor
 # ----------------------------
@@ -69,6 +60,13 @@ class TmcStepperDriver:
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
+        self.BOARD:Board = BOARD
+        self.tmc_mc:TmcMotionControl = None
+        self.tmc_ec:TmcEnableControl = None
+        self.tmc_logger:TmcLogger = None
+
+        self._deinit_finished:bool = False
+
         if logprefix is None:
             logprefix = "StepperDriver"
         self.tmc_logger = TmcLogger(loglevel, logprefix, log_handlers, log_formatter)
@@ -94,6 +92,11 @@ class TmcStepperDriver:
 
 
     def __del__(self):
+        self.deinit()
+
+
+
+    def deinit(self):
         """destructor"""
         if self._deinit_finished is False:
             self.tmc_logger.log("Deinit", Loglevel.INFO)
@@ -105,11 +108,11 @@ class TmcStepperDriver:
         else:
             self.tmc_logger.log("Deinit already finished", Loglevel.INFO)
         if self.tmc_ec is not None:
-            del self.tmc_ec
+            self.tmc_ec.deinit()
         if self.tmc_mc is not None:
-            del self.tmc_mc
+            self.tmc_mc.deinit()
         if self.tmc_logger is not None:
-            del self.tmc_logger
+            self.tmc_logger.deinit()
 
 
 # TmcEnableControl Wrapper

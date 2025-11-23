@@ -21,9 +21,6 @@ class TmcComUart(TmcCom):
     like the current or the microsteppingmode
     """
 
-    ser:serial.Serial = serial.Serial()
-
-
     def __init__(self,
                  serialport:str ,
                  baudrate:int = 115200,
@@ -39,6 +36,8 @@ class TmcComUart(TmcCom):
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
         super().__init__(mtr_id, tmc_logger)
+
+        self.ser = serial.Serial()
 
         if serialport is None:
             return
@@ -86,6 +85,10 @@ class TmcComUart(TmcCom):
 
 
     def __del__(self):
+        self.deinit()
+
+
+    def deinit(self):
         """destructor"""
         if self.ser is not None and isinstance(self.ser, serial.Serial):
             self.ser.close()
