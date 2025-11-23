@@ -187,6 +187,7 @@ class MockGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports Mock.GPIO"""
+        super().__init__()
         self.GPIO = import_module('Mock.GPIO')
         dependencies_logger.log("using Mock.GPIO for GPIO mocking", Loglevel.INFO)
 
@@ -195,6 +196,7 @@ class RPiGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports RPi.GPIO"""
+        super().__init__()
         self.GPIO = import_module('RPi.GPIO')
         dependencies_logger.log("using RPi.GPIO for GPIO control", Loglevel.INFO)
 
@@ -203,6 +205,7 @@ class JetsonGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports Jetson.GPIO"""
+        super().__init__()
         self.GPIO = import_module('Jetson.GPIO')
         dependencies_logger.log("using Jetson.GPIO for GPIO control", Loglevel.INFO)
 
@@ -211,6 +214,7 @@ class OPiGPIOWrapper(BaseRPiGPIOWrapper):
 
     def __init__(self):
         """constructor, imports OPi.GPIO"""
+        super().__init__()
         self.GPIO = import_module('OPi.GPIO')
         dependencies_logger.log("using OPi.GPIO for GPIO control", Loglevel.INFO)
 
