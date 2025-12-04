@@ -28,7 +28,7 @@ print("---")
 
 
 #-----------------------------------------------------------------------
-# initiate the Tmc2209 class
+# initiate the Tmc2240 class
 # use your pins for pin_en, pin_step, pin_dir here
 #-----------------------------------------------------------------------
 # Multiple driver not tested
@@ -87,7 +87,7 @@ print("---\n---")
 
 
 #-----------------------------------------------------------------------
-# deinitiate the Tmc2209 class
+# deinitiate the Tmc2240 class
 #-----------------------------------------------------------------------
 tmc1.set_motor_enabled(False)
 tmc2.set_motor_enabled(False)
