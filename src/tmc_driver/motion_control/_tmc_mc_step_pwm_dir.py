@@ -9,7 +9,8 @@ STEP_PWM/DIR Motion Control module
 from ._tmc_mc import MovementAbsRel, Direction, StopMode
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import tmc_gpio, GpiozeroWrapper
+from .._tmc_gpio_board import GpiozeroWrapper
+from .. import _tmc_gpio_board as tmc_gpio
 
 
 class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
@@ -24,14 +25,14 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
     def speed(self, speed:int):
         """_speed setter"""
         self._speed = speed
-        tmc_gpio.gpio_pwm_set_frequency(self._pin_step, self._speed)
+        tmc_gpio.tmc_gpio.gpio_pwm_set_frequency(self._pin_step, self._speed)
         self._tmc_logger.log(f"Speed: {self._speed} µsteps/s", Loglevel.DEBUG)
 
 
     def init(self, tmc_logger:TmcLogger):
         """init: called by the Tmc class"""
         super().init(tmc_logger)
-        tmc_gpio.gpio_pwm_setup(self._pin_step, 1, 0)
+        tmc_gpio.tmc_gpio.gpio_pwm_setup(self._pin_step, 1, 0)
 
 
     def stop(self, stop_mode = StopMode.HARDSTOP):
@@ -42,7 +43,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
                 (Default value = StopMode.HARDSTOP)
         """
         super().stop(stop_mode)
-        tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
+        tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
 
 
     def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
@@ -57,7 +58,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
             StopMode: the stop mode
         """
         if isinstance(tmc_gpio, GpiozeroWrapper):
-            tmc_gpio.gpio_pwm_enable(self._pin_step, False)
+            tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, False)
 
         return super().run_to_position_steps(steps, movement_abs_rel)
 
@@ -70,11 +71,11 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
             speed = self.max_speed
 
         if isinstance(tmc_gpio, GpiozeroWrapper):
-            tmc_gpio.gpio_pwm_enable(self._pin_step, True)
+            tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, True)
 
         if speed == 0:
             # stop movement
-            tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
+            tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
         else:
             if speed < 0:
                 self.set_direction(Direction.CCW)
@@ -84,7 +85,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
 
             # change pwm frequency
             self.speed = speed
-            tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 50)
+            tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 50)
 
 
     def run_speed_pwm_fullstep(self, speed:int = None):

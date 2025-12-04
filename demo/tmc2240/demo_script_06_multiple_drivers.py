@@ -10,11 +10,14 @@ test file for testing multiple drivers via one UART connection
 import time
 try:
     from src.tmc_driver.tmc_2209 import *
+    from src.tmc_driver.com._tmc_com_uart import *
     from src.tmc_driver.tmc_2240 import *
+    from src.tmc_driver.com._tmc_com_spi import *
 except ModuleNotFoundError:
     from tmc_driver.tmc_2209 import *
+    from tmc_driver.com._tmc_com_uart import *
     from tmc_driver.tmc_2240 import *
-
+    from tmc_driver.com._tmc_com_spi import *
 
 print("---")
 print("SCRIPT START")
@@ -29,13 +32,13 @@ print("---")
 # use your pins for pin_en, pin_step, pin_dir here
 #-----------------------------------------------------------------------
 # Multiple driver not tested
-if BOARD == Board.RASPBERRY_PI:
+if tmc_gpio.BOARD == Board.RASPBERRY_PI:
     tmc1 = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/serial0"), driver_address=0)
     tmc2 = Tmc2240(TmcEnableControlPin(26), TmcMotionControlStepDir(13, 19), TmcComSpi(0, 0), driver_address=1)
-elif BOARD == Board.RASPBERRY_PI5:
+elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
     tmc1 = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/ttyAMA0"), driver_address=0)
     tmc2 = Tmc2240(TmcEnableControlPin(26), TmcMotionControlStepDir(13, 19), TmcComSpi(0, 0), driver_address=1)
-elif BOARD == Board.NVIDIA_JETSON:
+elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
     raise Exception("Not tested for Nvidia Jetson, use with caution")
 else:
     # just in case

@@ -5,8 +5,10 @@ test file for testing the UART connection
 import time
 try:
     from src.tmc_driver.tmc_2209 import *
+    from src.tmc_driver.com._tmc_com_uart import *
 except ModuleNotFoundError:
     from tmc_driver.tmc_2209 import *
+    from tmc_driver.com._tmc_com_uart import *
 
 
 print("---")
@@ -21,11 +23,11 @@ tmc:Tmc2209 = None
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 #-----------------------------------------------------------------------
-if BOARD == Board.RASPBERRY_PI:
+if tmc_gpio.BOARD == Board.RASPBERRY_PI:
     tmc = Tmc2209(None, None, TmcComUart("/dev/serial0"), loglevel=Loglevel.DEBUG)
-elif BOARD == Board.RASPBERRY_PI5:
+elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
     tmc = Tmc2209(None, None, TmcComUart("/dev/ttyAMA0"), loglevel=Loglevel.DEBUG)
-elif BOARD == Board.NVIDIA_JETSON:
+elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
     tmc = Tmc2209(None, None, TmcComUart("/dev/ttyTHS1"), loglevel=Loglevel.DEBUG)
 else:
     # just in case

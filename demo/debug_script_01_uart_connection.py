@@ -5,8 +5,10 @@ debug file for debuging the UART connection
 import time
 try:
     from src.tmc_driver.tmc_2209 import *
+    from src.tmc_driver.com._tmc_com_uart import *
 except ModuleNotFoundError:
     from tmc_driver.tmc_2209 import *
+    from tmc_driver.com._tmc_com_uart import *
 
 
 print("---")
@@ -21,22 +23,22 @@ print("---")
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 #-----------------------------------------------------------------------
-if BOARD == Board.RASPBERRY_PI:
+if tmc_gpio.BOARD == Board.RASPBERRY_PI:
     tmc = Tmc2209(None, None)
-elif BOARD == Board.RASPBERRY_PI5:
+elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
     tmc = Tmc2209(None, None)
-elif BOARD == Board.NVIDIA_JETSON:
+elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
     tmc = Tmc2209(None, None)
 else:
     # just in case
     tmc = Tmc2209(None, None)
 
 
-if BOARD == Board.RASPBERRY_PI:
+if tmc_gpio.BOARD == Board.RASPBERRY_PI:
     tmc.tmc_com = TmcComUart("/dev/serial0")
-elif BOARD == Board.RASPBERRY_PI5:
+elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
     tmc.tmc_com = TmcComUart("/dev/ttyAMA0")
-elif BOARD == Board.NVIDIA_JETSON:
+elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
     tmc.tmc_com = TmcComUart("/dev/ttyTHS1")
 
 tmc.tmc_com.tmc_logger = tmc.tmc_logger

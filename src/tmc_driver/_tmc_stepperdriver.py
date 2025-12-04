@@ -11,7 +11,8 @@ this module has the function to move the motor via STEP/DIR pins
 """
 
 import logging
-from ._tmc_gpio_board import Gpio, GpioMode, Board, BOARD, tmc_gpio
+from ._tmc_gpio_board import Gpio, GpioMode, Board
+from . import _tmc_gpio_board as tmc_gpio
 from .motion_control._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, StopMode, Direction
 from .enable_control._tmc_ec import TmcEnableControl
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
@@ -60,7 +61,7 @@ class TmcStepperDriver:
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.BOARD:Board = BOARD
+        self.BOARD:Board = tmc_gpio.BOARD
         self.tmc_mc:TmcMotionControl = None
         self.tmc_ec:TmcEnableControl = None
         self.tmc_logger:TmcLogger = None
@@ -73,7 +74,7 @@ class TmcStepperDriver:
 
         self.tmc_logger.log("Init", Loglevel.INFO)
 
-        tmc_gpio.init(gpio_mode)
+        tmc_gpio.tmc_gpio.init(gpio_mode)
 
         if tmc_mc is not None:
             self.tmc_mc = tmc_mc

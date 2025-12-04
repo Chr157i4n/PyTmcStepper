@@ -15,6 +15,7 @@ import types
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
 from ._tmc_gpio_board import GpioPUD, GpioMode
+from . import _tmc_gpio_board as tmc_gpio
 from ._tmc_logger import Loglevel
 from .reg._tmc224x_reg import *
 from . import _tmc_math as tmc_math
@@ -44,8 +45,8 @@ class StallGuard():
         """destructor"""
         if self._deinit_finished is False:
             if self._pin_stallguard is not None:
-                tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
-                tmc_gpio.gpio_cleanup(self._pin_stallguard)
+                tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
+                tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
                 self._pin_stallguard = None
 
 
@@ -69,10 +70,10 @@ class StallGuard():
         self._sg_callback = callback
         self._pin_stallguard = pin_stallguard
 
-        tmc_gpio.gpio_setup(self._pin_stallguard, GpioMode.IN, pull_up_down=GpioPUD.PUD_DOWN)
+        tmc_gpio.tmc_gpio.gpio_setup(self._pin_stallguard, GpioMode.IN, pull_up_down=GpioPUD.PUD_DOWN)
         # first remove existing events
-        tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
-        tmc_gpio.gpio_add_event_detect(self._pin_stallguard, self.stallguard_callback)
+        tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
+        tmc_gpio.tmc_gpio.gpio_add_event_detect(self._pin_stallguard, self.stallguard_callback)
 
 
 

@@ -5,8 +5,10 @@ test file for testing basic movement
 import time
 try:
     from src.tmc_driver.tmc_2240 import *
+    from src.tmc_driver.com._tmc_com_spi import *
 except ModuleNotFoundError:
     from tmc_driver.tmc_2240 import *
+    from tmc_driver.com._tmc_com_spi import *
 
 
 print("---")
@@ -21,11 +23,11 @@ print("---")
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 #-----------------------------------------------------------------------
-if BOARD == Board.RASPBERRY_PI:
+if tmc_gpio.BOARD == Board.RASPBERRY_PI:
     tmc = Tmc2240(TmcEnableControlPin(26), TmcMotionControlStepPwmDir(13, 19), TmcComSpi(0, 0))
-elif BOARD == Board.RASPBERRY_PI5:
+elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
     tmc = Tmc2240(TmcEnableControlPin(26), TmcMotionControlStepPwmDir(13, 19), TmcComSpi(0, 0))
-elif BOARD == Board.NVIDIA_JETSON:
+elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
     tmc = Tmc2240(TmcEnableControlPin(26), TmcMotionControlStepPwmDir(13, 19), TmcComSpi(0, 0))
 else:
     # just in case

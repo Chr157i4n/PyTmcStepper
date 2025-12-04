@@ -11,7 +11,8 @@ import math
 import threading
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, Direction, StopMode
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import tmc_gpio, Gpio, GpioMode
+from .._tmc_gpio_board import Gpio, GpioMode
+from .. import _tmc_gpio_board as tmc_gpio
 from .. import _tmc_math as tmc_math
 
 
@@ -74,10 +75,10 @@ class TmcMotionControlStepDir(TmcMotionControl):
         else:
             self._step_interval = abs(1000000.0 / speed)
             if speed > 0:
-                tmc_gpio.gpio_output(self._pin_dir, Gpio.HIGH)
+                tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, Gpio.HIGH)
                 self._tmc_logger.log("going CW", Loglevel.MOVEMENT)
             else:
-                tmc_gpio.gpio_output(self._pin_dir, Gpio.LOW)
+                tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, Gpio.LOW)
                 self._tmc_logger.log("going CCW", Loglevel.MOVEMENT)
 
         self._speed = speed
@@ -125,11 +126,11 @@ class TmcMotionControlStepDir(TmcMotionControl):
         """init: called by the Tmc class"""
         super().init(tmc_logger)
         self._tmc_logger.log(f"STEP Pin: {self._pin_step}", Loglevel.DEBUG)
-        tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
+        tmc_gpio.tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
 
         if self._pin_dir is not None:
             self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
-            tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
+            tmc_gpio.tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
 
 
     def __del__(self):
@@ -139,10 +140,10 @@ class TmcMotionControlStepDir(TmcMotionControl):
     def deinit(self):
         """destructor"""
         if self._pin_step is not None:
-            tmc_gpio.gpio_cleanup(self._pin_step)
+            tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_step)
             self._pin_step = None
         if self._pin_dir is not None:
-            tmc_gpio.gpio_cleanup(self._pin_dir)
+            tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_dir)
             self._pin_dir = None
 
 
@@ -151,9 +152,9 @@ class TmcMotionControlStepDir(TmcMotionControl):
 
         for the TMC2209 there needs to be a signal duration of minimum 100 ns
         """
-        tmc_gpio.gpio_output(self._pin_step, Gpio.HIGH)
+        tmc_gpio.tmc_gpio.gpio_output(self._pin_step, Gpio.HIGH)
         time.sleep(1/1000/1000)
-        tmc_gpio.gpio_output(self._pin_step, Gpio.LOW)
+        tmc_gpio.tmc_gpio.gpio_output(self._pin_step, Gpio.LOW)
         time.sleep(1/1000/1000)
 
         # self._tmc_logger.log("one step", Loglevel.MOVEMENT)
@@ -167,7 +168,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
             direction (bool): motor shaft direction: False = CCW; True = CW
         """
         super().set_direction(direction)
-        tmc_gpio.gpio_output(self._pin_dir, direction.value)
+        tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, direction.value)
 
 
     def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
@@ -342,7 +343,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         if self._n == 0:
             # First step from stopped
             self._cn = self._c0
-            tmc_gpio.gpio_output(self._pin_step, Gpio.LOW)
+            tmc_gpio.tmc_gpio.gpio_output(self._pin_step, Gpio.LOW)
             if distance_to > 0:
                 self.set_direction(Direction.CW)
                 self._tmc_logger.log("going CW", Loglevel.MOVEMENT)
