@@ -3,7 +3,8 @@ Enable Control base module
 """
 
 from ._tmc_ec import TmcEnableControl
-from .._tmc_gpio_board import Gpio, GpioMode, tmc_gpio
+from .._tmc_gpio_board import Gpio, GpioMode
+from .. import _tmc_gpio_board as tmc_gpio
 from .._tmc_logger import TmcLogger, Loglevel
 
 
@@ -27,7 +28,7 @@ class TmcEnableControlPin(TmcEnableControl):
         """init: called by the Tmc class"""
         super().init(tmc_logger)
         self._tmc_logger.log(f"EN Pin: {self._pin_en}", Loglevel.DEBUG)
-        tmc_gpio.gpio_setup(self._pin_en, GpioMode.OUT, initial=Gpio.HIGH)
+        tmc_gpio.tmc_gpio.gpio_setup(self._pin_en, GpioMode.OUT, initial=Gpio.HIGH)
 
 
     def __del__(self):
@@ -37,7 +38,7 @@ class TmcEnableControlPin(TmcEnableControl):
     def deinit(self):
         """destructor"""
         if self._pin_en is not None:
-            tmc_gpio.gpio_cleanup(self._pin_en)
+            tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_en)
             self._pin_en = None
 
 
@@ -48,5 +49,5 @@ class TmcEnableControlPin(TmcEnableControl):
             en (bool): whether the motor current output should be enabled
         """
         if self._pin_en is not None:
-            tmc_gpio.gpio_output(self._pin_en, not en)
+            tmc_gpio.tmc_gpio.gpio_output(self._pin_en, not en)
             self._tmc_logger.log(f"Motor output active: {en}", Loglevel.INFO)

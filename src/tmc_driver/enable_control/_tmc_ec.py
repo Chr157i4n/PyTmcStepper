@@ -19,6 +19,10 @@ class TmcEnableControl():
         self._tmc_logger = tmc_logger
 
 
+    def deinit(self):
+        """destructor"""
+
+
     def set_motor_enabled(self, en):
         """enables or disables the motor current output
 

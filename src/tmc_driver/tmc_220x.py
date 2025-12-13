@@ -21,7 +21,7 @@ import time
 import typing
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
-from .com._tmc_com_uart import TmcComUart
+from .com._tmc_com_uart_base import TmcComUartBase
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
@@ -73,7 +73,7 @@ class Tmc220x(TmcStepperDriver):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.tmc_com:TmcComUart = None
+        self.tmc_com:TmcComUartBase = None
 
         if logprefix is None:
             logprefix = f"TMC2209 {driver_address}"
@@ -146,9 +146,10 @@ class Tmc220x(TmcStepperDriver):
 
     def deinit(self):
         """destructor"""
+        super().deinit()
         if self.tmc_com is not None:
             self.tmc_com.deinit()
-        super().deinit()
+            self.tmc_com = None
 
 
 
@@ -647,9 +648,9 @@ class Tmc220x(TmcStepperDriver):
         pin_ok = True
 
         # turn on all pins
-        tmc_gpio.gpio_output(self.tmc_mc.pin_dir, Gpio.HIGH)
-        tmc_gpio.gpio_output(self.tmc_mc.pin_step, Gpio.HIGH)
-        tmc_gpio.gpio_output(self.tmc_ec.pin_en, Gpio.HIGH)
+        tmc_gpio.tmc_gpio.gpio_output(self.tmc_mc.pin_dir, Gpio.HIGH)
+        tmc_gpio.tmc_gpio.gpio_output(self.tmc_mc.pin_step, Gpio.HIGH)
+        tmc_gpio.tmc_gpio.gpio_output(self.tmc_ec.pin_en, Gpio.HIGH)
 
         # check that the selected pin is on
         ioin = self.read_ioin()
@@ -657,7 +658,7 @@ class Tmc220x(TmcStepperDriver):
             pin_ok = False
 
         # turn off only the selected pin
-        tmc_gpio.gpio_output(pin, Gpio.LOW)
+        tmc_gpio.tmc_gpio.gpio_output(pin, Gpio.LOW)
         time.sleep(0.1)
 
         # check that the selected pin is off

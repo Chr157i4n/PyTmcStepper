@@ -7,7 +7,8 @@ from ._tmc_mc import Direction
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import tmc_gpio, Gpio, GpioMode
+from .._tmc_gpio_board import Gpio, GpioMode
+from .. import _tmc_gpio_board as tmc_gpio
 
 
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
@@ -35,7 +36,7 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         """init: called by the Tmc class"""
         super().init(tmc_logger)
         self._tmc_logger.log(f"STEP Pin: {self._pin_step}", Loglevel.DEBUG)
-        tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
+        tmc_gpio.tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
 
         self.max_speed_fullstep = 100
         self.acceleration_fullstep = 100
@@ -48,7 +49,7 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
     def deinit(self):
         """destructor"""
         if self._pin_step is not None:
-            tmc_gpio.gpio_cleanup(self._pin_step)
+            tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_step)
             self._pin_step = None
 
 

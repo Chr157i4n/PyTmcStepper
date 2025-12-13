@@ -67,6 +67,7 @@ gpiozero    | RASPBERRY_PI5             | Pi5
 Jetson.GPIO | NVIDIA_JETSON             | Nvidia Jetson
 pheriphery  | LUCKFOX_PICO              | Luckfox Pico
 OPi.GPIO    | ORANGE_PI                 | Orange Pi
+pyftdi      | -                         | Windows/Linux
 
 Those libraries are needed for this library to work. You can either install the correct library yourself.
 You can also install the needed GPIO library by specifing the Installation Parameter while installing this library:
@@ -118,10 +119,11 @@ Further methods of controlling the motion of a motor could be:
 
 ### Com
 
-Com     | Class         | Driver    | Notes
---      | --            | --        | --
-UART    | [TmcComUart](src/tmc_driver/com/_tmc_com_uart.py)    | all       | Communication via UART (RX, TX). See [Wiring](#uart)<br />[pyserial](https://pypi.org/project/pyserial) needs to be installed
-SPI     | [TmcComSpi](src/tmc_driver/com/_tmc_com_spi.py)     | TMC2240   | Communication via SPI (MOSI, MISO, CLK, CS). See [Wiring](#spi)<br />[spidev](https://pypi.org/project/spidev) needs to be installed
+Com             | Class         | Driver    | Notes
+--              | --            | --        | --
+UART            | [TmcComUart](src/tmc_driver/com/_tmc_com_uart.py)    | all       | Communication via UART (RX, TX). See [Wiring](#uart)<br />[pyserial](https://pypi.org/project/pyserial) needs to be installed
+SPI             | [TmcComSpi](src/tmc_driver/com/_tmc_com_spi.py)     | TMC2240   | Communication via SPI (MOSI, MISO, CLK, CS). See [Wiring](#spi)<br />[spidev](https://pypi.org/project/spidev) needs to be installed
+SPI over FT232H | [TmcComSpiFtdi](src/tmc_driver/com/_tmc_com_spi_ftdi.py)  | TMC2240   | Communication via SPI using a FT232H. This can be used on any OS.<br />[pyftdi](https://pypi.org/project/pyftdi) needs to be installed
 
 ## Wiring
 

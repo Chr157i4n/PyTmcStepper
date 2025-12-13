@@ -3,7 +3,7 @@ test for _tmc_com_uart.py
 """
 
 import unittest
-from unittest import  mock
+from unittest import mock
 from src.tmc_driver._tmc_logger import *
 from src.tmc_driver.com._tmc_com_uart import *
 

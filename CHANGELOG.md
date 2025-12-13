@@ -1,5 +1,10 @@
 # Changelog
 
+## version 0.8.0
+
+- added support for FT232H (can be used on Windows; currently only with TMC2240 and SPI)
+- added missing deinit in TmcEnableControl
+
 ## version 0.7.8
 
 - fixed RPi4 using wrong gpio lib
