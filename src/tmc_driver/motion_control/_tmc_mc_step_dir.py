@@ -8,8 +8,19 @@ STEP/DIR Motion Control module
 
 import time
 import math
+import sys
 import threading
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, Direction, StopMode
+
+# MicroPython compatibility for time functions
+MICROPYTHON = sys.implementation.name == "micropython"
+
+def _get_time_us():
+    """Get current time in microseconds, compatible with both CPython and MicroPython"""
+    if MICROPYTHON:
+        return time.ticks_us()
+    return time.time_ns() // 1000
+
 from .._tmc_logger import TmcLogger, Loglevel
 from .._tmc_gpio_board import Gpio, GpioMode
 from .. import _tmc_gpio_board as tmc_gpio
@@ -372,7 +383,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         if not self._step_interval:
             return False
 
-        curtime = time.time_ns()/1000
+        curtime = _get_time_us()
 
         if curtime - self._last_step_time >= self._step_interval:
 
