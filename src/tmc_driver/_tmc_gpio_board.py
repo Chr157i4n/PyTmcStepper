@@ -7,6 +7,7 @@
 #pylint: disable=abstract-method
 #pylint: disable=no-member
 #pylint: disable=too-few-public-methods
+#pylint: skip-file
 """
 Many boards have RaspberryPI-compatible PinOut,
 but require to import special GPIO module instead RPI.GPIO

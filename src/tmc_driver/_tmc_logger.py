@@ -1,4 +1,5 @@
 #pylint: disable=protected-access
+#pylint: skip-file
 """
 Tmc2209 stepper driver logger module
 """
