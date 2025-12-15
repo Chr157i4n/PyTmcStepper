@@ -10,17 +10,6 @@ print("---")
 print("SCRIPT START")
 print("---")
 
-
-spi = TmcComSpiMicroPython(
-    spi_id=0,
-    cs_pin=17,
-    sck_pin=18,
-    mosi_pin=19,
-    miso_pin=16,
-    baudrate=1000000
-)
-
-
 #-----------------------------------------------------------------------
 # initiate the Tmc2240 class
 # use your pins for pin_en, pin_step, pin_dir here
