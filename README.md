@@ -229,7 +229,6 @@ Then you can run a demo script by using
 some external micropython-lib are needed to be installed:
 
 ```shell
-python -m mpremote connect COM4 mip install logging
 python -m mpremote connect COM4 mip install threading
 python -m mpremote connect COM4 mip install types
 ```

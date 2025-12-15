@@ -120,7 +120,6 @@ def main():
 
     deps = [
         "threading",
-        "logging",
         "types"
     ]
 

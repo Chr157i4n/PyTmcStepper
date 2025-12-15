@@ -3,14 +3,17 @@
 Tmc2209 stepper driver logger module
 """
 
-# Detect MicroPython
+from enum import Enum
 import sys
+
+# Detect MicroPython
 MICROPYTHON = sys.implementation.name == "micropython"
 
+if not MICROPYTHON:
+    import logging
 
-from enum import Enum
-import logging
-from enum import Enum
+
+
 
 
 class Loglevel(Enum):
@@ -30,7 +33,7 @@ class Loglevel(Enum):
 
 if MICROPYTHON:
     class TmcLogger:
-        """No-op logger for MicroPython"""
+        """minimal logger for MicroPython"""
 
         def __init__(self, loglevel=None, logprefix=None, handlers=None, formatter=None):
             self._loglevel = Loglevel.NONE

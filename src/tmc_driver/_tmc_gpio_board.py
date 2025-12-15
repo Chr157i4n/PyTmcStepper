@@ -20,16 +20,9 @@ Supports MicroPython
 
 # Detect MicroPython
 import sys
-from typing import TYPE_CHECKING
 from ._tmc_logger import TmcLogger, Loglevel
 
 MICROPYTHON = sys.implementation.name == "micropython"
-
-if TYPE_CHECKING:
-    # Nur für statische Analyse - wird nie ausgeführt
-    from typing import Any
-    Pin: Any
-    PWM: Any
 
 if MICROPYTHON:
     # MicroPython imports
