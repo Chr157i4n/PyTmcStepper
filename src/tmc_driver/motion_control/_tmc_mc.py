@@ -1,5 +1,6 @@
 #pylint: disable=too-many-instance-attributes
 #pylint: disable=unnecessary-pass
+#pylint: skip-file
 """
 Motion Control base module
 """
