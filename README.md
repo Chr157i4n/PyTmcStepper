@@ -220,6 +220,16 @@ For me these baudrates worked fine: 19200, 38400, 57600, 115200, 230400, 460800,
 If the TMC2209 driver is connected to the Vmotor, the internal voltage regulator will create the Vio for the chip.
 So you don't need to connect anything to the Vio pin of the driver.
 
+### Micropython
+
+First you need to upload all need files to the µController with mpremote or another tool. You can use the script `upload_to_pico.py` for that.
+Then you can run a demo script by using
+```shell
+python -m mpremote connect COM4 run .\demo\micropython\demo_script_tmc2240_03_basic_movement.py
+```
+
+currently only SPI with the TMC2240 is tested
+
 ## Usage
 
 The library currently uses functions to access the TMC registers, but Python properties for internal getters/setters.

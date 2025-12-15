@@ -108,8 +108,8 @@ def main():
         "src/tmc_driver/enable_control/_tmc_ec_toff.py",
     ]
 
-    # main file
-    main_file = "demo_pico_move.py"
+    # # main file
+    # main_file = "demo_pico_move.py"
 
     # Directories to create on Pico
     directories = [
@@ -150,13 +150,14 @@ def main():
         else:
             print(f"    SKIP: {src} (not found)")
 
-    # Step 4: Upload demo file
-    print("\n[4/5] Uploading demo script...")
-    src_path = os.path.join(BASE_PATH, main_file)
-    if os.path.exists(src_path):
-        run_mpremote(port, "fs", "cp", src_path, f":{main_file}")
-    else:
-        print(f"    SKIP: {main_file} (not found)")
+    # # Step 4: Upload demo file
+    # print("\n[4/5] Uploading demo script...")
+    # src_path = os.path.join(BASE_PATH, main_file)
+    # main_file_name = os.path.basename(main_file)
+    # if os.path.exists(src_path):
+    #     run_mpremote(port, "fs", "cp", src_path, f":{main_file_name}")
+    # else:
+    #     print(f"    SKIP: {main_file} (not found)")
 
     # print("\n" + "=" * 60)
     # print("Upload complete!")
