@@ -13,11 +13,17 @@ class Direction(Enum):
     CCW = 0
     CW = 1
 
+    def __int__(self):
+        return self.value
+
 
 class MovementAbsRel(Enum):
     """movement absolute or relative"""
     ABSOLUTE = 0
     RELATIVE = 1
+
+    def __int__(self):
+        return self.value
 
 
 class MovementPhase(Enum):
@@ -27,12 +33,18 @@ class MovementPhase(Enum):
     MAXSPEED = 2
     DECELERATING = 3
 
+    def __int__(self):
+        return self.value
+
 
 class StopMode(Enum):
     """stopmode"""
     NO = 0
     SOFTSTOP = 1
     HARDSTOP = 2
+
+    def __int__(self):
+        return self.value
 
 
 

@@ -23,6 +23,9 @@ class Loglevel(Enum):
     ERROR = 40          # only error messages will be logged
     NONE = -1           # no messages will be logged
 
+    def __int__(self):
+        return self.value
+
 
 
 if MICROPYTHON:

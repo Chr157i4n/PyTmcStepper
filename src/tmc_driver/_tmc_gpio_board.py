@@ -64,21 +64,33 @@ class Board(Enum):
     ORANGE_PI = 5
     MICROPYTHON = 6
 
+    def __int__(self):
+        return self.value
+
 class Gpio(IntEnum):
     """GPIO value"""
     LOW = 0
     HIGH = 1
+
+    def __int__(self):
+        return self.value
 
 class GpioMode(IntEnum):
     """GPIO mode"""
     OUT = 0
     IN = 1
 
+    def __int__(self):
+        return self.value
+
 class GpioPUD(IntEnum):
     """Pull up Down"""
     PUD_OFF = 20
     PUD_UP = 22
     PUD_DOWN = 21
+
+    def __int__(self):
+        return self.value
 
 if MICROPYTHON:
     BOARD = Board.UNKNOWN
