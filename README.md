@@ -272,6 +272,8 @@ The code to run the stepper motor is based on the code of the [AccelStepper Libr
 
 The code for the UART communication is based on this [code from troxel](https://github.com/troxel/TMC_UART).
 
+For the implementation of Python-stdlib for micropython [micropython-lib](https://github.com/micropython/micropython-lib)
+
 My goal is to make a library, that can run a stepper motor with a TMC2209 stepper driver and can write the setting in the register of the TMC2209, entirely in Python.
 The main focus for this are Test setups, as Python is not fast enough for high motor speeds.
 
