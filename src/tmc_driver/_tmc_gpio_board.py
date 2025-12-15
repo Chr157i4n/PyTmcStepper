@@ -92,11 +92,9 @@ class GpioPUD(IntEnum):
     def __int__(self):
         return self.value
 
-if MICROPYTHON:
-    BOARD = Board.UNKNOWN
-    dependencies_logger = TmcLogger(Loglevel.DEBUG, "DEPENDENCIES")
-else:
-    BOARD = Board.MICROPYTHON
+
+BOARD = Board.UNKNOWN
+dependencies_logger = TmcLogger(Loglevel.DEBUG, "DEPENDENCIES")
 
 
 class BaseGPIOWrapper:
