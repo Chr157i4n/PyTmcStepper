@@ -14,13 +14,34 @@ This module determines the type of board
 and import the corresponding GPIO module
 
 Can be extended to support BeagleBone or other boards
+Supports MicroPython
 """
 
-import types
-from os.path import exists
-from enum import Enum, IntEnum
-from importlib import import_module
+# Detect MicroPython
+import sys
+MICROPYTHON = sys.implementation.name == "micropython"
+
 from ._tmc_logger import TmcLogger, Loglevel
+
+if MICROPYTHON:
+    # MicroPython imports
+    from machine import Pin, PWM
+    import sys
+
+        # Define Enum/IntEnum as simple base classes for MicroPython
+    class Enum:
+        """Simple Enum replacement for MicroPython"""
+        pass
+
+    class IntEnum(int):
+        """Simple IntEnum replacement for MicroPython"""
+        pass
+else:
+    # CPython imports
+    import types
+    from os.path import exists
+    from enum import Enum, IntEnum
+    from importlib import import_module
 
 # ------------------------------
 # LIB           | BOARD
@@ -30,6 +51,7 @@ from ._tmc_logger import TmcLogger, Loglevel
 # gpiozero      | Pi5
 # pheriphery    | Luckfox Pico
 # OPi.GPIO      | Orange Pi
+# machine       | MicroPython
 # ------------------------------
 
 class Board(Enum):
@@ -40,7 +62,7 @@ class Board(Enum):
     NVIDIA_JETSON = 3
     LUCKFOX_PICO = 4
     ORANGE_PI = 5
-
+    MICROPYTHON = 6
 
 class Gpio(IntEnum):
     """GPIO value"""
@@ -58,8 +80,11 @@ class GpioPUD(IntEnum):
     PUD_UP = 22
     PUD_DOWN = 21
 
-BOARD = Board.UNKNOWN
-dependencies_logger = TmcLogger(Loglevel.DEBUG, "DEPENDENCIES")
+if MICROPYTHON:
+    BOARD = Board.UNKNOWN
+    dependencies_logger = TmcLogger(Loglevel.DEBUG, "DEPENDENCIES")
+else:
+    BOARD = Board.MICROPYTHON
 
 
 class BaseGPIOWrapper:
@@ -472,71 +497,174 @@ class FtdiWrapper(BaseGPIOWrapper):
         """remove event detect - not supported"""
         pass
 
+class MicroPythonGPIOWrapper(BaseGPIOWrapper):
+    """MicroPython GPIO wrapper for Raspberry Pi Pico (RP2040) and similar boards.
+
+    Uses machine.Pin and machine.PWM for GPIO control.
+    Only available when running under MicroPython.
+    """
+
+    def __init__(self):
+        """constructor"""
+        if not MICROPYTHON:
+            raise RuntimeError("MicroPythonGPIOWrapper can only be used with MicroPython")
+        self._pins = {}  # pin_num -> Pin object
+        self._pwms = {}  # pin_num -> PWM object
+
+    def init(self, gpio_mode=None):
+        """initialize GPIO library - not needed for MicroPython"""
+        pass
+
+    def deinit(self):
+        """deinitialize GPIO library"""
+        for pin_num in list(self._pwms.keys()):
+            self.gpio_cleanup(pin_num)
+        for pin_num in list(self._pins.keys()):
+            self.gpio_cleanup(pin_num)
+
+    def gpio_setup(self, pin, mode, initial=0, pull_up_down=0):
+        """setup GPIO pin
+
+        Args:
+            pin: GPIO pin number
+            mode: GpioMode.OUT or GpioMode.IN
+            initial: Initial value for output pins
+            pull_up_down: Pull-up/down configuration
+        """
+        if mode == GpioMode.OUT:
+            self._pins[pin] = Pin(pin, Pin.OUT, value=initial)
+        else:
+            # Configure pull-up/down
+            if pull_up_down == GpioPUD.PUD_UP:
+                self._pins[pin] = Pin(pin, Pin.IN, Pin.PULL_UP)
+            elif pull_up_down == GpioPUD.PUD_DOWN:
+                self._pins[pin] = Pin(pin, Pin.IN, Pin.PULL_DOWN)
+            else:
+                self._pins[pin] = Pin(pin, Pin.IN)
+
+    def gpio_cleanup(self, pin):
+        """cleanup GPIO pin"""
+        if pin in self._pwms:
+            self._pwms[pin].deinit()
+            del self._pwms[pin]
+        if pin in self._pins:
+            del self._pins[pin]
+
+    def gpio_input(self, pin):
+        """read GPIO pin"""
+        if pin in self._pins:
+            return self._pins[pin].value()
+        return 0
+
+    def gpio_output(self, pin, value):
+        """write GPIO pin"""
+        if pin in self._pins:
+            self._pins[pin].value(value)
+
+    def gpio_pwm_setup(self, pin, frequency=10, duty_cycle=0):
+        """setup PWM
+
+        Args:
+            pin: GPIO pin number
+            frequency: PWM frequency in Hz
+            duty_cycle: Duty cycle in percent (0-100)
+        """
+        self._pwms[pin] = PWM(Pin(pin))
+        self._pwms[pin].freq(frequency)
+        # MicroPython uses 0-65535 for duty, convert from percent
+        self._pwms[pin].duty_u16(int(duty_cycle /100 *65535))
+
+    def gpio_pwm_set_frequency(self, pin, frequency):
+        """set PWM frequency"""
+        if pin in self._pwms:
+            self._pwms[pin].freq(frequency)
+
+    def gpio_pwm_set_duty_cycle(self, pin, duty_cycle):
+        """set PWM duty cycle
+
+        Args:
+            pin: GPIO pin number
+            duty_cycle: Duty cycle in percent (0-100)
+        """
+        if pin in self._pwms:
+            # Convert percent to 0-65535
+            self._pwms[pin].duty_u16(int(duty_cycle * 655.35))
+
+    def gpio_add_event_detect(self, pin, callback):
+        """add event detect (rising edge interrupt)"""
+        if pin in self._pins:
+            self._pins[pin].irq(trigger=Pin.IRQ_RISING, handler=callback)
+
+    def gpio_remove_event_detect(self, pin):
+        """remove event detect"""
+        if pin in self._pins:
+            self._pins[pin].irq(handler=None)
 
 
+if MICROPYTHON:
+    tmc_gpio = MicroPythonGPIOWrapper()
+    BOARD = Board.MICROPYTHON
+else:
+    board_mapping = {
+        "raspberry pi 5": (GpiozeroWrapper, Board.RASPBERRY_PI5, "gpiozero", "https://gpiozero.readthedocs.io/en/stable/installing.html"),
+        "raspberry": (RPiGPIOWrapper, Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
+        "jetson": (JetsonGPIOWrapper, Board.NVIDIA_JETSON, "jetson-gpio", "https://github.com/NVIDIA/jetson-gpio"),
+        "luckfox": (peripheryWrapper, Board.LUCKFOX_PICO, "periphery", "https://github.com/vsergeev/python-periphery"),
+        "orange": (OPiGPIOWrapper, Board.ORANGE_PI, "OPi.GPIO", "https://github.com/rm-hull/OPi.GPIO")
+    }
 
-board_mapping = {
-    "raspberry pi 5": (GpiozeroWrapper, Board.RASPBERRY_PI5, "gpiozero", "https://gpiozero.readthedocs.io/en/stable/installing.html"),
-    "raspberry": (RPiGPIOWrapper, Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
-    "jetson": (JetsonGPIOWrapper, Board.NVIDIA_JETSON, "jetson-gpio", "https://github.com/NVIDIA/jetson-gpio"),
-    "luckfox": (peripheryWrapper, Board.LUCKFOX_PICO, "periphery", "https://github.com/vsergeev/python-periphery"),
-    "orange": (OPiGPIOWrapper, Board.ORANGE_PI, "OPi.GPIO", "https://github.com/rm-hull/OPi.GPIO")
-}
+    # Determine the board and instantiate the appropriate GPIO class
+    def get_board_model_name():
+        """get board model name from /proc/device-tree/model file"""
+        if not exists('/proc/device-tree/model'):
+            return "mock"
+        with open('/proc/device-tree/model', encoding="utf-8") as f:
+            return f.readline().lower()
 
+    def handle_module_not_found_error(err, board_name, module_name, install_link):
+        """handle module not found error"""
+        dependencies_logger.log(
+            (f"ModuleNotFoundError: {err}\n"
+             f"Board is {board_name} but module {module_name} isn't installed.\n"
+             f"Follow the installation instructions in the link below to resolve the issue:\n"
+             f"{install_link}\n"
+             "Exiting..."),
+            Loglevel.ERROR)
+        raise err
 
+    def handle_import_error(err, board_name, module_name, install_link):
+        """handle import error"""
+        dependencies_logger.log(
+            (f"ImportError: {err}\n"
+             f"Board is {board_name} but module {module_name} isn't installed.\n"
+             f"Follow the installation instructions in the link below to resolve the issue:\n"
+             f"{install_link}\n"
+             "Exiting..."),
+            Loglevel.ERROR)
+        raise err
 
-# Determine the board and instantiate the appropriate GPIO class
-def get_board_model_name():
-    """get board model name from /proc/device-tree/model file"""
-    if not exists('/proc/device-tree/model'):
-        return "mock"
-    with open('/proc/device-tree/model', encoding="utf-8") as f:
-        return f.readline().lower()
+    def initialize_gpio(force_lib=None):
+        """initialize GPIO"""
+        model = get_board_model_name()
+        dependencies_logger.log(f"Board model: {model}", Loglevel.INFO)
+        if model == "mock":
+            return MockGPIOWrapper(), Board.UNKNOWN
 
-def handle_module_not_found_error(err, board_name, module_name, install_link):
-    """handle module not found error"""
-    dependencies_logger.log(
-        (f"ModuleNotFoundError: {err}\n"
-         f"Board is {board_name} but module {module_name} isn't installed.\n"
-         f"Follow the installation instructions in the link below to resolve the issue:\n"
-         f"{install_link}\n"
-         "Exiting..."),
-        Loglevel.ERROR)
-    raise err
+        for key, (wrapper_class, board_enum, module_name, install_link) in board_mapping.items():
+            if (key in model and force_lib is None) or (force_lib == module_name):
+                try:
+                    return wrapper_class(), board_enum
+                except ModuleNotFoundError as err:
+                    handle_module_not_found_error(err, key.capitalize(), module_name, install_link)
+                except ImportError as err:
+                    handle_import_error(err, key.capitalize(), module_name, install_link)
 
-def handle_import_error(err, board_name, module_name, install_link):
-    """handle import error"""
-    dependencies_logger.log(
-        (f"ImportError: {err}\n"
-         f"Board is {board_name} but module {module_name} isn't installed.\n"
-         f"Follow the installation instructions in the link below to resolve the issue:\n"
-         f"{install_link}\n"
-         "Exiting..."),
-        Loglevel.ERROR)
-    raise err
+        dependencies_logger.log(
+            "The board is not recognized. Trying import default RPi.GPIO module...",
+            Loglevel.INFO)
+        try:
+            return RPiGPIOWrapper(), Board.UNKNOWN
+        except ImportError:
+            return MockGPIOWrapper(), Board.UNKNOWN
 
-def initialize_gpio(force_lib:Board = None) -> tuple[BaseGPIOWrapper, Board]:
-    """initialize GPIO"""
-    model = get_board_model_name()
-    dependencies_logger.log(f"Board model: {model}", Loglevel.INFO)
-    if model == "mock":
-        return MockGPIOWrapper(), Board.UNKNOWN
-
-    for key, (wrapper_class, board_enum, module_name, install_link) in board_mapping.items():
-        if (key in model and force_lib is None) or (force_lib == module_name):
-            try:
-                return wrapper_class(), board_enum
-            except ModuleNotFoundError as err:
-                handle_module_not_found_error(err, key.capitalize(), module_name, install_link)
-            except ImportError as err:
-                handle_import_error(err, key.capitalize(), module_name, install_link)
-
-    dependencies_logger.log(
-        "The board is not recognized. Trying import default RPi.GPIO module...",
-        Loglevel.INFO)
-    try:
-        return RPiGPIOWrapper(), Board.UNKNOWN
-    except ImportError:
-        return MockGPIOWrapper(), Board.UNKNOWN
-
-tmc_gpio, BOARD = initialize_gpio()
+    tmc_gpio, BOARD = initialize_gpio()
