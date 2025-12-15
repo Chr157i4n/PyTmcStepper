@@ -11,6 +11,7 @@ Usage on Pico:
 
 # Basic types - just return the argument or a dummy
 def _dummy(*args, **kwargs):
+    del kwargs
     if args:
         return args[0]
     return None
