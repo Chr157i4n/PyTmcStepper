@@ -62,10 +62,7 @@ def main():
     # MicroPython compatibility modules (go to /lib/)
     micropython_modules = [
         "src/tmc_driver/micropython/enum.py",
-        "src/tmc_driver/micropython/logging.py",
-        "src/tmc_driver/micropython/types.py",
         "src/tmc_driver/micropython/typing.py",
-        "src/tmc_driver/micropython/threading.py",
     ]
 
     # TMC driver core files
@@ -121,6 +118,12 @@ def main():
         "lib/tmc_driver/enable_control",
     ]
 
+    deps = [
+        "threading",
+        "logging",
+        "types"
+    ]
+
     # Step 1: Create directories
     print("\n[1/5] Creating directories on Pico...")
     for dir_path in directories:
@@ -149,6 +152,12 @@ def main():
             run_mpremote(port, "fs", "cp", src_path, dst)
         else:
             print(f"    SKIP: {src} (not found)")
+
+    # Step 4: Install external dependencies
+    print("\n[4/5] Installing external dependencies...")
+    for dep in deps:
+        print(f"  > Installing {dep}...")
+        run_mpremote(port, "mip", "install", dep)
 
     # # Step 4: Upload demo file
     # print("\n[4/5] Uploading demo script...")

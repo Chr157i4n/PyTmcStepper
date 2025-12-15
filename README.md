@@ -68,6 +68,7 @@ Jetson.GPIO | NVIDIA_JETSON             | Nvidia Jetson
 pheriphery  | LUCKFOX_PICO              | Luckfox Pico
 OPi.GPIO    | ORANGE_PI                 | Orange Pi
 pyftdi      | -                         | Windows/Linux
+machine     | -                         | Pico, Pico2, ESP32, etc.
 
 Those libraries are needed for this library to work. You can either install the correct library yourself.
 You can also install the needed GPIO library by specifing the Installation Parameter while installing this library:
@@ -224,6 +225,15 @@ So you don't need to connect anything to the Vio pin of the driver.
 
 First you need to upload all need files to the µController with mpremote or another tool. You can use the script `upload_to_pico.py` for that.
 Then you can run a demo script by using
+
+some external micropython-lib are needed to be installed
+```shell
+python -m mpremote connect COM4 mip install logging
+python -m mpremote connect COM4 mip install threading
+python -m mpremote connect COM4 mip install types
+```
+
+
 ```shell
 python -m mpremote connect COM4 run .\demo\micropython\demo_script_tmc2240_03_basic_movement.py
 ```
