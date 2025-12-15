@@ -130,7 +130,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
 
         if self._pin_dir is not None:
             self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
-            tmc_gpio.tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
+            tmc_gpio.tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=int(self._direction))
 
 
     def __del__(self):
@@ -168,7 +168,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
             direction (bool): motor shaft direction: False = CCW; True = CW
         """
         super().set_direction(direction)
-        tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, direction.value)
+        tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, int(direction))
 
 
     def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
