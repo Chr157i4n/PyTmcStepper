@@ -11,6 +11,10 @@ import math
 import sys
 import threading
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, Direction, StopMode
+from .._tmc_logger import TmcLogger, Loglevel
+from .._tmc_gpio_board import Gpio, GpioMode
+from .. import _tmc_gpio_board as tmc_gpio
+from .. import _tmc_math as tmc_math
 
 # MicroPython compatibility for time functions
 MICROPYTHON = sys.implementation.name == "micropython"
@@ -18,13 +22,8 @@ MICROPYTHON = sys.implementation.name == "micropython"
 def _get_time_us():
     """Get current time in microseconds, compatible with both CPython and MicroPython"""
     if MICROPYTHON:
-        return time.ticks_us()
+        return time.ticks_us()  # pylint: disable=no-member
     return time.time_ns() // 1000
-
-from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import Gpio, GpioMode
-from .. import _tmc_gpio_board as tmc_gpio
-from .. import _tmc_math as tmc_math
 
 
 class TmcMotionControlStepDir(TmcMotionControl):

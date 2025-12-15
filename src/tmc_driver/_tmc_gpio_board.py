@@ -6,6 +6,7 @@
 #pylint: disable=unnecessary-pass
 #pylint: disable=abstract-method
 #pylint: disable=no-member
+#pylint: disable=too-few-public-methods
 """
 Many boards have RaspberryPI-compatible PinOut,
 but require to import special GPIO module instead RPI.GPIO
@@ -19,16 +20,22 @@ Supports MicroPython
 
 # Detect MicroPython
 import sys
+from typing import TYPE_CHECKING
+from ._tmc_logger import TmcLogger, Loglevel
+
 MICROPYTHON = sys.implementation.name == "micropython"
 
-from ._tmc_logger import TmcLogger, Loglevel
+if TYPE_CHECKING:
+    # Nur für statische Analyse - wird nie ausgeführt
+    from typing import Any
+    Pin: Any
+    PWM: Any
 
 if MICROPYTHON:
     # MicroPython imports
-    from machine import Pin, PWM
-    import sys
+    from machine import Pin, PWM  # pylint: disable=import-error
 
-        # Define Enum/IntEnum as simple base classes for MicroPython
+    # Define Enum/IntEnum as simple base classes for MicroPython
     class Enum:
         """Simple Enum replacement for MicroPython"""
         pass
