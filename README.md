@@ -239,8 +239,6 @@ Run the demo script with:
 python -m mpremote connect COM4 run .\demo\micropython\demo_script_tmc2240_03_basic_movement.py
 ```
 
-currently only SPI with the TMC2240 is tested
-
 ## Usage
 
 The library currently uses functions to access the TMC registers, but Python properties for internal getters/setters.

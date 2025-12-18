@@ -74,6 +74,8 @@ def main():
         "src/tmc_driver/_tmc_stepperdriver.py",
         "src/tmc_driver/_tmc_stallguard.py",
         "src/tmc_driver/tmc_2240.py",
+        "src/tmc_driver/tmc_2209.py",
+        "src/tmc_driver/tmc_220x.py",
     ]
 
     # Communication modules
@@ -81,12 +83,16 @@ def main():
         "src/tmc_driver/com/_tmc_com.py",
         "src/tmc_driver/com/_tmc_com_spi_base.py",
         "src/tmc_driver/com/_tmc_com_spi_micropython.py",
+        "src/tmc_driver/com/_tmc_com_uart_base.py",
+        "src/tmc_driver/com/_tmc_com_uart_micropython.py",
     ]
 
     # Register modules
     tmc_reg_files = [
         "src/tmc_driver/reg/_tmc_reg.py",
         "src/tmc_driver/reg/_tmc224x_reg.py",
+        "src/tmc_driver/reg/_tmc2209_reg.py",
+        "src/tmc_driver/reg/_tmc220x_reg.py",
     ]
 
     # Motion control modules
