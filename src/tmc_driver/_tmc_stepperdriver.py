@@ -140,6 +140,17 @@ class TmcStepperDriver:
             self.tmc_mc.current_pos = current_pos
 
     @property
+    def current_pos_fullstep(self):
+        """_current_pos as fullstep property"""
+        return self.current_pos // self.mres
+
+    @current_pos_fullstep.setter
+    def current_pos_fullstep(self, current_pos:int):
+        """_current_pos as fullstep setter"""
+        self.current_pos = current_pos * self.mres
+
+
+    @property
     def mres(self):
         """_mres property"""
         if self.tmc_mc is not None:
