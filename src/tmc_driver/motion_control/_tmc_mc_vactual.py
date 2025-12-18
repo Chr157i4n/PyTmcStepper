@@ -12,6 +12,7 @@ from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
 from .. import _tmc_math as tmc_math
+from .._tmc_exceptions import TmcMotionControlException
 
 
 class TmcMotionControlVActual(TmcMotionControl):
@@ -81,6 +82,8 @@ class TmcMotionControlVActual(TmcMotionControl):
         Args:
             vactual (int): value for VACTUAL
         """
+        if "vactual" not in self.tmc_com.tmc_registers:
+            raise TmcMotionControlException("TMC register VACTUAL not available")
         self.tmc_com.tmc_registers["vactual"].modify("vactual", vactual)
 
 
