@@ -62,4 +62,4 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         self._direction = direction
         self._tmc_logger.log(f"New Direction is: {direction}", Loglevel.MOVEMENT)
 
-        self._tmc_com.tmc_registers["gconf"].modify("shaft", bool(direction.value))
+        self._tmc_com.tmc_registers["gconf"].modify("shaft", bool(int(direction)))

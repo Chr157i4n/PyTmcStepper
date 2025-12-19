@@ -26,7 +26,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         """_speed setter"""
         self._speed = speed
         tmc_gpio.tmc_gpio.gpio_pwm_set_frequency(self._pin_step, self._speed)
-        self._tmc_logger.log(f"Speed: {self._speed} µsteps/s", Loglevel.DEBUG)
+        self._tmc_logger.log(f"Speed: {self._speed} msteps/s", Loglevel.DEBUG)
 
 
     def init(self, tmc_logger:TmcLogger):

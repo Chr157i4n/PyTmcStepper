@@ -39,6 +39,13 @@ class TestTMCMath(unittest.TestCase):
         self.assertEqual(tmc_math.constrain(-5,0,10), 0, "test_constrain is wrong")
         self.assertEqual(tmc_math.constrain(-5,-10,10), -5, "test_constrain is wrong")
 
+    def test_mean(self):
+        """test_mean"""
+        self.assertEqual(tmc_math.mean([1,2,3,4,5]), 3, "mean is wrong")
+        self.assertEqual(tmc_math.mean([-1,0,1]), 0, "mean is wrong")
+        self.assertEqual(tmc_math.mean([0,0,0]), 0, "mean is wrong")
+        self.assertEqual(tmc_math.mean([1,3,4,5,7]), 4, "mean is wrong")
+
 
 if __name__ == '__main__':
     unittest.main()

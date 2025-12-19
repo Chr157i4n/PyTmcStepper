@@ -110,7 +110,7 @@ class TmcComSpiBase(TmcCom):
             Dict: flags
         """
         data, flags = self.read_reg(addr)
-        return int.from_bytes(data, byteorder='big', signed=False), flags
+        return int.from_bytes(bytes(data), 'big'), flags
 
 
     def write_reg(self, addr: hex, val: int):

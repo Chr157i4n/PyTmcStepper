@@ -7,7 +7,6 @@
 """Tmc2209 stepper driver module
 """
 
-import statistics
 from .tmc_220x import *
 from ._tmc_stallguard import StallGuard
 from .reg._tmc2209_reg import *
@@ -185,7 +184,7 @@ class Tmc2209(Tmc220x, StallGuard):
                 sgresult = self.get_stallguard_result()
                 sgresults.append(sgresult)
                 if len(sgresults)>20:
-                    sgresult_average = statistics.mean(sgresults[-6:])
+                    sgresult_average = tmc_math.mean(sgresults[-6:])
                     if sgresult_average < threshold:
                         break
 

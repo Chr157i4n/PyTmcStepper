@@ -241,7 +241,7 @@ class ChopConf(TmcReg):
             ["diss2g",              30, 0x1, bool,  None, ""],
             ["dedge",               29, 0x1, bool,  None, ""],
             ["intpol",              28, 0x1, bool,  None, ""],
-            ["mres",                24, 0xF, int,   lambda: self.mres_ms, "µStep"],
+            ["mres",                24, 0xF, int,   lambda: self.mres_ms, "mStep"],
             ["tpfd",                20, 0xF, int,   None, ""],
             ["vhighchm",            19, 0x1, bool,  None, ""],
             ["vhighfs",             18, 0x1, bool,  None, ""],

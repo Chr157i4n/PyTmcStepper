@@ -68,6 +68,7 @@ Jetson.GPIO | NVIDIA_JETSON             | Nvidia Jetson
 pheriphery  | LUCKFOX_PICO              | Luckfox Pico
 OPi.GPIO    | ORANGE_PI                 | Orange Pi
 pyftdi      | -                         | Windows/Linux
+machine     | -                         | Pico, Pico2, ESP32, etc.
 
 Those libraries are needed for this library to work. You can either install the correct library yourself.
 You can also install the needed GPIO library by specifing the Installation Parameter while installing this library:
@@ -220,6 +221,24 @@ For me these baudrates worked fine: 19200, 38400, 57600, 115200, 230400, 460800,
 If the TMC2209 driver is connected to the Vmotor, the internal voltage regulator will create the Vio for the chip.
 So you don't need to connect anything to the Vio pin of the driver.
 
+### Micropython
+
+First you need to upload all need files to the µController with mpremote or another tool. You can use the script `upload_to_pico.py` for that.
+Then you can run a demo script by using
+
+some external micropython-lib are needed to be installed:
+
+```shell
+python -m mpremote connect COM4 mip install threading
+python -m mpremote connect COM4 mip install types
+```
+
+Run the demo script with:
+
+```shell
+python -m mpremote connect COM4 run .\demo\micropython\demo_script_tmc2240_03_basic_movement.py
+```
+
 ## Usage
 
 The library currently uses functions to access the TMC registers, but Python properties for internal getters/setters.
@@ -271,6 +290,8 @@ PermissionError: [Errno 13] <br /> Permission denied: '/dev/serial0' | you need 
 The code to run the stepper motor is based on the code of the [AccelStepper Library from Mike McCauley](http://www.airspayce.com/mikem/arduino/AccelStepper).
 
 The code for the UART communication is based on this [code from troxel](https://github.com/troxel/TMC_UART).
+
+For the implementation of Python-stdlib for micropython [micropython-lib](https://github.com/micropython/micropython-lib)
 
 My goal is to make a library, that can run a stepper motor with a TMC2209 stepper driver and can write the setting in the register of the TMC2209, entirely in Python.
 The main focus for this are Test setups, as Python is not fast enough for high motor speeds.

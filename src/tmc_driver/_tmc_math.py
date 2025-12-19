@@ -100,3 +100,21 @@ def constrain(val:int, min_val:int, max_val:int) -> int:
     if val > max_val:
         return max_val
     return val
+
+
+def mean(data) -> int:
+    """Return the arithmetic mean
+
+    Args:
+        data (list): data to calculate the mean from
+
+    Returns:
+        int: mean of the data
+    """
+    count = len(data)
+    if count == 0:
+        return 0
+
+    total = sum(data)
+
+    return total / count

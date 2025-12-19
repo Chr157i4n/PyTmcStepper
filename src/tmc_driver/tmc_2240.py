@@ -335,7 +335,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
         hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
         """
-        self.tmc_logger.log(F"Desired current: {run_current} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
 
         # rdson = 0.23    # 230 mOhm
 
@@ -346,7 +346,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
 
         current_range_ma = current_range_a * 1000
 
-        self.tmc_logger.log(F"current_range: {current_range_a} A | {current_range_ma} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"current_range: {current_range_a} A | {current_range_ma} mA", Loglevel.DEBUG)
         self._set_current_range(current_range_a)
 
         # 256 == 0  -> max current
@@ -355,11 +355,11 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         global_scaler = min(global_scaler, 256)
         global_scaler = max(global_scaler, 0)
 
-        self.tmc_logger.log(F"global_scaler: {global_scaler}", Loglevel.DEBUG)
+        self.tmc_logger.log(f"global_scaler: {global_scaler}", Loglevel.DEBUG)
         self._set_global_scaler(global_scaler)
 
         ct_current_ma = round(current_range_ma * global_scaler / 256)
-        self.tmc_logger.log(F"Calculated theoretical current after gscaler: {ct_current_ma} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"Calculated theoretical current after gscaler: {ct_current_ma} mA", Loglevel.DEBUG)
 
 
         cs_irun = round(run_current / ct_current_ma * 31)
@@ -382,7 +382,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         self._set_irun_ihold(cs_ihold, cs_irun, hold_current_delay, run_current_delay)
 
         ct_current_ma = round(ct_current_ma * cs_irun / 31)
-        self.tmc_logger.log(F"Calculated theoretical final current: {ct_current_ma} mA", Loglevel.INFO)
+        self.tmc_logger.log(f"Calculated theoretical final current: {ct_current_ma} mA", Loglevel.INFO)
 
 
 
