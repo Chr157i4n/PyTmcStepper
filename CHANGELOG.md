@@ -1,5 +1,13 @@
 # Changelog
 
+## version 0.9.0
+
+- added support for MicroPython
+- added support for relative movements in TmcMotionControlVActual
+- added TmcMotionControlException in TmcMotionControlVActual if the VActual reg is not available (TMC2240)
+- removed statistics dependency
+- added property current_pos_fullstep
+
 ## version 0.8.0
 
 - added support for FT232H (can be used on Windows; currently only with TMC2240 and SPI)
