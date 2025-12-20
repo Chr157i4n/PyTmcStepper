@@ -7,12 +7,23 @@
 VActual Motion Control module
 """
 
+import sys
 import time
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
 from .. import _tmc_math as tmc_math
+from .._tmc_exceptions import TmcMotionControlException
 
+
+# MicroPython compatibility for time functions
+MICROPYTHON = sys.implementation.name == "micropython"
+
+def _get_time_ms():
+    """Get current time in milliseconds, compatible with both CPython and MicroPython"""
+    if MICROPYTHON:
+        return time.ticks_ms()  # pylint: disable=no-member
+    return time.time_ns() // 1_000_000
 
 class TmcMotionControlVActual(TmcMotionControl):
     """VActual Motion Control class"""
@@ -53,7 +64,7 @@ class TmcMotionControlVActual(TmcMotionControl):
         self.set_vactual(0)
 
 
-    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None):
+    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
         """runs the motor to the given position.
         with acceleration and deceleration
         blocks the code until finished or stopped from a different thread!
@@ -68,8 +79,18 @@ class TmcMotionControlVActual(TmcMotionControl):
         Returns:
             stop (enum): how the movement was finished
         """
+        self._tmc_logger.log(f"cur: {self._current_pos} | tar: {self._target_pos}", Loglevel.MOVEMENT)
+        # self._tmc_logger.log(f"mov: {movement_abs_rel}", Loglevel.MOVEMENT)
+
+        self._stop = StopMode.NO
+        if movement_abs_rel == MovementAbsRel.ABSOLUTE or (movement_abs_rel is None and self._movement_abs_rel == MovementAbsRel.ABSOLUTE):
+            steps = steps - self.current_pos
+
         rps = tmc_math.steps_to_rps(self.max_speed_fullstep, self.steps_per_rev)
         self.set_vactual_rps(rps, revolutions=steps/self.steps_per_rev)
+
+        self.current_pos += steps
+        return self._stop
 
 
     def set_vactual(self, vactual:int):
@@ -81,6 +102,8 @@ class TmcMotionControlVActual(TmcMotionControl):
         Args:
             vactual (int): value for VACTUAL
         """
+        if "vactual" not in self.tmc_com.tmc_registers:
+            raise TmcMotionControlException("TMC register VACTUAL not available")
         self.tmc_com.tmc_registers["vactual"].modify("vactual", vactual)
 
 
@@ -122,14 +145,15 @@ class TmcMotionControlVActual(TmcMotionControl):
 
         if duration == 0:
             return -1
+        duration_ms = duration * 1000
 
-        self._starttime = time.time()
-        current_time = time.time()
-        while current_time < self._starttime+duration:
+        self._starttime = _get_time_ms()
+        current_time = _get_time_ms()
+        while current_time < self._starttime+duration_ms:
             if self._stop == StopMode.HARDSTOP:
                 break
             if acceleration != 0:
-                time_to_stop = self._starttime+duration-abs(current_vactual/acceleration)
+                time_to_stop = self._starttime+duration_ms-abs(current_vactual/acceleration)
                 if self._stop == StopMode.SOFTSTOP:
                     time_to_stop = current_time-1
             if acceleration != 0 and current_time > time_to_stop:
@@ -148,7 +172,7 @@ class TmcMotionControlVActual(TmcMotionControl):
                 # self._tmc_logger.log(f"TStep result: {self.get_tstep()}",
                 #                     Loglevel.INFO)
                 time.sleep(0.1)
-            current_time = time.time()
+            current_time = _get_time_ms()
         self.set_vactual(0)
         return self._stop
 

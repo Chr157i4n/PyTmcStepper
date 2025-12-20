@@ -8,12 +8,22 @@ STEP/DIR Motion Control module
 
 import time
 import math
+import sys
 import threading
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, Direction, StopMode
 from .._tmc_logger import TmcLogger, Loglevel
 from .._tmc_gpio_board import Gpio, GpioMode
 from .. import _tmc_gpio_board as tmc_gpio
 from .. import _tmc_math as tmc_math
+
+# MicroPython compatibility for time functions
+MICROPYTHON = sys.implementation.name == "micropython"
+
+def _get_time_us():
+    """Get current time in microseconds, compatible with both CPython and MicroPython"""
+    if MICROPYTHON:
+        return time.ticks_us()  # pylint: disable=no-member
+    return time.time_ns() // 1000
 
 
 class TmcMotionControlStepDir(TmcMotionControl):
@@ -130,7 +140,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
 
         if self._pin_dir is not None:
             self._tmc_logger.log(f"DIR Pin: {self._pin_dir}", Loglevel.DEBUG)
-            tmc_gpio.tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=self._direction.value)
+            tmc_gpio.tmc_gpio.gpio_setup(self._pin_dir, GpioMode.OUT, initial=int(self._direction))
 
 
     def __del__(self):
@@ -168,7 +178,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
             direction (bool): motor shaft direction: False = CCW; True = CW
         """
         super().set_direction(direction)
-        tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, direction.value)
+        tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, int(direction))
 
 
     def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
@@ -372,7 +382,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         if not self._step_interval:
             return False
 
-        curtime = time.time_ns()/1000
+        curtime = _get_time_us()
 
         if curtime - self._last_step_time >= self._step_interval:
 
