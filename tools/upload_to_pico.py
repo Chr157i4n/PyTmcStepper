@@ -23,7 +23,7 @@ DEFAULT_PORT = "COM4"  # Windows
 
 # Base path (script location)
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-
+BASE_PATH = os.path.split(BASE_PATH)[0]
 
 def run_mpremote(port, *args, show_output=False):
     """Run mpremote command"""
@@ -68,7 +68,7 @@ def main():
     # TMC driver core files
     tmc_driver_files = [
         "src/tmc_driver/_tmc_logger.py",
-        "src/tmc_driver/_tmc_gpio_board.py",
+        "src/tmc_driver/tmc_gpio/_tmc_gpio_board.py",
         "src/tmc_driver/_tmc_math.py",
         "src/tmc_driver/_tmc_exceptions.py",
         "src/tmc_driver/_tmc_stepperdriver.py",
