@@ -21,6 +21,7 @@ Supports MicroPython
 
 # Detect MicroPython
 import sys
+from enum import Enum, IntEnum
 from .._tmc_logger import TmcLogger, Loglevel
 
 MICROPYTHON = sys.implementation.name == "micropython"
@@ -28,20 +29,10 @@ MICROPYTHON = sys.implementation.name == "micropython"
 if MICROPYTHON:
     # MicroPython imports
     from machine import Pin, PWM  # pylint: disable=import-error
-
-    # Define Enum/IntEnum as simple base classes for MicroPython
-    class Enum:
-        """Simple Enum replacement for MicroPython"""
-        pass
-
-    class IntEnum(int):
-        """Simple IntEnum replacement for MicroPython"""
-        pass
 else:
     # CPython imports
     import types
     from os.path import exists
-    from enum import Enum, IntEnum
     from importlib import import_module
 
 # ------------------------------
