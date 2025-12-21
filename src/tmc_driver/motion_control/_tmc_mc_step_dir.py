@@ -12,8 +12,8 @@ import sys
 import threading
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, Direction, StopMode
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import Gpio, GpioMode
-from .. import _tmc_gpio_board as tmc_gpio
+from ..tmc_gpio._tmc_gpio_board import Gpio, GpioMode
+from ..tmc_gpio import _tmc_gpio_board as tmc_gpio
 from .. import _tmc_math as tmc_math
 
 # MicroPython compatibility for time functions

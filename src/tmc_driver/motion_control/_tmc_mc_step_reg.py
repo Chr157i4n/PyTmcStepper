@@ -7,8 +7,8 @@ from ._tmc_mc import Direction
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import Gpio, GpioMode
-from .. import _tmc_gpio_board as tmc_gpio
+from ..tmc_gpio._tmc_gpio_board import Gpio, GpioMode
+from ..tmc_gpio import _tmc_gpio_board as tmc_gpio
 
 
 class TmcMotionControlStepReg(TmcMotionControlStepDir):

@@ -21,7 +21,7 @@ Supports MicroPython
 
 # Detect MicroPython
 import sys
-from ._tmc_logger import TmcLogger, Loglevel
+from .._tmc_logger import TmcLogger, Loglevel
 
 MICROPYTHON = sys.implementation.name == "micropython"
 
