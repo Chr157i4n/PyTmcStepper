@@ -4,7 +4,7 @@
 Tmc2209 stepper driver logger module
 """
 
-from enum import Enum
+from enum import IntEnum
 import sys
 
 # Detect MicroPython
@@ -17,7 +17,7 @@ if not MICROPYTHON:
 
 
 
-class Loglevel(Enum):
+class Loglevel(IntEnum):
     """loglevel"""
     ALL = 1             # all messages will be logged
     MOVEMENT = 5        # error, warning, info, debug and movement messages will be logged
@@ -26,9 +26,6 @@ class Loglevel(Enum):
     WARNING = 30        # error and warning messages will be logged
     ERROR = 40          # only error messages will be logged
     NONE = -1           # no messages will be logged
-
-    def __int__(self):
-        return self.value
 
 
 
