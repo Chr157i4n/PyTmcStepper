@@ -35,10 +35,10 @@ else:
     # Board mapping: (module_path, class_name, Board enum, module_name, install_link)
     board_mapping = {
         "raspberry pi 5": ("._tmc_gpio_board_gpiozero", "GpiozeroWrapper", Board.RASPBERRY_PI5, "gpiozero", "https://gpiozero.readthedocs.io/en/stable/installing.html"),
-        "raspberry": ("._tmc_gpio_board", "RPiGPIOWrapper", Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
-        "jetson": ("._tmc_gpio_board", "JetsonGPIOWrapper", Board.NVIDIA_JETSON, "jetson-gpio", "https://github.com/NVIDIA/jetson-gpio"),
+        "raspberry": ("._tmc_gpio_board_rpi_gpio", "RPiGPIOWrapper", Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
+        "jetson": ("._tmc_gpio_board_rpi_gpio", "JetsonGPIOWrapper", Board.NVIDIA_JETSON, "jetson-gpio", "https://github.com/NVIDIA/jetson-gpio"),
         "luckfox": ("._tmc_gpio_board_periphery", "peripheryWrapper", Board.LUCKFOX_PICO, "periphery", "https://github.com/vsergeev/python-periphery"),
-        "orange": ("._tmc_gpio_board", "OPiGPIOWrapper", Board.ORANGE_PI, "OPi.GPIO", "https://github.com/rm-hull/OPi.GPIO")
+        "orange": ("._tmc_gpio_board_rpi_gpio", "OPiGPIOWrapper", Board.ORANGE_PI, "OPi.GPIO", "https://github.com/rm-hull/OPi.GPIO")
     }
 
     # Determine the board and instantiate the appropriate GPIO class
@@ -79,7 +79,7 @@ else:
         dependencies_logger.log(f"Board model: {model}", Loglevel.INFO)
 
         if model == "mock":
-            from ._tmc_gpio_board import MockGPIOWrapper
+            from ._tmc_gpio_board_rpi_gpio import MockGPIOWrapper
             return MockGPIOWrapper(), Board.UNKNOWN
 
         for key, (module_path, class_name, board_enum, module_name, install_link) in board_mapping.items():
@@ -98,10 +98,10 @@ else:
             "The board is not recognized. Trying import default RPi.GPIO module...",
             Loglevel.INFO)
         try:
-            from ._tmc_gpio_board import RPiGPIOWrapper
+            from ._tmc_gpio_board_rpi_gpio import RPiGPIOWrapper
             return RPiGPIOWrapper(), Board.UNKNOWN
         except ImportError:
-            from ._tmc_gpio_board import MockGPIOWrapper
+            from ._tmc_gpio_board_rpi_gpio import MockGPIOWrapper
             return MockGPIOWrapper(), Board.UNKNOWN
 
     tmc_gpio, BOARD = initialize_gpio()

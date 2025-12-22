@@ -13,15 +13,47 @@ Supports MicroPython
 """
 
 from importlib import import_module
+from typing import Protocol, Any, runtime_checkable
 from ._tmc_gpio_board_base import *
+
+
+@runtime_checkable
+class GPIOModuleProtocol(Protocol):
+    """Protocol defining the interface for GPIO modules like RPi.GPIO, Jetson.GPIO, etc."""
+
+    BCM: int
+    BOARD: int
+    IN: int
+    OUT: int
+    HIGH: int
+    LOW: int
+    PUD_OFF: int
+    PUD_UP: int
+    PUD_DOWN: int
+    RISING: int
+
+    def setwarnings(self, value: bool) -> None: ...
+    def setmode(self, mode: int) -> None: ...
+    def cleanup(self, pin: int | None = None) -> None: ...
+    def setup(self, pin: int, mode: int, initial: int = 0, pull_up_down: int = 0) -> None: ...
+    def input(self, pin: int) -> int: ...
+    def output(self, pin: int, value: int) -> None: ...
+    def PWM(self, pin: int, frequency: int) -> Any: ...  # Returns PWM object
+    def add_event_detect(self, pin: int, edge: int, callback: Any = None, bouncetime: int = 0) -> None: ...
+    def remove_event_detect(self, pin: int) -> None: ...
 
 
 class BaseRPiGPIOWrapper(BaseGPIOWrapper):
     """RPI.GPIO base wrapper"""
 
-    def __init__(self):
-        """constructor"""
-        self._gpios_pwm = [None] * 200
+    def __init__(self, gpio_module: GPIOModuleProtocol):
+        """constructor
+
+        Args:
+            gpio_module: GPIO module conforming to GPIOModuleProtocol (e.g., RPi.GPIO, Jetson.GPIO)
+        """
+        self.GPIO: GPIOModuleProtocol = gpio_module
+        self._gpios_pwm: list[Any] = [None] * 200
 
     def init(self, gpio_mode=None):
         """initialize GPIO library"""
@@ -84,38 +116,37 @@ class BaseRPiGPIOWrapper(BaseGPIOWrapper):
         self.GPIO.remove_event_detect(pin)
 
 
-class MockGPIOWrapper(BaseRPiGPIOWrapper):
-    """Mock.GPIO wrapper"""
+def create_gpio_wrapper(module_name: str, description: str) -> BaseRPiGPIOWrapper:
+    """Factory function to create a GPIO wrapper with the specified module.
 
-    def __init__(self):
-        """constructor, imports Mock.GPIO"""
-        super().__init__()
-        self.GPIO = import_module('Mock.GPIO')
-        dependencies_logger.log("using Mock.GPIO for GPIO mocking", Loglevel.INFO)
+    Args:
+        module_name: Name of the GPIO module to import (e.g., 'RPi.GPIO', 'Jetson.GPIO')
+        description: Description for logging (e.g., 'GPIO control', 'GPIO mocking')
 
-class RPiGPIOWrapper(BaseRPiGPIOWrapper):
-    """RPi.GPIO wrapper"""
+    Returns:
+        Configured BaseRPiGPIOWrapper instance
+    """
+    gpio_module = import_module(module_name)
+    dependencies_logger.log(f"using {module_name} for {description}", Loglevel.INFO)
+    return BaseRPiGPIOWrapper(gpio_module)
 
-    def __init__(self):
-        """constructor, imports RPi.GPIO"""
-        super().__init__()
-        self.GPIO = import_module('RPi.GPIO')
-        dependencies_logger.log("using RPi.GPIO for GPIO control", Loglevel.INFO)
 
-class JetsonGPIOWrapper(BaseRPiGPIOWrapper):
-    """Jetson.GPIO wrapper"""
+# Convenience factory functions for each GPIO type
+def MockGPIOWrapper() -> BaseRPiGPIOWrapper:
+    """Create Mock.GPIO wrapper"""
+    return create_gpio_wrapper('Mock.GPIO', 'GPIO mocking')
 
-    def __init__(self):
-        """constructor, imports Jetson.GPIO"""
-        super().__init__()
-        self.GPIO = import_module('Jetson.GPIO')
-        dependencies_logger.log("using Jetson.GPIO for GPIO control", Loglevel.INFO)
 
-class OPiGPIOWrapper(BaseRPiGPIOWrapper):
-    """OPi.GPIO wrapper"""
+def RPiGPIOWrapper() -> BaseRPiGPIOWrapper:
+    """Create RPi.GPIO wrapper"""
+    return create_gpio_wrapper('RPi.GPIO', 'GPIO control')
 
-    def __init__(self):
-        """constructor, imports OPi.GPIO"""
-        super().__init__()
-        self.GPIO = import_module('OPi.GPIO')
-        dependencies_logger.log("using OPi.GPIO for GPIO control", Loglevel.INFO)
+
+def JetsonGPIOWrapper() -> BaseRPiGPIOWrapper:
+    """Create Jetson.GPIO wrapper"""
+    return create_gpio_wrapper('Jetson.GPIO', 'GPIO control')
+
+
+def OPiGPIOWrapper() -> BaseRPiGPIOWrapper:
+    """Create OPi.GPIO wrapper"""
+    return create_gpio_wrapper('OPi.GPIO', 'GPIO control')
