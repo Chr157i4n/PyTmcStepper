@@ -28,5 +28,8 @@
     "python.analysis.extraPaths": [
         "~/.micropico-stubs/included"
     ],
-    "micropico.syncFolder": "src"
+    "micropico.syncFolder": "src",
+    "micropico.additionalSyncFolders": [
+        "micropython"
+    ]
 }
