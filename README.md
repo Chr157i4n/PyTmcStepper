@@ -96,21 +96,21 @@ is split into their own classes to be able to support the diverse methods.
 
 The EnableControl module controls the motor current output. It has a function `set_motor_enabled` with one boolean parameter. This function is used to enable or disable the Motor current output.
 
-EnableControl   | Class                 | Driver    | Notes
---              | --                    | --        | --
+EnableControl   | Class                                                                 | Driver    | Notes
+--              | --                                                                    | --        | --
 Pin             | [TmcEnableControlPin](src/tmc_driver/enable_control/_tmc_ec_pin.py)   | all       | the EN Pin of the Driver needs to be connected to a GPIO of the Pi
-TOff            | [TmcEnableControlToff](src/tmc_driver/enable_control/_tmc_ec_toff.py)  | all       | the EN Pin needs to be connected to GND.<br />On the TMC2209 this enables current Output on Startup!<br />On the TMC2240 this works fine, because TOff is per default 0 (off).
+TOff            | [TmcEnableControlToff](src/tmc_driver/enable_control/_tmc_ec_toff.py) | all       | the EN Pin needs to be connected to GND.<br />On the TMC2209 this enables current Output on Startup!<br />On the TMC2240 this works fine, because TOff is per default 0 (off).
 
 ### MotionControl
 
 The MotionControl module controls the motion of the motor. Before a movement the motor current output needs to be enabled by the [EnableControl](#enablecontrol) module.
 
-MotionControl   | Class                     | Driver    | Notes
---              | --                        | --        | --
-STEP/DIR        | [TmcMotionControlStepDir](src/tmc_driver/motion_control/_tmc_mc_step_dir.py)  | all       | the STEP and DIR pin of the driver must each be connected to a GPIO of the Pi
-STEP/REG        | [TmcMotionControlStepReg](src/tmc_driver/motion_control/_tmc_mc_step_reg.py)   | all       | only the STEP pin needs to be connected to a GPIO of the Pi.<br />The direction is controlled via the Register.
-VACTUAL         | [TmcMotionControlVActual](src/tmc_driver/motion_control/_tmc_mc_vactual.py)  | TMC220x   | the Direction and Speed is controlled via Register. But VActual does only allow setting a speed and therefore cannot control positioning of the Motor.
-STEP_PWM/DIR    | [TmcMotionControlStepPwmDir](src/tmc_driver/motion_control/_tmc_mc_step_pwm_dir.py) | all | In contrast to STEP/DIR, the step pin is controlled by PWM. This reduces the load on the CPU, but does not allow precise positioning (similar to the VACTUAL).<br />STEP must be connected to a PWM-capable pin for this purpose
+MotionControl   | Class                                                                                 | Driver    | Notes
+--              | --                                                                                    | --        | --
+STEP/DIR        | [TmcMotionControlStepDir](src/tmc_driver/motion_control/_tmc_mc_step_dir.py)          | all       | the STEP and DIR pin of the driver must each be connected to a GPIO of the Pi
+STEP/REG        | [TmcMotionControlStepReg](src/tmc_driver/motion_control/_tmc_mc_step_reg.py)          | all       | only the STEP pin needs to be connected to a GPIO of the Pi.<br />The direction is controlled via the Register.
+VACTUAL         | [TmcMotionControlVActual](src/tmc_driver/motion_control/_tmc_mc_vactual.py)           | TMC220x   | the Direction and Speed is controlled via Register. But VActual does only allow setting a speed and therefore cannot control positioning of the Motor.
+STEP_PWM/DIR    | [TmcMotionControlStepPwmDir](src/tmc_driver/motion_control/_tmc_mc_step_pwm_dir.py)   | all       | In contrast to STEP/DIR, the step pin is controlled by PWM. This reduces the load on the CPU, but does not allow precise positioning (similar to the VACTUAL).<br />STEP must be connected to a PWM-capable pin for this purpose
 
 Further methods of controlling the motion of a motor could be:
 
@@ -120,10 +120,10 @@ Further methods of controlling the motion of a motor could be:
 
 ### Com
 
-Com             | Class         | Driver    | Notes
---              | --            | --        | --
-UART            | [TmcComUart](src/tmc_driver/com/_tmc_com_uart.py)    | all       | Communication via UART (RX, TX). See [Wiring](#uart)<br />[pyserial](https://pypi.org/project/pyserial) needs to be installed
-SPI             | [TmcComSpi](src/tmc_driver/com/_tmc_com_spi.py)     | TMC2240   | Communication via SPI (MOSI, MISO, CLK, CS). See [Wiring](#spi)<br />[spidev](https://pypi.org/project/spidev) needs to be installed
+Com             | Class                                                     | Driver    | Notes
+--              | --                                                        | --        | --
+UART            | [TmcComUart](src/tmc_driver/com/_tmc_com_uart.py)         | all       | Communication via UART (RX, TX). See [Wiring](#uart)<br />[pyserial](https://pypi.org/project/pyserial) needs to be installed
+SPI             | [TmcComSpi](src/tmc_driver/com/_tmc_com_spi.py)           | TMC2240   | Communication via SPI (MOSI, MISO, CLK, CS). See [Wiring](#spi)<br />[spidev](https://pypi.org/project/spidev) needs to be installed
 SPI over FT232H | [TmcComSpiFtdi](src/tmc_driver/com/_tmc_com_spi_ftdi.py)  | TMC2240   | Communication via SPI using a FT232H. This can be used on any OS.<br />[pyftdi](https://pypi.org/project/pyftdi) needs to be installed
 
 ## Wiring
@@ -270,15 +270,15 @@ If you encounter any problems, feel free to open an issue (ENG/GER).
 Please don't send any E-Mails to me. Pls use Github, so that i don't need to answer the same question multiple times.
 I reserve the right not to answer E-Mails.
 
-Problem | Solution
--- | --
-FileNotFoundError: [Errno 2] No such file or directory: '/dev/serial0' | depending on your Raspberry Pi version, you need to enable the Serial Port <br /> run `sudo raspi-config` in your terminal. <br /> there go to '3 Interface Options' -> 'P3 Serial Port' <br /> Would you like a login shell to be accessible over serial? No <br /> Would you like the serial port hardware to be enabled? Yes <br /> Finish and then reboot
-PermissionError: [Errno 13] <br /> Permission denied: '/dev/serial0' | you need to give the permission to acces the Serial Port to your current user <br /> You may need to add your user (pi) to the dialout group with `sudo usermod -a -G dialout pi` and then relog. <br /> If that does not work, make sure that your user has read/write permissions on the dev file `/dev/serial0` by calling `sudo chmod 660 /dev/serial0`.
-"TMC2209: UART Communication Error" | You can use the 'debug_script_01_uart_connection' script to get a better reading on the received bytes and troubleshoot your problem
-"TMC2209: UART Communication Error: 0 data bytes \| 4 total bytes" | only 4 total bytes received indicates, that the Raspberry Pi receives its own data, but nothing from the TMC driver. This happens if RX and TX are connected properly, but the TMC driver has no power
-"TMC2209: UART Communication Error: 0 data bytes \| 0 total bytes" | 0 total bytes received indicates, a problem with your wiring or your Raspberry Pi. This happens if TX is not connected
-"TMC2209: UART Communication Error: 4 data bytes \| 12 total bytes" | this indicates, the Raspberry Pi received only zeroes. This happens if only RX is connected and TX not
-"the Raspberry Pi received only the sended bits" or<br /> inconsistent received bits | Make sure the UART ist properly connected to the TMC driver and the driver is powered and working. <br /> Make sure login shell (console) over serial is disabled.
+Problem                                                                                 | Solution
+--                                                                                      | --
+FileNotFoundError: [Errno 2] No such file or directory: '/dev/serial0'                  | depending on your Raspberry Pi version, you need to enable the Serial Port <br /> run `sudo raspi-config` in your terminal. <br /> there go to '3 Interface Options' -> 'P3 Serial Port' <br /> Would you like a login shell to be accessible over serial? No <br /> Would you like the serial port hardware to be enabled? Yes <br /> Finish and then reboot
+PermissionError: [Errno 13] <br /> Permission denied: '/dev/serial0'                    | you need to give the permission to acces the Serial Port to your current user <br /> You may need to add your user (pi) to the dialout group with `sudo usermod -a -G dialout pi` and then relog. <br /> If that does not work, make sure that your user has read/write permissions on the dev file `/dev/serial0` by calling `sudo chmod 660 /dev/serial0`.
+"TMC2209: UART Communication Error"                                                     | You can use the 'debug_script_01_uart_connection' script to get a better reading on the received bytes and troubleshoot your problem
+"TMC2209: UART Communication Error: 0 data bytes \| 4 total bytes"                      | only 4 total bytes received indicates, that the Raspberry Pi receives its own data, but nothing from the TMC driver. This happens if RX and TX are connected properly, but the TMC driver has no power
+"TMC2209: UART Communication Error: 0 data bytes \| 0 total bytes"                      | 0 total bytes received indicates, a problem with your wiring or your Raspberry Pi. This happens if TX is not connected
+"TMC2209: UART Communication Error: 4 data bytes \| 12 total bytes"                     | this indicates, the Raspberry Pi received only zeroes. This happens if only RX is connected and TX not
+"the Raspberry Pi received only the sended bits" or<br /> inconsistent received bits    | Make sure the UART ist properly connected to the TMC driver and the driver is powered and working. <br /> Make sure login shell (console) over serial is disabled.
 
 ![wiring photo](docs/images/wiring_photo.jpg)
 
