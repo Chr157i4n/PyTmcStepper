@@ -21,7 +21,6 @@ class MicroPythonGPIOWrapper(BaseGPIOWrapper):
 
     def init(self, gpio_mode=None):
         """initialize GPIO library - not needed for MicroPython"""
-        pass
 
     def deinit(self):
         """deinitialize GPIO library"""

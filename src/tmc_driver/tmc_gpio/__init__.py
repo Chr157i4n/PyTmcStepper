@@ -1,4 +1,5 @@
 #pylint: disable=unused-import
+#pylint: disable=import-outside-toplevel
 """
 Module for GPIO handling across different boards and libraries.
 Automatically detects the board type and imports the appropriate GPIO library.
@@ -32,13 +33,13 @@ else:
     from os.path import exists
     from ._tmc_gpio_board_ftdi import FtdiWrapper
 
-    # Board mapping: (module_path, class_name, Board enum, module_name, install_link)
+    # Board mapping: (module_path, class_name, Board enum)
     board_mapping = {
-        "raspberry pi 5": ("._tmc_gpio_board_gpiozero", "GpiozeroWrapper", Board.RASPBERRY_PI5, "gpiozero", "https://gpiozero.readthedocs.io/en/stable/installing.html"),
-        "raspberry": ("._tmc_gpio_board_rpi_gpio", "RPiGPIOWrapper", Board.RASPBERRY_PI, "RPi.GPIO", "https://sourceforge.net/p/raspberry-gpio-python/wiki/install"),
-        "jetson": ("._tmc_gpio_board_rpi_gpio", "JetsonGPIOWrapper", Board.NVIDIA_JETSON, "jetson-gpio", "https://github.com/NVIDIA/jetson-gpio"),
-        "luckfox": ("._tmc_gpio_board_periphery", "peripheryWrapper", Board.LUCKFOX_PICO, "periphery", "https://github.com/vsergeev/python-periphery"),
-        "orange": ("._tmc_gpio_board_rpi_gpio", "OPiGPIOWrapper", Board.ORANGE_PI, "OPi.GPIO", "https://github.com/rm-hull/OPi.GPIO")
+        "raspberry pi 5": ("._tmc_gpio_board_gpiozero", "GpiozeroWrapper", Board.RASPBERRY_PI5),
+        "raspberry": ("._tmc_gpio_board_rpi_gpio", "RPiGPIOWrapper", Board.RASPBERRY_PI),
+        "jetson": ("._tmc_gpio_board_rpi_gpio", "JetsonGPIOWrapper", Board.NVIDIA_JETSON),
+        "luckfox": ("._tmc_gpio_board_periphery", "peripheryWrapper", Board.LUCKFOX_PICO),
+        "orange": ("._tmc_gpio_board_rpi_gpio", "OPiGPIOWrapper", Board.ORANGE_PI)
     }
 
     # Determine the board and instantiate the appropriate GPIO class
@@ -49,29 +50,7 @@ else:
         with open('/proc/device-tree/model', encoding="utf-8") as f:
             return f.readline().lower()
 
-    def handle_module_not_found_error(err, board_name, module_name, install_link):
-        """handle module not found error"""
-        dependencies_logger.log(
-            (f"ModuleNotFoundError: {err}\n"
-             f"Board is {board_name} but module {module_name} isn't installed.\n"
-             f"Follow the installation instructions in the link below to resolve the issue:\n"
-             f"{install_link}\n"
-             "Exiting..."),
-            Loglevel.ERROR)
-        raise err
-
-    def handle_import_error(err, board_name, module_name, install_link):
-        """handle import error"""
-        dependencies_logger.log(
-            (f"ImportError: {err}\n"
-             f"Board is {board_name} but module {module_name} isn't installed.\n"
-             f"Follow the installation instructions in the link below to resolve the issue:\n"
-             f"{install_link}\n"
-             "Exiting..."),
-            Loglevel.ERROR)
-        raise err
-
-    def initialize_gpio(force_lib=None):
+    def initialize_gpio():
         """initialize GPIO"""
         from importlib import import_module
 
@@ -82,17 +61,12 @@ else:
             from ._tmc_gpio_board_rpi_gpio import MockGPIOWrapper
             return MockGPIOWrapper(), Board.UNKNOWN
 
-        for key, (module_path, class_name, board_enum, module_name, install_link) in board_mapping.items():
-            if (key in model and force_lib is None) or (force_lib == module_name):
-                try:
-                    # Import module dynamically only when needed
-                    module = import_module(module_path, package=__name__)
-                    wrapper_class = getattr(module, class_name)
-                    return wrapper_class(), board_enum
-                except ModuleNotFoundError as err:
-                    handle_module_not_found_error(err, key.capitalize(), module_name, install_link)
-                except ImportError as err:
-                    handle_import_error(err, key.capitalize(), module_name, install_link)
+        for key, (module_path, class_name, board_enum) in board_mapping.items():
+            if key in model:
+                # Import module dynamically only when needed
+                module = import_module(module_path, package=__name__)
+                wrapper_class = getattr(module, class_name)
+                return wrapper_class(), board_enum
 
         dependencies_logger.log(
             "The board is not recognized. Trying import default RPi.GPIO module...",

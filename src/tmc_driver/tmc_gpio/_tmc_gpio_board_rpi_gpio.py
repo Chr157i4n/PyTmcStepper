@@ -20,6 +20,7 @@ from ._tmc_gpio_board_base import *
 @runtime_checkable
 class GPIOModuleProtocol(Protocol):
     """Protocol defining the interface for GPIO modules like RPi.GPIO, Jetson.GPIO, etc."""
+    # pylint: disable=missing-function-docstring
 
     BCM: int
     BOARD: int
