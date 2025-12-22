@@ -68,7 +68,9 @@ def main():
     # TMC driver core files
     tmc_driver_files = [
         "src/tmc_driver/_tmc_logger.py",
-        "src/tmc_driver/tmc_gpio/_tmc_gpio_board.py",
+        "src/tmc_driver/tmc_gpio/__init__.py",
+        "src/tmc_driver/tmc_gpio/_tmc_gpio_board_base.py",
+        "src/tmc_driver/tmc_gpio/_tmc_gpio_board_micropython.py",
         "src/tmc_driver/_tmc_math.py",
         "src/tmc_driver/_tmc_exceptions.py",
         "src/tmc_driver/_tmc_stepperdriver.py",
@@ -126,7 +128,8 @@ def main():
 
     deps = [
         "threading",
-        "types"
+        "types",
+        "abc"
     ]
 
     # Step 1: Create directories

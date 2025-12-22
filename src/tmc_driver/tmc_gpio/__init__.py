@@ -1,6 +1,5 @@
 import sys
 from enum import Enum, IntEnum
-from os.path import exists
 from .._tmc_logger import TmcLogger, Loglevel
 from ._tmc_gpio_board_base import *
 
@@ -24,6 +23,7 @@ if MICROPYTHON:
     tmc_gpio = MicroPythonGPIOWrapper()
     BOARD = Board.MICROPYTHON
 else:
+    from os.path import exists
     from ._tmc_gpio_board import *
 
     board_mapping = {
