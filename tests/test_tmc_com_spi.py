@@ -13,8 +13,7 @@ class TestTmcComSpi(unittest.TestCase):
 
     def setUp(self):
         """setUp"""
-        self.tmc_logger = TmcLogger()
-        self.tmc_uart = TmcComSpi(None, 115200, 0, self.tmc_logger)
+        self.tmc_uart = TmcComSpi(None, 115200, 0)
 
     def test_read_int(self):
         """test_read_int"""

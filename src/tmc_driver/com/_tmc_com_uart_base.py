@@ -1,5 +1,3 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=wildcard-import
 #pylint: disable=unused-wildcard-import
 #pylint: disable=unused-import
@@ -8,6 +6,7 @@ TmcComUartBase - Abstract base class for UART communication
 This class contains no hardware-specific imports (no serial/pyserial)
 """
 
+from abc import abstractmethod
 from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
@@ -21,8 +20,7 @@ class TmcComUartBase(TmcCom):
     """
 
     def __init__(self,
-                 mtr_id: int = 0,
-                 tmc_logger=None
+                 mtr_id: int = 0
                  ):
         """constructor
 
@@ -30,21 +28,23 @@ class TmcComUartBase(TmcCom):
             tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self.ser = None  # To be set by subclass
 
         self.r_frame = [0x55, 0, 0, 0]
         self.w_frame = [0x55, 0, 0, 0, 0, 0, 0, 0]
 
+
+    @abstractmethod
     def init(self):
         """init - to be implemented by subclass"""
-        raise NotImplementedError
 
+    @abstractmethod
     def deinit(self):
         """destructor - to be implemented by subclass"""
-        raise NotImplementedError
 
+    @abstractmethod
     def _uart_write(self, data: list) -> int:
         """Write data to UART - to be implemented by subclass
 
@@ -54,8 +54,8 @@ class TmcComUartBase(TmcCom):
         Returns:
             Number of bytes written
         """
-        raise NotImplementedError
 
+    @abstractmethod
     def _uart_read(self, length: int) -> bytes:
         """Read data from UART - to be implemented by subclass
 
@@ -65,13 +65,11 @@ class TmcComUartBase(TmcCom):
         Returns:
             Received data
         """
-        raise NotImplementedError
-
+    @abstractmethod
     def _uart_flush(self):
         """Flush UART buffers - to be implemented by subclass"""
-        raise NotImplementedError
 
-    def read_reg(self, addr: hex):
+    def read_reg(self, addr: int):
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -108,7 +106,7 @@ class TmcComUartBase(TmcCom):
 
         return rtn, None
 
-    def read_int(self, addr: hex, tries: int = 10):
+    def read_int(self, addr: int, tries: int = 10):
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -150,7 +148,7 @@ class TmcComUartBase(TmcCom):
         val = struct.unpack(">i", rtn_data)[0]
         return val, flags
 
-    def write_reg(self, addr: hex, val: int):
+    def write_reg(self, addr: int, val: int):
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -188,7 +186,7 @@ class TmcComUartBase(TmcCom):
 
         return True
 
-    def write_reg_check(self, addr: hex, val: int, tries: int = 10):
+    def write_reg_check(self, addr: int, val: int, tries: int = 10):
         """this function als writes a value to the register of the TMC
         but it also checks if the writing process was successfully by checking
         the InterfaceTransmissionCounter before and after writing

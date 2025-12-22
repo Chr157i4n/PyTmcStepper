@@ -7,8 +7,8 @@ from ._tmc_mc import Direction
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import Gpio, GpioMode
-from .. import _tmc_gpio_board as tmc_gpio
+from ..tmc_gpio import Gpio, GpioMode
+from .. import tmc_gpio
 
 
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
@@ -29,7 +29,7 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
     def __init__(self, pin_step:int):
         """constructor"""
         super().__init__(pin_step, None)
-        self._tmc_com:TmcCom = None
+        self._tmc_com:TmcCom|None = None
 
 
     def init(self, tmc_logger:TmcLogger):

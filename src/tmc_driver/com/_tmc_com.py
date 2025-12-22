@@ -1,5 +1,3 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=unused-import
 """
 TmcCom stepper driver communication module
@@ -7,7 +5,7 @@ TmcCom stepper driver communication module
 
 import time
 import struct
-from typing import List
+from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 
 
@@ -37,12 +35,12 @@ class TmcCom:
     """TmcCom
     """
     @property
-    def tmc_logger(self):
+    def tmc_logger(self) -> TmcLogger:
         """get the tmc_logger"""
         return self._tmc_logger
 
     @tmc_logger.setter
-    def tmc_logger(self, tmc_logger):
+    def tmc_logger(self, tmc_logger: TmcLogger):
         """set the tmc_logger"""
         self._tmc_logger = tmc_logger
 
@@ -59,35 +57,26 @@ class TmcCom:
 
 
     def __init__(self,
-                 mtr_id:int = 0,
-                 tmc_logger:TmcLogger = None
+                 mtr_id:int = 0
                  ):
         """constructor
 
         Args:
-            _tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        self._tmc_logger = tmc_logger
+        self._tmc_logger:TmcLogger
         self.mtr_id = mtr_id
         self._tmc_registers = None
 
         self.mtr_id:int = 0
-        # self.r_frame:List[int]
-        # self.w_frame:List[int]
+        # self.r_frame:list[int]
+        # self.w_frame:list[int]
         self.communication_pause:int = 0
         self.error_handler_running:bool = False
 
 
-    # def init(self):
-    #     """init"""
-
-
-    # def __del__(self):
-    #     """destructor"""
-
-
-    def read_reg(self, addr:hex):
+    @abstractmethod
+    def read_reg(self, addr:int):
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -97,10 +86,10 @@ class TmcCom:
             int: register value
             Dict: flags
         """
-        raise NotImplementedError
 
 
-    def read_int(self, addr:hex, tries:int = 10):
+    @abstractmethod
+    def read_int(self, addr:int, tries:int = 10):
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -111,10 +100,10 @@ class TmcCom:
             int: register value
             Dict: flags
         """
-        raise NotImplementedError
 
 
-    def write_reg(self, addr:hex, val:int):
+    @abstractmethod
+    def write_reg(self, addr:int, val:int):
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -124,10 +113,10 @@ class TmcCom:
             addr (int): HEX, which register to write
             val (int): value for that register
         """
-        raise NotImplementedError
 
 
-    def write_reg_check(self, addr:hex, val:int, tries:int=10):
+    @abstractmethod
+    def write_reg_check(self, addr:int, val:int, tries:int=10):
         """this function als writes a value to the register of the TMC
         but it also checks if the writing process was successfully by checking
         the InterfaceTransmissionCounter before and after writing
@@ -137,23 +126,22 @@ class TmcCom:
             val: value for that register
             tries: how many tries, before error is raised (Default value = 10)
         """
-        raise NotImplementedError
 
 
+    @abstractmethod
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
-        raise NotImplementedError
 
 
+    @abstractmethod
     def handle_error(self):
         """error handling"""
-        raise NotImplementedError
 
 
+    @abstractmethod
     def test_com(self, addr):
         """test com connection
 
         Args:
             addr (int):  HEX, which register to test
         """
-        raise NotImplementedError

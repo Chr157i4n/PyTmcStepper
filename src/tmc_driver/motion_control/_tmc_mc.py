@@ -1,51 +1,40 @@
 #pylint: disable=too-many-instance-attributes
-#pylint: disable=unnecessary-pass
 #pylint: skip-file
 """
 Motion Control base module
 """
 
-from enum import Enum
+from enum import IntEnum
+from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 
 
-class Direction(Enum):
+class Direction(IntEnum):
     """movement direction of the motor"""
     CCW = 0
     CW = 1
 
-    def __int__(self):
-        return self.value
 
-
-class MovementAbsRel(Enum):
+class MovementAbsRel(IntEnum):
     """movement absolute or relative"""
     ABSOLUTE = 0
     RELATIVE = 1
 
-    def __int__(self):
-        return self.value
 
-
-class MovementPhase(Enum):
+class MovementPhase(IntEnum):
     """movement phase"""
     STANDSTILL = 0
     ACCELERATING = 1
     MAXSPEED = 2
     DECELERATING = 3
 
-    def __int__(self):
-        return self.value
 
-
-class StopMode(Enum):
+class StopMode(IntEnum):
     """stopmode"""
     NO = 0
     SOFTSTOP = 1
     HARDSTOP = 2
 
-    def __int__(self):
-        return self.value
 
 
 
@@ -171,7 +160,7 @@ class TmcMotionControl():
         self._current_pos:int = 0                # current position of stepper in steps
         self._target_pos:int = 0                 # the target position in steps
 
-        self._speed:int = 0                      # the current speed in steps per second
+        self._speed:float = 0.0                 # the current speed in steps per second
 
         self._max_speed:int = 1                  # the maximum speed in steps per second
         self._max_speed_homing:int = 200         # the maximum speed in steps per second for homing
@@ -195,12 +184,11 @@ class TmcMotionControl():
 
     def deinit(self):
         """destructor"""
-        pass
 
 
+    @abstractmethod
     def make_a_step(self):
         """make a Step"""
-        raise NotImplementedError
 
 
     def set_direction(self, direction:Direction):
@@ -223,6 +211,7 @@ class TmcMotionControl():
         self._stop = stop_mode
 
 
+    @abstractmethod
     def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None):
         """runs the motor to the given position.
         with acceleration and deceleration
@@ -238,4 +227,3 @@ class TmcMotionControl():
         Returns:
             stop (enum): how the movement was finished
         """
-        raise NotImplementedError

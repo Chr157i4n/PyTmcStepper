@@ -9,6 +9,7 @@ VActual Motion Control module
 
 import sys
 import time
+from abc import abstractmethod
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
@@ -43,14 +44,14 @@ class TmcMotionControlVActual(TmcMotionControl):
     def __init__(self):
         """constructor"""
         super().__init__()
-        self._tmc_com:TmcCom = None
+        self._tmc_com:TmcCom|None = None
         self._starttime:int = 0
 
 
+    @abstractmethod
     def make_a_step(self):
         """method that makes on step
         """
-        raise NotImplementedError
 
 
     def stop(self, stop_mode = StopMode.HARDSTOP):
@@ -64,7 +65,7 @@ class TmcMotionControlVActual(TmcMotionControl):
         self.set_vactual(0)
 
 
-    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """runs the motor to the given position.
         with acceleration and deceleration
         blocks the code until finished or stopped from a different thread!

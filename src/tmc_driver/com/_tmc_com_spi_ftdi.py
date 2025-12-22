@@ -1,19 +1,12 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=unused-import
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
 #pylint: disable=too-few-public-methods
-#pylint: disable=too-many-arguments
-#pylint: disable=too-many-positional-arguments
 """
 TmcComSpiFtdi stepper driver spi module
 """
 
-from pyftdi.spi import *
-from ._tmc_com import *
+from pyftdi.spi import SpiPort
 from .._tmc_exceptions import TmcComException, TmcDriverException
-from ._tmc_com_spi_base import TmcComSpiBase
+from ._tmc_com_spi_base import TmcComSpiBase, TmcLogger
 
 
 
@@ -28,8 +21,7 @@ class TmcComSpiFtdi(TmcComSpiBase):
 
     def __init__(self,
                  spi_port:SpiPort,
-                 mtr_id:int = 0,
-                 tmc_logger = None
+                 mtr_id:int = 0
                  ):
         """constructor
 
@@ -38,7 +30,7 @@ class TmcComSpiFtdi(TmcComSpiBase):
             tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self.spi = spi_port
 

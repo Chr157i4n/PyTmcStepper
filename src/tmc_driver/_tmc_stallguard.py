@@ -14,8 +14,8 @@
 import types
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
-from ._tmc_gpio_board import GpioPUD, GpioMode
-from . import _tmc_gpio_board as tmc_gpio
+from .tmc_gpio import GpioPUD, GpioMode
+from . import tmc_gpio
 from ._tmc_logger import Loglevel
 from .reg._tmc224x_reg import *
 from . import _tmc_math as tmc_math
@@ -33,8 +33,8 @@ class StallGuard():
 
     def __init__(self):
         """initialize StallGuard instance variables"""
-        self._pin_stallguard:int = None
-        self._sg_callback:types.FunctionType = None
+        self._pin_stallguard:int|None = None
+        self._sg_callback:types.FunctionType|None = None
 
 
     def __del__(self):

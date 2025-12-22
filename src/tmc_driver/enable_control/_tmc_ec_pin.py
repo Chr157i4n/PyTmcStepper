@@ -3,8 +3,8 @@ Enable Control base module
 """
 
 from ._tmc_ec import TmcEnableControl
-from .._tmc_gpio_board import Gpio, GpioMode
-from .. import _tmc_gpio_board as tmc_gpio
+from ..tmc_gpio import Gpio, GpioMode
+from .. import tmc_gpio
 from .._tmc_logger import TmcLogger, Loglevel
 
 
@@ -18,7 +18,7 @@ class TmcEnableControlPin(TmcEnableControl):
         return self._pin_en
 
 
-    def __init__(self, pin_en:int = None):
+    def __init__(self, pin_en:int):
         """constructor"""
         super().__init__()
         self._pin_en = pin_en

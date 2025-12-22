@@ -12,8 +12,8 @@ import sys
 import threading
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, Direction, StopMode
 from .._tmc_logger import TmcLogger, Loglevel
-from .._tmc_gpio_board import Gpio, GpioMode
-from .. import _tmc_gpio_board as tmc_gpio
+from ..tmc_gpio import Gpio, GpioMode
+from .. import tmc_gpio
 from .. import _tmc_math as tmc_math
 
 # MicroPython compatibility for time functions
@@ -181,7 +181,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, int(direction))
 
 
-    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """runs the motor to the given position.
         with acceleration and deceleration
         blocks the code until finished or stopped from a different thread!
@@ -220,7 +220,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         return self._stop
 
 
-    def run_to_position_revolutions(self, revolutions, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_revolutions(self, revolutions, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """runs the motor to the given position.
         with acceleration and deceleration
         blocks the code until finished!
@@ -236,7 +236,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
                                             movement_abs_rel)
 
 
-    def run_to_position_steps_threaded(self, steps, movement_abs_rel:MovementAbsRel = None):
+    def run_to_position_steps_threaded(self, steps, movement_abs_rel:MovementAbsRel|None = None):
         """runs the motor to the given position.
         with acceleration and deceleration
         does not block the code
@@ -256,7 +256,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         self._movement_thread.start()
 
 
-    def run_to_position_revolutions_threaded(self, revolutions, movement_abs_rel:MovementAbsRel = None):
+    def run_to_position_revolutions_threaded(self, revolutions, movement_abs_rel:MovementAbsRel|None = None):
         """runs the motor to the given position.
         with acceleration and deceleration
         does not block the code

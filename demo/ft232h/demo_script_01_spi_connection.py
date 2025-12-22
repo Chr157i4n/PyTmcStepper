@@ -6,11 +6,11 @@ import time
 try:
     from src.tmc_driver.tmc_2240 import *
     from src.tmc_driver.com._tmc_com_spi_ftdi import *
-    from src.tmc_driver import _tmc_gpio_board as tmc_gpio
+    from src.tmc_driver import tmc_gpio
 except ModuleNotFoundError:
     from tmc_driver.tmc_2240 import *
     from tmc_driver.com._tmc_com_spi_ftdi import *
-    from tmc_driver import _tmc_gpio_board as tmc_gpio
+    from tmc_driver import tmc_gpio
 from pyftdi.spi import SpiController
 
 

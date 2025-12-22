@@ -1,8 +1,5 @@
-#pylint: disable=import-error
 #pylint: disable=broad-exception-caught
 #pylint: disable=unused-import
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
 #pylint: disable=too-few-public-methods
 #pylint: disable=too-many-arguments
 #pylint: disable=too-many-positional-arguments
@@ -11,22 +8,8 @@ TmcComSpi stepper driver spi module
 """
 
 import spidev
-from ._tmc_com import *
-from ._tmc_com_spi_base import TmcComSpiBase
+from ._tmc_com_spi_base import TmcComSpiBase, TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException, TmcDriverException
-
-# class MockSpiDev:
-#     """MockSpiDev"""
-
-#     def SpiDev(self):
-#         """SpiDev"""
-
-# try:
-#     import spidev
-# except ImportError:
-#     print("spidev not found. Using MockSpiDev")
-#     spidev = MockSpiDev()
-
 
 
 
@@ -46,8 +29,7 @@ class TmcComSpi(TmcComSpiBase):
                  spi_bus:int,
                  spi_dev:int,
                  spi_speed:int = 8000000,
-                 mtr_id:int = 0,
-                 tmc_logger = None
+                 mtr_id:int = 0
                  ):
         """constructor
 
@@ -55,7 +37,7 @@ class TmcComSpi(TmcComSpiBase):
             _tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self.spi = spidev.SpiDev()
 

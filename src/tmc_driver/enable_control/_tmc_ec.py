@@ -2,6 +2,7 @@
 Enable Control base module
 """
 
+from abc import abstractmethod
 from .._tmc_logger import TmcLogger
 
 
@@ -11,7 +12,7 @@ class TmcEnableControl():
 
     def __init__(self):
         """constructor"""
-        self._tmc_logger:TmcLogger = None
+        self._tmc_logger:TmcLogger|None = None
 
 
     def init(self, tmc_logger: TmcLogger):
@@ -23,10 +24,10 @@ class TmcEnableControl():
         """destructor"""
 
 
+    @abstractmethod
     def set_motor_enabled(self, en):
         """enables or disables the motor current output
 
         Args:
             en (bool): whether the motor current output should be enabled
         """
-        raise NotImplementedError

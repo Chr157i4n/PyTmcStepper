@@ -1,5 +1,3 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=too-many-instance-attributes
 #pylint: disable=too-many-arguments
 #pylint: disable=too-many-positional-arguments
@@ -10,11 +8,9 @@ Uses the machine.SPI interface available on RP2040 and similar boards.
 """
 
 # Detect if we're running on MicroPython
-import sys
 from machine import SPI, Pin  # pylint: disable=import-error
 from ._tmc_com_spi_base import TmcComSpiBase
 
-MICROPYTHON = sys.implementation.name == "micropython"
 
 
 class TmcComSpiMicroPython(TmcComSpiBase):
@@ -27,9 +23,15 @@ class TmcComSpiMicroPython(TmcComSpiBase):
     TMC2240 uses SPI Mode 3: CPOL=1, CPHA=1
     """
 
-    def __init__(self, spi_id=0, cs_pin=17,
-                    sck_pin=18, mosi_pin=19, miso_pin=16,
-                    baudrate=1000000, mtr_id=0, tmc_logger=None):
+    def __init__(self,
+                 spi_id=0,
+                 cs_pin=17,
+                 sck_pin=18,
+                 mosi_pin=19,
+                 miso_pin=16,
+                 baudrate=1000000,
+                 mtr_id=0
+                 ):
         """Initialize SPI communication
 
         Args:
@@ -42,7 +44,7 @@ class TmcComSpiMicroPython(TmcComSpiBase):
             mtr_id: Motor/driver ID (default 0)
             tmc_logger: Logger instance (optional)
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self._spi_id = spi_id
         self._cs_pin = cs_pin
