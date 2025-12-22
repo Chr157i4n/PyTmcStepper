@@ -7,7 +7,6 @@ TmcCom stepper driver communication module
 
 import time
 import struct
-from typing import List
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 
@@ -74,8 +73,8 @@ class TmcCom:
         self._tmc_registers = None
 
         self.mtr_id:int = 0
-        # self.r_frame:List[int]
-        # self.w_frame:List[int]
+        # self.r_frame:list[int]
+        # self.w_frame:list[int]
         self.communication_pause:int = 0
         self.error_handler_running:bool = False
 

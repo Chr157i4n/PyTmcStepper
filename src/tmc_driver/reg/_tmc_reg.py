@@ -4,7 +4,6 @@
 Register module
 """
 
-import typing
 from .._tmc_logger import TmcLogger, Loglevel
 from ..com._tmc_com import TmcCom
 
@@ -24,7 +23,7 @@ class TmcReg():
         return self._name
 
     @property
-    def reg_map(self) -> typing.List:
+    def reg_map(self) -> list:
         """reg_map property"""
         return self._reg_map
 
@@ -34,15 +33,15 @@ class TmcReg():
         return self._data_int
 
     @property
-    def flags(self) -> typing.Dict:
+    def flags(self) -> dict:
         """flags property"""
         return self._flags
 
 
-    def __init__(self, address:hex, name:str, tmc_com:TmcCom, reg_map:typing.List):
+    def __init__(self, address:hex, name:str, tmc_com:TmcCom, reg_map:list):
         """Constructor"""
         self._data_int: int
-        self._flags: typing.Dict
+        self._flags: dict
 
         self._addr = address
         self._name = name

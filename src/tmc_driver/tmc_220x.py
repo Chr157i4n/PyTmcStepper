@@ -17,7 +17,6 @@ this module has two different functions:
 
 import threading
 import time
-import typing
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_uart_base import TmcComUartBase
