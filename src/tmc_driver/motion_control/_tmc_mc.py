@@ -1,51 +1,40 @@
 #pylint: disable=too-many-instance-attributes
-#pylint: disable=unnecessary-pass
 #pylint: skip-file
 """
 Motion Control base module
 """
 
+from enum import IntEnum
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 
 
-class Direction(Enum):
+class Direction(IntEnum):
     """movement direction of the motor"""
     CCW = 0
     CW = 1
 
-    def __int__(self):
-        return self.value
 
-
-class MovementAbsRel(Enum):
+class MovementAbsRel(IntEnum):
     """movement absolute or relative"""
     ABSOLUTE = 0
     RELATIVE = 1
 
-    def __int__(self):
-        return self.value
 
-
-class MovementPhase(Enum):
+class MovementPhase(IntEnum):
     """movement phase"""
     STANDSTILL = 0
     ACCELERATING = 1
     MAXSPEED = 2
     DECELERATING = 3
 
-    def __int__(self):
-        return self.value
 
-
-class StopMode(Enum):
+class StopMode(IntEnum):
     """stopmode"""
     NO = 0
     SOFTSTOP = 1
     HARDSTOP = 2
 
-    def __int__(self):
-        return self.value
 
 
 
