@@ -5,7 +5,7 @@ TmcComUart stepper driver uart module
 """
 
 import serial
-from ._tmc_com_uart_base import TmcComUartBase, TmcLogger
+from ._tmc_com_uart_base import TmcComUartBase, TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
