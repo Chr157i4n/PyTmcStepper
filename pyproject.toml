@@ -5,6 +5,42 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "PyTmcStepper"
+version = "0.9.0"
+authors = [
+    { name = "Christian Köhlke", email = "christian@koehlke.de" }
+]
+description = "This is a Python libary to drive a stepper motor with a Trinamic stepper driver and a single board computer like a Raspberry Pi"
+readme = "README.md"
+license = "GPL-3.0"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+dependencies = [
+    "pyserial",
+]
+
+[project.urls]
+Homepage = "https://github.com/Chr157i4n/PyTmcStepper"
+"Bug Tracker" = "https://github.com/Chr157i4n/PyTmcStepper/issues"
+
+[project.optional-dependencies]
+RASPBERRY_PI = ["RPi.GPIO"]
+RASPBERRY_PI5 = ["gpiozero"]
+NVIDIA_JETSON = ["Jetson.GPIO"]
+LUCKFOX_PICO = ["python-periphery"]
+ORANGE_PI = ["OPi.GPIO"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.pylint."messages control"]
 disable = "C0103,W0511,W0012,R0801"
 
