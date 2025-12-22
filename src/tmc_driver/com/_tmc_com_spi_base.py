@@ -11,6 +11,7 @@ TmcComSpiBase - Abstract base class for SPI communication
 This class contains no hardware-specific imports (no spidev, no pyftdi)
 """
 
+from abc import abstractmethod
 from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
@@ -41,16 +42,17 @@ class TmcComSpiBase(TmcCom):
         self._w_frame = [0x55, 0, 0, 0, 0]
 
 
+    @abstractmethod
     def init(self):
         """init - to be implemented by subclass"""
-        raise NotImplementedError
 
 
+    @abstractmethod
     def deinit(self):
         """destructor - to be implemented by subclass"""
-        raise NotImplementedError
 
 
+    @abstractmethod
     def _spi_transfer(self, data: list) -> list:
         """Perform SPI transfer - to be implemented by subclass
 
@@ -60,7 +62,6 @@ class TmcComSpiBase(TmcCom):
         Returns:
             Received data
         """
-        raise NotImplementedError
 
 
     def read_reg(self, addr: hex):

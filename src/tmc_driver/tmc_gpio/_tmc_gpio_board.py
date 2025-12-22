@@ -1,5 +1,3 @@
-#pylint: disable=unnecessary-pass
-#pylint: disable=abstract-method
 #pylint: disable=wildcard-import
 #pylint: disable=unused-wildcard-import
 #pylint: disable=no-member
@@ -134,11 +132,9 @@ class GpiozeroWrapper(BaseGPIOWrapper):
 
     def init(self, gpio_mode=None):
         """initialize GPIO library. pass on gpiozero"""
-        pass
 
     def deinit(self):
         """deinitialize GPIO library. pass on gpiozero"""
-        pass
 
     def gpio_setup(self, pin:int, mode:GpioMode, initial:Gpio=Gpio.LOW, pull_up_down:GpioPUD=GpioPUD.PUD_OFF):
         """setup GPIO pin"""
@@ -214,11 +210,9 @@ class peripheryWrapper(BaseGPIOWrapper):
 
     def init(self, gpio_mode=None):
         """initialize GPIO library. pass on periphery"""
-        pass
 
     def deinit(self):
         """deinitialize GPIO library. pass on periphery"""
-        pass
 
     def gpio_setup(self, pin:int, mode:GpioMode, initial:Gpio=Gpio.LOW, pull_up_down:GpioPUD=GpioPUD.PUD_OFF):
         """setup GPIO pin"""
@@ -238,6 +232,31 @@ class peripheryWrapper(BaseGPIOWrapper):
     def gpio_output(self, pin:int, value):
         """write GPIO pin"""
         self._gpios[pin].write(bool(value))
+
+    def gpio_pwm_setup(self, pin:int, frequency:int = 10, duty_cycle:int = 0):
+        """setup PWM"""
+        raise NotImplementedError
+
+    def gpio_pwm_set_frequency(self, pin:int, frequency:int):
+        """set PWM frequency"""
+        raise NotImplementedError
+
+    def gpio_pwm_set_duty_cycle(self, pin:int, duty_cycle:int):
+        """set PWM duty cycle
+
+        Args:
+            pin (int): pin number
+            duty_cycle (int): duty cycle in percent (0-100)
+        """
+        raise NotImplementedError
+
+    def gpio_add_event_detect(self, pin:int, callback:types.FunctionType):
+        """add event detect"""
+        raise NotImplementedError
+
+    def gpio_remove_event_detect(self, pin:int):
+        """remove event detect"""
+        raise NotImplementedError
 
 class FtdiWrapper(BaseGPIOWrapper):
     """FTDI GPIO wrapper for FT232H and similar chips using pyftdi.
@@ -263,7 +282,6 @@ class FtdiWrapper(BaseGPIOWrapper):
 
     def init(self, gpio_mode=None):
         """initialize GPIO library and configure FTDI device"""
-        pass
 
 
     def deinit(self):
@@ -357,21 +375,26 @@ class FtdiWrapper(BaseGPIOWrapper):
         self._gpio_port.write(self._gpio_state & 0xF0)
 
     def gpio_pwm_setup(self, pin:int, frequency:int = 10, duty_cycle:int = 0):
-        """setup PWM - not natively supported on FTDI GPIO"""
-        dependencies_logger.log("FTDI GPIO: Hardware PWM not supported", Loglevel.WARNING)
+        """setup PWM"""
+        raise NotImplementedError
 
     def gpio_pwm_set_frequency(self, pin:int, frequency:int):
-        """set PWM frequency - not supported"""
-        dependencies_logger.log("FTDI GPIO: Hardware PWM not supported", Loglevel.WARNING)
+        """set PWM frequency"""
+        raise NotImplementedError
 
     def gpio_pwm_set_duty_cycle(self, pin:int, duty_cycle:int):
-        """set PWM duty cycle - not supported"""
-        dependencies_logger.log("FTDI GPIO: Hardware PWM not supported", Loglevel.WARNING)
+        """set PWM duty cycle
+
+        Args:
+            pin (int): pin number
+            duty_cycle (int): duty cycle in percent (0-100)
+        """
+        raise NotImplementedError
 
     def gpio_add_event_detect(self, pin:int, callback:types.FunctionType):
-        """add event detect - not supported on FTDI"""
-        dependencies_logger.log("FTDI GPIO: Event detection not supported", Loglevel.WARNING)
+        """add event detect"""
+        raise NotImplementedError
 
     def gpio_remove_event_detect(self, pin:int):
-        """remove event detect - not supported"""
-        pass
+        """remove event detect"""
+        raise NotImplementedError

@@ -5,7 +5,7 @@
 Motion Control base module
 """
 
-from enum import Enum
+from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 
 
@@ -195,12 +195,11 @@ class TmcMotionControl():
 
     def deinit(self):
         """destructor"""
-        pass
 
 
+    @abstractmethod
     def make_a_step(self):
         """make a Step"""
-        raise NotImplementedError
 
 
     def set_direction(self, direction:Direction):
@@ -223,6 +222,7 @@ class TmcMotionControl():
         self._stop = stop_mode
 
 
+    @abstractmethod
     def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None):
         """runs the motor to the given position.
         with acceleration and deceleration
@@ -238,4 +238,3 @@ class TmcMotionControl():
         Returns:
             stop (enum): how the movement was finished
         """
-        raise NotImplementedError

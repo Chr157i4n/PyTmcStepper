@@ -8,6 +8,7 @@ TmcCom stepper driver communication module
 import time
 import struct
 from typing import List
+from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 
 
@@ -79,14 +80,7 @@ class TmcCom:
         self.error_handler_running:bool = False
 
 
-    # def init(self):
-    #     """init"""
-
-
-    # def __del__(self):
-    #     """destructor"""
-
-
+    @abstractmethod
     def read_reg(self, addr:hex):
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
@@ -97,9 +91,9 @@ class TmcCom:
             int: register value
             Dict: flags
         """
-        raise NotImplementedError
 
 
+    @abstractmethod
     def read_int(self, addr:hex, tries:int = 10):
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
@@ -111,9 +105,9 @@ class TmcCom:
             int: register value
             Dict: flags
         """
-        raise NotImplementedError
 
 
+    @abstractmethod
     def write_reg(self, addr:hex, val:int):
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
@@ -124,9 +118,9 @@ class TmcCom:
             addr (int): HEX, which register to write
             val (int): value for that register
         """
-        raise NotImplementedError
 
 
+    @abstractmethod
     def write_reg_check(self, addr:hex, val:int, tries:int=10):
         """this function als writes a value to the register of the TMC
         but it also checks if the writing process was successfully by checking
@@ -137,23 +131,22 @@ class TmcCom:
             val: value for that register
             tries: how many tries, before error is raised (Default value = 10)
         """
-        raise NotImplementedError
 
 
+    @abstractmethod
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
-        raise NotImplementedError
 
 
+    @abstractmethod
     def handle_error(self):
         """error handling"""
-        raise NotImplementedError
 
 
+    @abstractmethod
     def test_com(self, addr):
         """test com connection
 
         Args:
             addr (int):  HEX, which register to test
         """
-        raise NotImplementedError

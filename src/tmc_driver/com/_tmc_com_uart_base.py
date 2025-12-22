@@ -8,6 +8,7 @@ TmcComUartBase - Abstract base class for UART communication
 This class contains no hardware-specific imports (no serial/pyserial)
 """
 
+from abc import abstractmethod
 from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
@@ -37,14 +38,16 @@ class TmcComUartBase(TmcCom):
         self.r_frame = [0x55, 0, 0, 0]
         self.w_frame = [0x55, 0, 0, 0, 0, 0, 0, 0]
 
+
+    @abstractmethod
     def init(self):
         """init - to be implemented by subclass"""
-        raise NotImplementedError
 
+    @abstractmethod
     def deinit(self):
         """destructor - to be implemented by subclass"""
-        raise NotImplementedError
 
+    @abstractmethod
     def _uart_write(self, data: list) -> int:
         """Write data to UART - to be implemented by subclass
 
@@ -54,8 +57,8 @@ class TmcComUartBase(TmcCom):
         Returns:
             Number of bytes written
         """
-        raise NotImplementedError
 
+    @abstractmethod
     def _uart_read(self, length: int) -> bytes:
         """Read data from UART - to be implemented by subclass
 
@@ -65,11 +68,9 @@ class TmcComUartBase(TmcCom):
         Returns:
             Received data
         """
-        raise NotImplementedError
-
+    @abstractmethod
     def _uart_flush(self):
         """Flush UART buffers - to be implemented by subclass"""
-        raise NotImplementedError
 
     def read_reg(self, addr: hex):
         """reads the registry on the TMC with a given address.

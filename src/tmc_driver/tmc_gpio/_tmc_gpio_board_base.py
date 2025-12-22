@@ -4,6 +4,7 @@ but require to import special GPIO module instead RPI.GPIO
 """
 
 from enum import IntEnum
+from abc import abstractmethod
 import types
 from .._tmc_logger import TmcLogger, Loglevel
 
@@ -41,38 +42,39 @@ dependencies_logger = TmcLogger(Loglevel.DEBUG, "DEPENDENCIES")
 class BaseGPIOWrapper():
     """Base class for GPIO wrappers"""
 
+    @abstractmethod
     def init(self, gpio_mode=None):
         """initialize GPIO library"""
-        raise NotImplementedError
 
+    @abstractmethod
     def deinit(self):
         """deinitialize GPIO library"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_setup(self, pin:int, mode:GpioMode, initial:Gpio=Gpio.LOW, pull_up_down:GpioPUD=GpioPUD.PUD_OFF):
         """setup GPIO pin"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_cleanup(self, pin:int):
         """cleanup GPIO pin"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_input(self, pin:int) -> int:
         """read GPIO pin"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_output(self, pin:int, value):
         """write GPIO pin"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_pwm_setup(self, pin:int, frequency:int = 10, duty_cycle:int = 0):
         """setup PWM"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_pwm_set_frequency(self, pin:int, frequency:int):
         """set PWM frequency"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_pwm_set_duty_cycle(self, pin:int, duty_cycle:int):
         """set PWM duty cycle
 
@@ -80,12 +82,11 @@ class BaseGPIOWrapper():
             pin (int): pin number
             duty_cycle (int): duty cycle in percent (0-100)
         """
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_add_event_detect(self, pin:int, callback:types.FunctionType):
         """add event detect"""
-        raise NotImplementedError
 
+    @abstractmethod
     def gpio_remove_event_detect(self, pin:int):
         """remove event detect"""
-        raise NotImplementedError

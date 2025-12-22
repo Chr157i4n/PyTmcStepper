@@ -9,6 +9,7 @@ VActual Motion Control module
 
 import sys
 import time
+from abc import abstractmethod
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
@@ -47,10 +48,10 @@ class TmcMotionControlVActual(TmcMotionControl):
         self._starttime:int = 0
 
 
+    @abstractmethod
     def make_a_step(self):
         """method that makes on step
         """
-        raise NotImplementedError
 
 
     def stop(self, stop_mode = StopMode.HARDSTOP):
