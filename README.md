@@ -223,21 +223,18 @@ So you don't need to connect anything to the Vio pin of the driver.
 
 ### Micropython
 
-First you need to upload all need files to the µController with mpremote or another tool. You can use the script `upload_to_pico.py` for that.
-Then you can run a demo script by using
+The lib is also compatible with MicroPython. For using it with Micropython the VSCode addon [MicroPico](https://marketplace.visualstudio.com/items?itemName=paulober.pico-w-go) is used. Use the Upload Project function to upload the src folder and the needed lib folder.
 
-some external micropython-lib are needed to be installed:
+the needed libs, which are not builtin in Micropython are:
 
-```shell
-python -m mpremote connect COM4 mip install threading
-python -m mpremote connect COM4 mip install types
-```
+Lib         | available on MIP
+--          | --
+abc         | yes
+enum        | no
+threading   | yes
+types       | yes
 
-Run the demo script with:
-
-```shell
-python -m mpremote connect COM4 run .\demo\micropython\demo_script_tmc2240_03_basic_movement.py
-```
+You can also use MicroPico to run the demo script by opening one and then pressing Run on the bottom left corner
 
 ## Usage
 
