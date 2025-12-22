@@ -20,7 +20,8 @@ import time
 import types
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
-from .tmc_gpio._tmc_gpio_board import GpioPUD
+from .tmc_gpio import GpioPUD
+from . import tmc_gpio as tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual

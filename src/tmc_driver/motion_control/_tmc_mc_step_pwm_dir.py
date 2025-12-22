@@ -10,7 +10,7 @@ from ._tmc_mc import MovementAbsRel, Direction, StopMode
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from .._tmc_logger import TmcLogger, Loglevel
 from ..tmc_gpio._tmc_gpio_board import GpiozeroWrapper
-from ..tmc_gpio import _tmc_gpio_board as tmc_gpio
+from .. import tmc_gpio
 
 
 class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):

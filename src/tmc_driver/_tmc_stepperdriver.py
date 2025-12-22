@@ -11,8 +11,8 @@ this module has the function to move the motor via STEP/DIR pins
 """
 
 import logging
-from .tmc_gpio._tmc_gpio_board import Gpio, GpioMode, Board
-from .tmc_gpio import _tmc_gpio_board as tmc_gpio
+from .tmc_gpio import Gpio, GpioMode, Board
+from . import tmc_gpio as tmc_gpio
 from .motion_control._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, StopMode, Direction
 from .enable_control._tmc_ec import TmcEnableControl
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
