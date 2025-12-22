@@ -9,7 +9,7 @@ Uses the machine.SPI interface available on RP2040 and similar boards.
 
 # Detect if we're running on MicroPython
 from machine import SPI, Pin  # pylint: disable=import-error
-from ._tmc_com_spi_base import TmcComSpiBase, TmcLogger
+from ._tmc_com_spi_base import TmcComSpiBase
 
 
 

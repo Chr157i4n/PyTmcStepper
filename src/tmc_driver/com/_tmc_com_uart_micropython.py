@@ -12,7 +12,7 @@ Uses the machine.UART interface for single-wire UART communication.
 import sys
 import time
 from machine import UART, Pin  # pylint: disable=import-error
-from ._tmc_com_uart_base import TmcComUartBase, TmcLogger
+from ._tmc_com_uart_base import TmcComUartBase
 
 MICROPYTHON = sys.implementation.name == "micropython"
 
