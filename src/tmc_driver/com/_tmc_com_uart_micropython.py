@@ -32,8 +32,7 @@ class TmcComUartMicroPython(TmcComUartBase):
                  tx_pin=0,
                  rx_pin=1,
                  baudrate=115200,
-                 mtr_id=0,
-                 tmc_logger: TmcLogger|None =None
+                 mtr_id=0
                  ):
         """Initialize UART communication
 
@@ -45,7 +44,7 @@ class TmcComUartMicroPython(TmcComUartBase):
             mtr_id: Motor/slave address (0-3)
             tmc_logger: Logger instance (optional)
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self._uart_id = uart_id
         self._tx_pin = tx_pin

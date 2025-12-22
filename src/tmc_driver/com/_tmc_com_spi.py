@@ -29,8 +29,7 @@ class TmcComSpi(TmcComSpiBase):
                  spi_bus:int,
                  spi_dev:int,
                  spi_speed:int = 8000000,
-                 mtr_id:int = 0,
-                 tmc_logger: TmcLogger|None = None
+                 mtr_id:int = 0
                  ):
         """constructor
 
@@ -38,7 +37,7 @@ class TmcComSpi(TmcComSpiBase):
             _tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self.spi = spidev.SpiDev()
 

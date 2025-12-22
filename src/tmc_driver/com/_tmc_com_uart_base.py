@@ -20,8 +20,7 @@ class TmcComUartBase(TmcCom):
     """
 
     def __init__(self,
-                 mtr_id: int = 0,
-                 tmc_logger: TmcLogger|None =None
+                 mtr_id: int = 0
                  ):
         """constructor
 
@@ -29,7 +28,7 @@ class TmcComUartBase(TmcCom):
             tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self.ser = None  # To be set by subclass
 

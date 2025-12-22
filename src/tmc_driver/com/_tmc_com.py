@@ -35,12 +35,12 @@ class TmcCom:
     """TmcCom
     """
     @property
-    def tmc_logger(self):
+    def tmc_logger(self) -> TmcLogger:
         """get the tmc_logger"""
         return self._tmc_logger
 
     @tmc_logger.setter
-    def tmc_logger(self, tmc_logger):
+    def tmc_logger(self, tmc_logger: TmcLogger):
         """set the tmc_logger"""
         self._tmc_logger = tmc_logger
 
@@ -57,16 +57,14 @@ class TmcCom:
 
 
     def __init__(self,
-                 mtr_id:int = 0,
-                 tmc_logger:TmcLogger|None = None
+                 mtr_id:int = 0
                  ):
         """constructor
 
         Args:
-            _tmc_logger (class): TMCLogger class
             mtr_id (int, optional): driver address [0-3]. Defaults to 0.
         """
-        self._tmc_logger = tmc_logger
+        self._tmc_logger:TmcLogger
         self.mtr_id = mtr_id
         self._tmc_registers = None
 

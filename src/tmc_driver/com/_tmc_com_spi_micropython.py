@@ -30,8 +30,7 @@ class TmcComSpiMicroPython(TmcComSpiBase):
                  mosi_pin=19,
                  miso_pin=16,
                  baudrate=1000000,
-                 mtr_id=0,
-                 tmc_logger: TmcLogger|None = None
+                 mtr_id=0
                  ):
         """Initialize SPI communication
 
@@ -45,7 +44,7 @@ class TmcComSpiMicroPython(TmcComSpiBase):
             mtr_id: Motor/driver ID (default 0)
             tmc_logger: Logger instance (optional)
         """
-        super().__init__(mtr_id, tmc_logger)
+        super().__init__(mtr_id)
 
         self._spi_id = spi_id
         self._cs_pin = cs_pin
