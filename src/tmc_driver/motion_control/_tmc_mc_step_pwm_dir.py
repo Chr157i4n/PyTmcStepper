@@ -9,7 +9,6 @@ STEP_PWM/DIR Motion Control module
 from ._tmc_mc import MovementAbsRel, Direction, StopMode
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from .._tmc_logger import TmcLogger, Loglevel
-from ..tmc_gpio._tmc_gpio_board import GpiozeroWrapper
 from .. import tmc_gpio
 
 
@@ -57,7 +56,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         Returns:
             StopMode: the stop mode
         """
-        if isinstance(tmc_gpio, GpiozeroWrapper):
+        if tmc_gpio.tmc_gpio.__class__.__name__ == "GpiozeroWrapper":
             tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, False)
 
         return super().run_to_position_steps(steps, movement_abs_rel)
@@ -70,7 +69,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         if speed is None:
             speed = self.max_speed
 
-        if isinstance(tmc_gpio, GpiozeroWrapper):
+        if tmc_gpio.tmc_gpio.__class__.__name__ == "GpiozeroWrapper":
             tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, True)
 
         if speed == 0:

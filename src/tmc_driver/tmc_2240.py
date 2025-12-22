@@ -15,7 +15,6 @@ this module has two different functions:
 2. move the motor via STEP/DIR pins
 """
 
-import logging
 import time
 import types
 from ._tmc_stepperdriver import *
@@ -26,7 +25,7 @@ from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
 from ._tmc_stallguard import StallGuard
-from ._tmc_logger import TmcLogger, Loglevel
+from ._tmc_logger import *
 from .reg._tmc224x_reg import *
 from . import _tmc_math as tmc_math
 from ._tmc_exceptions import TmcException, TmcComException, TmcMotionControlException, TmcEnableControlException, TmcDriverException

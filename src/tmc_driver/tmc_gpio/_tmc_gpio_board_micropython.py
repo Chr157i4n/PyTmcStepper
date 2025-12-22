@@ -3,8 +3,8 @@
 MicroPython GPIO module
 """
 
-from ._tmc_gpio_board_base import *
 from machine import Pin, PWM
+from ._tmc_gpio_board_base import *
 
 
 class MicroPythonGPIOWrapper(BaseGPIOWrapper):
