@@ -1,5 +1,14 @@
 # Changelog
 
+## version 0.9.1
+
+- refactored tmc_gpio modules
+- refactored tmc_com modules
+- dropped support for python 3.9 and older
+- added more typehints
+- added MicroPico project files for better Micropython support
+- moved all project metadata into pyproject.toml
+
 ## version 0.9.0
 
 - added support for MicroPython
