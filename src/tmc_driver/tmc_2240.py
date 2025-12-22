@@ -48,13 +48,13 @@ class Tmc2240(TmcStepperDriver, StallGuard):
     def __init__(self,
                     tmc_ec:TmcEnableControl,
                     tmc_mc:TmcMotionControl,
-                    tmc_com:TmcCom = None,
+                    tmc_com:TmcCom|None = None,
                     driver_address:int = 0,
                     gpio_mode = None,
                     loglevel:Loglevel = Loglevel.INFO,
-                    logprefix:str = None,
-                    log_handlers:list = None,
-                    log_formatter:logging.Formatter = None
+                    logprefix:str|None = None,
+                    log_handlers:list|None = None,
+                    log_formatter:logging.Formatter|None = None
                     ):
         """constructor
 
@@ -73,9 +73,9 @@ class Tmc2240(TmcStepperDriver, StallGuard):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.tmc_com:TmcCom = None
-        self._pin_stallguard:int = None
-        self._sg_callback:types.FunctionType = None
+        self.tmc_com:TmcCom|None = None
+        self._pin_stallguard:int|None = None
+        self._sg_callback:types.FunctionType|None = None
         self._sg_threshold:int = 100             # threshold for stallguard
 
         if logprefix is None:

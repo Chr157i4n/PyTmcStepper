@@ -46,13 +46,13 @@ class Tmc220x(TmcStepperDriver):
     def __init__(self,
                     tmc_ec:TmcEnableControl,
                     tmc_mc:TmcMotionControl,
-                    tmc_com:TmcCom = None,
+                    tmc_com:TmcCom|None = None,
                     driver_address:int = 0,
                     gpio_mode = None,
                     loglevel:Loglevel = Loglevel.INFO,
-                    logprefix:str = None,
-                    log_handlers:list = None,
-                    log_formatter:logging.Formatter = None
+                    logprefix:str|None = None,
+                    log_handlers:list|None = None,
+                    log_formatter:logging.Formatter|None = None
                     ):
         """constructor
 
@@ -71,7 +71,7 @@ class Tmc220x(TmcStepperDriver):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.tmc_com:TmcComUartBase = None
+        self.tmc_com:TmcComUartBase|None = None
 
         if logprefix is None:
             logprefix = f"TMC2209 {driver_address}"

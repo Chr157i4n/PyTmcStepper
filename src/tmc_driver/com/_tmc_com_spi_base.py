@@ -1,11 +1,6 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=unused-import
 #pylint: disable=wildcard-import
 #pylint: disable=unused-wildcard-import
-#pylint: disable=too-few-public-methods
-#pylint: disable=too-many-arguments
-#pylint: disable=too-many-positional-arguments
 """
 TmcComSpiBase - Abstract base class for SPI communication
 This class contains no hardware-specific imports (no spidev, no pyftdi)
@@ -64,7 +59,7 @@ class TmcComSpiBase(TmcCom):
         """
 
 
-    def read_reg(self, addr: hex):
+    def read_reg(self, addr: int):
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -99,7 +94,7 @@ class TmcComSpiBase(TmcCom):
         return rtn[1:], flags
 
 
-    def read_int(self, addr: hex, tries: int = 10):
+    def read_int(self, addr: int, tries: int = 10):
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -114,7 +109,7 @@ class TmcComSpiBase(TmcCom):
         return int.from_bytes(bytes(data), 'big'), flags
 
 
-    def write_reg(self, addr: hex, val: int):
+    def write_reg(self, addr: int, val: int):
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -134,7 +129,7 @@ class TmcComSpiBase(TmcCom):
         self._spi_transfer(self._w_frame)
 
 
-    def write_reg_check(self, addr: hex, val: int, tries: int = 10):
+    def write_reg_check(self, addr: int, val: int, tries: int = 10):
         """IFCNT is disabled in SPI mode. Therefore, no check is possible.
         This only calls the write_reg function
 
@@ -166,6 +161,7 @@ class TmcComSpiBase(TmcCom):
         Args:
             addr (int):  HEX, which register to test
         """
+        del addr  # addr is not used here
         self._tmc_registers["ioin"].read()
         self._tmc_registers["ioin"].log(self.tmc_logger)
         if self._tmc_registers["ioin"].data_int == 0:

@@ -12,7 +12,7 @@ class TmcEnableControl():
 
     def __init__(self):
         """constructor"""
-        self._tmc_logger:TmcLogger = None
+        self._tmc_logger:TmcLogger|None = None
 
 
     def init(self, tmc_logger: TmcLogger):

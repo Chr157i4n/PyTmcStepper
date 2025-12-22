@@ -91,8 +91,8 @@ else:
         def __init__(self,
                      loglevel: Loglevel = Loglevel.INFO,
                      logprefix: str = "TMC2209",
-                     handlers: list = None,
-                     formatter: logging.Formatter = None):
+                     handlers: list|None = None,
+                     formatter: logging.Formatter|None = None):
             """constructor
 
             Args:
@@ -193,7 +193,7 @@ else:
 
 
         @staticmethod
-        def _add_logging_level(level_name: str, level_num: int, method_name: str = None):
+        def _add_logging_level(level_name: str, level_num: int, method_name: str|None = None):
             if not method_name:
                 method_name = level_name.lower()
 

@@ -117,4 +117,4 @@ def mean(data) -> int:
 
     total = sum(data)
 
-    return total / count
+    return total // count

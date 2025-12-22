@@ -22,13 +22,13 @@ class Tmc2209(Tmc220x, StallGuard):
     def __init__(self,
                     tmc_ec:TmcEnableControl,
                     tmc_mc:TmcMotionControl,
-                    tmc_com:TmcCom = None,
+                    tmc_com:TmcCom|None = None,
                     driver_address:int = 0,
                     gpio_mode = None,
                     loglevel:Loglevel = Loglevel.INFO,
-                    logprefix:str = None,
-                    log_handlers:list = None,
-                    log_formatter:logging.Formatter = None
+                    logprefix:str|None = None,
+                    log_handlers:list|None = None,
+                    log_formatter:logging.Formatter|None = None
                     ):
         """constructor
 
@@ -88,7 +88,12 @@ class Tmc2209(Tmc220x, StallGuard):
 
 # Tmc2209 methods
 # ----------------------------
-    def do_homing(self, diag_pin, revolutions = 10, threshold = 100, speed_rpm = None) -> bool:
+    def do_homing(self,
+                  diag_pin:int,
+                  revolutions = 10,
+                  threshold = 100,
+                  speed_rpm:float|None = None
+                  ) -> bool:
         """homes the motor in the given direction using stallguard.
         this method is using vactual to move the motor and an interrupt on the DIAG pin
 
@@ -216,7 +221,7 @@ class Tmc2209(Tmc220x, StallGuard):
         self.tmc_logger.log("---", Loglevel.INFO)
         self.tmc_logger.log("test_stallguard_threshold", Loglevel.INFO)
 
-        self.set_spreadcycle(0)
+        self.set_spreadcycle(False)
 
         min_stallguard_result_accel = 512
         min_stallguard_result_maxspeed = 512

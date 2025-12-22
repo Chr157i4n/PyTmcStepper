@@ -40,9 +40,9 @@ class TmcStepperDriver:
                     tmc_mc:TmcMotionControl,
                     gpio_mode = None,
                     loglevel:Loglevel = Loglevel.INFO,
-                    logprefix:str = None,
-                    log_handlers:list = None,
-                    log_formatter:logging.Formatter = None
+                    logprefix:str|None = None,
+                    log_handlers:list|None = None,
+                    log_formatter:logging.Formatter|None = None
                     ):
         """constructor
 
@@ -63,9 +63,9 @@ class TmcStepperDriver:
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
         self.BOARD:Board = tmc_gpio.BOARD
-        self.tmc_mc:TmcMotionControl = None
-        self.tmc_ec:TmcEnableControl = None
-        self.tmc_logger:TmcLogger = None
+        self.tmc_mc:TmcMotionControl|None = None
+        self.tmc_ec:TmcEnableControl|None = None
+        self.tmc_logger:TmcLogger|None = None
 
         self._deinit_finished:bool = False
 
@@ -270,19 +270,19 @@ class TmcStepperDriver:
             self.tmc_mc.acceleration_fullstep = acceleration_fullstep
 
 
-    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """motioncontrol wrapper"""
         if self.tmc_mc is not None:
             return self.tmc_mc.run_to_position_steps(steps, movement_abs_rel)
-        return None
+        return StopMode.NO
 
 
-    def run_to_position_fullsteps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_fullsteps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """motioncontrol wrapper"""
         return self.run_to_position_steps(steps * self.mres, movement_abs_rel)
 
 
-    def run_to_position_revolutions(self, revs, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_revolutions(self, revs, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """motioncontrol wrapper"""
         return self.run_to_position_steps(revs * self.steps_per_rev, movement_abs_rel)
 

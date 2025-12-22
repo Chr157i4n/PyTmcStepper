@@ -13,7 +13,7 @@ class TmcReg():
 
 
     @property
-    def addr(self) -> hex:
+    def addr(self) -> int:
         """addr property"""
         return self._addr
 
@@ -38,7 +38,7 @@ class TmcReg():
         return self._flags
 
 
-    def __init__(self, address:hex, name:str, tmc_com:TmcCom, reg_map:list):
+    def __init__(self, address: int, name:str, tmc_com:TmcCom, reg_map:list):
         """Constructor"""
         self._data_int: int
         self._flags: dict

@@ -1,9 +1,6 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=too-many-instance-attributes
 #pylint: disable=too-many-arguments
 #pylint: disable=too-many-positional-arguments
-#pylint: disable=too-few-public-methods
 """
 TmcComUartPico - UART communication for MicroPython
 
@@ -14,7 +11,7 @@ Uses the machine.UART interface for single-wire UART communication.
 import sys
 import time
 from machine import UART, Pin  # pylint: disable=import-error
-from ._tmc_com_uart_base import TmcComUartBase
+from ._tmc_com_uart_base import TmcComUartBase, TmcLogger
 
 MICROPYTHON = sys.implementation.name == "micropython"
 
@@ -29,8 +26,14 @@ class TmcComUartMicroPython(TmcComUartBase):
     For single-wire UART, connect TX to the TMC UART pin through a 1k resistor.
     """
 
-    def __init__(self, uart_id=0, tx_pin=0, rx_pin=1,
-                    baudrate=115200, mtr_id=0, tmc_logger=None):
+    def __init__(self,
+                 uart_id=0,
+                 tx_pin=0,
+                 rx_pin=1,
+                 baudrate=115200,
+                 mtr_id=0,
+                 tmc_logger: TmcLogger|None =None
+                 ):
         """Initialize UART communication
 
         Args:

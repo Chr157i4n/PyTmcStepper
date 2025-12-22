@@ -44,7 +44,7 @@ class TmcMotionControlVActual(TmcMotionControl):
     def __init__(self):
         """constructor"""
         super().__init__()
-        self._tmc_com:TmcCom = None
+        self._tmc_com:TmcCom|None = None
         self._starttime:int = 0
 
 
@@ -65,7 +65,7 @@ class TmcMotionControlVActual(TmcMotionControl):
         self.set_vactual(0)
 
 
-    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel = None) -> StopMode:
+    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
         """runs the motor to the given position.
         with acceleration and deceleration
         blocks the code until finished or stopped from a different thread!

@@ -1,15 +1,11 @@
-#pylint: disable=import-error
 #pylint: disable=broad-exception-caught
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
 #pylint: disable=unused-import
 """
 TmcComUart stepper driver uart module
 """
 
 import serial
-from ._tmc_com import *
-from ._tmc_com_uart_base import TmcComUartBase
+from ._tmc_com_uart_base import TmcComUartBase, TmcLogger
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
@@ -26,7 +22,7 @@ class TmcComUart(TmcComUartBase):
                  serialport: str,
                  baudrate: int = 115200,
                  mtr_id: int = 0,
-                 tmc_logger=None
+                 tmc_logger: TmcLogger|None =None
                  ):
         """constructor
 

@@ -1,5 +1,3 @@
-#pylint: disable=import-error
-#pylint: disable=broad-exception-caught
 #pylint: disable=unused-import
 """
 TmcCom stepper driver communication module
@@ -60,7 +58,7 @@ class TmcCom:
 
     def __init__(self,
                  mtr_id:int = 0,
-                 tmc_logger:TmcLogger = None
+                 tmc_logger:TmcLogger|None = None
                  ):
         """constructor
 
@@ -80,7 +78,7 @@ class TmcCom:
 
 
     @abstractmethod
-    def read_reg(self, addr:hex):
+    def read_reg(self, addr:int):
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -93,7 +91,7 @@ class TmcCom:
 
 
     @abstractmethod
-    def read_int(self, addr:hex, tries:int = 10):
+    def read_int(self, addr:int, tries:int = 10):
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -107,7 +105,7 @@ class TmcCom:
 
 
     @abstractmethod
-    def write_reg(self, addr:hex, val:int):
+    def write_reg(self, addr:int, val:int):
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -120,7 +118,7 @@ class TmcCom:
 
 
     @abstractmethod
-    def write_reg_check(self, addr:hex, val:int, tries:int=10):
+    def write_reg_check(self, addr:int, val:int, tries:int=10):
         """this function als writes a value to the register of the TMC
         but it also checks if the writing process was successfully by checking
         the InterfaceTransmissionCounter before and after writing

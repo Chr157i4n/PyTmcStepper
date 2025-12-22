@@ -160,7 +160,7 @@ class TmcMotionControl():
         self._current_pos:int = 0                # current position of stepper in steps
         self._target_pos:int = 0                 # the target position in steps
 
-        self._speed:int = 0                      # the current speed in steps per second
+        self._speed:float = 0.0                 # the current speed in steps per second
 
         self._max_speed:int = 1                  # the maximum speed in steps per second
         self._max_speed_homing:int = 200         # the maximum speed in steps per second for homing
