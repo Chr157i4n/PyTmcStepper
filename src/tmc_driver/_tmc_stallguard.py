@@ -15,7 +15,7 @@ import types
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
 from .tmc_gpio import GpioPUD, GpioMode
-from . import tmc_gpio as tmc_gpio
+from . import tmc_gpio
 from ._tmc_logger import Loglevel
 from .reg._tmc224x_reg import *
 from . import _tmc_math as tmc_math

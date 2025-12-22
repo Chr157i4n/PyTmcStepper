@@ -1,3 +1,8 @@
+"""
+Module for GPIO handling across different boards and libraries.
+Automatically detects the board type and imports the appropriate GPIO library.
+"""
+
 import sys
 from enum import Enum, IntEnum
 from .._tmc_logger import TmcLogger, Loglevel
