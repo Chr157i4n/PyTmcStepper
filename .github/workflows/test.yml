@@ -10,8 +10,8 @@ jobs:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: DavidAnson/markdownlint-cli2-action@v14
+    - uses: actions/checkout@v6
+    - uses: DavidAnson/markdownlint-cli2-action@v22
       with:
         globs: |
           README.md
@@ -30,9 +30,9 @@ jobs:
         python-version: ["3.10", "3.12", "3.13"]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -63,9 +63,9 @@ jobs:
         python-version: ["3.10", "3.12", "3.13"]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -100,14 +100,14 @@ jobs:
           build-mode: none
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
 
@@ -121,18 +121,18 @@ jobs:
 
     steps:
     - name: Check out the code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Create SBOM
       run: |
         npm install -g @cyclonedx/cdxgen
         cdxgen -r . -o bom.json
     - name: Upload SBOM Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: sbom
         path: bom.json
     - name: Scan project
-      uses: anchore/scan-action@v6.1.0
+      uses: anchore/scan-action@v7
       id: scan
       with:
         sbom: "bom.json"
@@ -140,6 +140,6 @@ jobs:
         severity-cutoff: critical
         add-cpes-if-none: true
     - name: Upload vulnerability report
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
