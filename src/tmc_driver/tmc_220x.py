@@ -27,18 +27,18 @@ from ._tmc_logger import *
 from .reg._tmc220x_reg import *
 from . import _tmc_math as tmc_math
 from ._tmc_exceptions import TmcException, TmcComException, TmcMotionControlException, TmcEnableControlException, TmcDriverException
+from ._tmc_validation import validate_submodule
 
 
 
 
 
 class Tmc220x(TmcStepperDriver):
-    """Tmc220X
+    """Tmc220X"""
 
-    this class has two different functions:
-    1. change setting in the TMC-driver via UART
-    2. move the motor via STEP/DIR pins
-    """
+    SUPPORTED_COM_TYPES = (TmcComUartBase,)
+    SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
+    SUPPORTED_MC_TYPES = (TmcMotionControlStepDir, TmcMotionControlVActual)
 
 
 # Constructor/Destructor
@@ -77,6 +77,10 @@ class Tmc220x(TmcStepperDriver):
             logprefix = f"TMC2209 {driver_address}"
 
         super().__init__(tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter)
+
+        validate_submodule(tmc_com, self.SUPPORTED_COM_TYPES, self.__class__.__name__, "tmc_com")
+        validate_submodule(tmc_ec, self.SUPPORTED_EC_TYPES, self.__class__.__name__, "tmc_ec")
+        validate_submodule(tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc")
 
         if tmc_com is not None:
             self.tmc_com = tmc_com

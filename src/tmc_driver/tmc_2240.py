@@ -19,28 +19,29 @@ import time
 import types
 from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
+from .com._tmc_com_spi_base import TmcComSpiBase
+from .com._tmc_com_uart_base import TmcComUartBase
 from .tmc_gpio import GpioPUD
 from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
-from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
 from ._tmc_stallguard import StallGuard
 from ._tmc_logger import *
 from .reg._tmc224x_reg import *
 from . import _tmc_math as tmc_math
 from ._tmc_exceptions import TmcException, TmcComException, TmcMotionControlException, TmcEnableControlException, TmcDriverException
+from ._tmc_validation import validate_submodule
 
 
 
 
 
 class Tmc2240(TmcStepperDriver, StallGuard):
-    """Tmc220X
+    """Tmc2240"""
 
-    this class has two different functions:
-    1. change setting in the TMC-driver via UART
-    2. move the motor via STEP/DIR pins
-    """
+    SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
+    SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
+    SUPPORTED_MC_TYPES = (TmcMotionControlStepDir,)
 
 
 # Constructor/Destructor
@@ -83,6 +84,9 @@ class Tmc2240(TmcStepperDriver, StallGuard):
 
         super().__init__(tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter)
 
+        validate_submodule(tmc_com, self.SUPPORTED_COM_TYPES, self.__class__.__name__, "tmc_com")
+        validate_submodule(tmc_ec, self.SUPPORTED_EC_TYPES, self.__class__.__name__, "tmc_ec")
+        validate_submodule(tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc")
 
         if tmc_com is not None:
             self.tmc_com = tmc_com

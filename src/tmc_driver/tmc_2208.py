@@ -9,4 +9,4 @@ from .tmc_220x import *
 
 
 class Tmc2208(Tmc220x):
-    """Tmc2209"""
+    """Tmc2208"""
