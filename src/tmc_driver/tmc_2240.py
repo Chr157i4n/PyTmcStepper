@@ -317,14 +317,17 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         run_current_delay: int = 0,
         rref: int = 12,
     ):
-        """sets the current flow for the motor.
+        """sets the Peak current for the motor.
 
         Args:
-        run_current (int): current during movement in mA
-        hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
-        hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
-        run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
-        rref (int): reference resistor in kOhm (Default value = 12)
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+            run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
+            rref (int): reference resistor in kOhm (Default value = 12)
+
+        Returns:
+            int: theoretical final current in mA
         """
         self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
 
@@ -387,6 +390,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         self.tmc_logger.log(
             f"Calculated theoretical final current: {ct_current_ma} mA", Loglevel.INFO
         )
+        return ct_current_ma
 
     def get_spreadcycle(self) -> bool:
         """reads spreadcycle

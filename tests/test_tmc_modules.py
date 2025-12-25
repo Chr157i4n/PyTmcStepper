@@ -39,7 +39,6 @@ class TestTMCModules(unittest.TestCase):
             self.assertEqual(tmc.tmc_mc.pin_step, None, "tmc_mc pin_step should be 16")
             self.assertEqual(tmc.tmc_mc.pin_dir, None, "tmc_mc pin_dir should be 20")
             self.assertTrue(tmc.tmc_com is None, "tmc_mc should be None")
-        pass
 
         tmc = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), None)
         tmc.deinit()

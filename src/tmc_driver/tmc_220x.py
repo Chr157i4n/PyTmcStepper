@@ -366,11 +366,13 @@ class Tmc220x(TmcStepperDriver):
         """sets the current flow for the motor.
 
         Args:
-        run_current (int): current during movement in mA
-        hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
-        hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
-        pdn_disable (bool): should be disabled if UART is used (Default value = True)
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+            pdn_disable (bool): should be disabled if UART is used (Default value = True)
 
+        Returns:
+            int: theoretical final current in mA
         """
         cs_irun = 0
         rsense = 0.11
@@ -415,6 +417,8 @@ class Tmc220x(TmcStepperDriver):
         self._set_irun_ihold(cs_ihold, cs_irun, hold_current_delay)
 
         self._set_pdn_disable(pdn_disable)
+
+        return round(run_current_actual)
 
     def get_spreadcycle(self) -> bool:
         """reads spreadcycle
