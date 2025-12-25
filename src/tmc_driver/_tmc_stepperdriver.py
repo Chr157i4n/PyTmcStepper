@@ -68,9 +68,9 @@ class TmcStepperDriver:
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
         self.BOARD: Board = tmc_gpio.BOARD
-        self.tmc_mc: TmcMotionControl
-        self.tmc_ec: TmcEnableControl
-        self.tmc_logger: TmcLogger
+        self.tmc_mc: TmcMotionControl | None = None
+        self.tmc_ec: TmcEnableControl | None = None
+        self.tmc_logger: TmcLogger | None = None
 
         self._deinit_finished: bool = False
 
