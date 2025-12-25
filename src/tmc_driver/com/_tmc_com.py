@@ -76,6 +76,14 @@ class TmcCom:
 
 
     @abstractmethod
+    def init(self):
+        """init communication"""
+
+    @abstractmethod
+    def deinit(self):
+        """deinit communication"""
+
+    @abstractmethod
     def read_reg(self, addr:int):
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
