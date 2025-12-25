@@ -1,5 +1,5 @@
-#pylint: disable=broad-exception-caught
-#pylint: disable=unused-import
+# pylint: disable=broad-exception-caught
+# pylint: disable=unused-import
 """
 TmcComUart stepper driver uart module
 """
@@ -7,7 +7,6 @@ TmcComUart stepper driver uart module
 import serial
 from ._tmc_com_uart_base import TmcComUartBase, TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException, TmcDriverException
-
 
 
 class TmcComUart(TmcComUartBase):
@@ -18,11 +17,7 @@ class TmcComUart(TmcComUartBase):
     like the current or the microsteppingmode
     """
 
-    def __init__(self,
-                 serialport: str,
-                 baudrate: int = 115200,
-                 mtr_id: int = 0
-                 ):
+    def __init__(self, serialport: str, baudrate: int = 115200, mtr_id: int = 0):
         """constructor
 
         Args:
@@ -49,14 +44,20 @@ class TmcComUart(TmcComUartBase):
             errnum = e.args[0]
             self._tmc_logger.log(f"SERIAL ERROR: {e}")
             if errnum == 2:
-                self._tmc_logger.log(f""""{self.ser.serialport} does not exist.
-                      You need to activate the serial port with \"sudo raspi-config\"""", Loglevel.ERROR)
+                self._tmc_logger.log(
+                    f""""{self.ser.serialport} does not exist.
+                      You need to activate the serial port with \"sudo raspi-config\"""",
+                    Loglevel.ERROR,
+                )
                 raise SystemExit from e
 
             if errnum == 13:
-                self._tmc_logger.log("""you have no permission to use the serial port.
+                self._tmc_logger.log(
+                    """you have no permission to use the serial port.
                                     You may need to add your user to the dialout group
-                                    with \"sudo usermod -a -G dialout pi\"""", Loglevel.ERROR)
+                                    with \"sudo usermod -a -G dialout pi\"""",
+                    Loglevel.ERROR,
+                )
                 raise SystemExit from e
 
         # adjust per baud and hardware. Sequential reads without some delay fail.

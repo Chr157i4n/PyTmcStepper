@@ -3,6 +3,7 @@ test file for testing movement of motors with threads
 """
 
 import time
+
 try:
     from src.tmc_driver.tmc_2209 import *
     from src.tmc_driver.com._tmc_com_uart import *
@@ -16,41 +17,55 @@ print("SCRIPT START")
 print("---")
 
 
-
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 if tmc_gpio.BOARD == Board.RASPBERRY_PI:
-    tmc1 = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/serial0"), loglevel=Loglevel.DEBUG)
+    tmc1 = Tmc2209(
+        TmcEnableControlPin(21),
+        TmcMotionControlStepDir(16, 20),
+        TmcComUart("/dev/serial0"),
+        loglevel=Loglevel.DEBUG,
+    )
 elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
-    tmc1 = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/ttyAMA0"), loglevel=Loglevel.DEBUG)
+    tmc1 = Tmc2209(
+        TmcEnableControlPin(21),
+        TmcMotionControlStepDir(16, 20),
+        TmcComUart("/dev/ttyAMA0"),
+        loglevel=Loglevel.DEBUG,
+    )
 elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
-    tmc1 = Tmc2209(TmcEnableControlPin(13), TmcMotionControlStepDir(6, 5), TmcComUart("/dev/ttyTHS1"), loglevel=Loglevel.DEBUG)
+    tmc1 = Tmc2209(
+        TmcEnableControlPin(13),
+        TmcMotionControlStepDir(6, 5),
+        TmcComUart("/dev/ttyTHS1"),
+        loglevel=Loglevel.DEBUG,
+    )
 else:
     # just in case
-    tmc1 = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/serial0"), loglevel=Loglevel.DEBUG)
+    tmc1 = Tmc2209(
+        TmcEnableControlPin(21),
+        TmcMotionControlStepDir(16, 20),
+        TmcComUart("/dev/serial0"),
+        loglevel=Loglevel.DEBUG,
+    )
 
 tmc_driverlist = [tmc1]
 
 
-
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # set the loglevel of the libary (currently only printed)
 # set whether the movement should be relative or absolute
 # both optional
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 tmc1.tmc_logger.loglevel = Loglevel.DEBUG
 tmc1.movement_abs_rel = MovementAbsRel.ABSOLUTE
 
 
-
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # these functions change settings in the TMC register
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 for tmc in tmc_driverlist:
     tmc.set_direction_reg(False)
     tmc.set_current(300)
@@ -67,15 +82,15 @@ for tmc in tmc_driverlist:
 print("---\n---")
 
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # run part
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # move 4000 steps forward
 tmc1.tmc_mc.run_to_position_steps_threaded(4000, MovementAbsRel.RELATIVE)
 
 time.sleep(1)
-tmc1.tmc_mc.stop()     # stop the movement after 1 second
+tmc1.tmc_mc.stop()  # stop the movement after 1 second
 
 tmc1.tmc_mc.wait_for_movement_finished_threaded()
 
@@ -92,15 +107,12 @@ while tmc1.movement_phase != MovementPhase.STANDSTILL:
 tmc1.tmc_mc.wait_for_movement_finished_threaded()
 
 
-
-
-
 print("---\n---")
 
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # deinitiate the Tmc2209 class
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 tmc1.set_motor_enabled(False)
 del tmc1
 

@@ -1,4 +1,4 @@
-#pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
 """
 MicroPython enum dummy module
 

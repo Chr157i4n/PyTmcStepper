@@ -7,6 +7,7 @@ import unittest
 from unittest import mock
 from src.tmc_driver.tmc_2209 import *
 
+
 class TestTMCModules(unittest.TestCase):
     """TestTMCMove"""
 
@@ -20,7 +21,9 @@ class TestTMCModules(unittest.TestCase):
         """test_modules"""
 
         for _ in range(2):
-            tmc = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), None)
+            tmc = Tmc2209(
+                TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), None
+            )
 
             self.assertTrue(tmc.tmc_ec is not None, "tmc_ec should not be None")
             self.assertEqual(tmc.tmc_ec.pin_en, 21, "tmc_ec pin_en should be 21")
@@ -47,7 +50,7 @@ class TestTMCModules(unittest.TestCase):
         tmc = Tmc2209(TmcEnableControlPin(21), TmcMotionControlVActual(), None)
         tmc.deinit()
 
-        with mock.patch.object(TmcStepperDriver, 'set_motor_enabled'):
+        with mock.patch.object(TmcStepperDriver, "set_motor_enabled"):
             tmc = Tmc2209(TmcEnableControlToff(), TmcMotionControlStepDir(16, 20), None)
             tmc.deinit()
 
@@ -58,5 +61,5 @@ class TestTMCModules(unittest.TestCase):
             tmc.deinit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -6,6 +6,7 @@ import time
 import unittest
 from src.tmc_driver.tmc_2240 import *
 
+
 class TestTMCMove(unittest.TestCase):
     """TestTMCMove"""
 
@@ -39,5 +40,6 @@ class TestTMCMove(unittest.TestCase):
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 400, f"actual position: {pos}, expected position: 400")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

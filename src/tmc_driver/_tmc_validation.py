@@ -7,7 +7,9 @@ This module provides validation functions for TMC driver components.
 from ._tmc_exceptions import TmcDriverException
 
 
-def validate_submodule(module, supported_types: tuple, driver_name: str, module_name: str = "module"):
+def validate_submodule(
+    module, supported_types: tuple, driver_name: str, module_name: str = "module"
+):
     """Validate that a module is of a supported type.
 
     Args:

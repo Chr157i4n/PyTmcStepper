@@ -1,7 +1,7 @@
-#pylint: disable=too-many-instance-attributes
-#pylint: disable=too-many-arguments
-#pylint: disable=too-many-positional-arguments
-#pylint: disable=too-few-public-methods
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-few-public-methods
 """
 TmcComUartPico - UART communication for MicroPython
 
@@ -27,13 +27,7 @@ class TmcComUartMicroPython(TmcComUartBase):
     For single-wire UART, connect TX to the TMC UART pin through a 1k resistor.
     """
 
-    def __init__(self,
-                 uart_id=0,
-                 tx_pin=0,
-                 rx_pin=1,
-                 baudrate=115200,
-                 mtr_id=0
-                 ):
+    def __init__(self, uart_id=0, tx_pin=0, rx_pin=1, baudrate=115200, mtr_id=0):
         """Initialize UART communication
 
         Args:
@@ -53,14 +47,16 @@ class TmcComUartMicroPython(TmcComUartBase):
 
         self._uart = None
 
-
     def init(self):
         """Initialize UART hardware"""
-        self._uart = UART(self._uart_id, baudrate=self._baudrate,
-                            tx=Pin(self._tx_pin), rx=Pin(self._rx_pin))
+        self._uart = UART(
+            self._uart_id,
+            baudrate=self._baudrate,
+            tx=Pin(self._tx_pin),
+            rx=Pin(self._rx_pin),
+        )
         # Create a fake serial object for compatibility with base class
         self.ser = _FakeSerial(self._uart)
-
 
     def deinit(self):
         """Deinitialize UART hardware"""
@@ -68,7 +64,6 @@ class TmcComUartMicroPython(TmcComUartBase):
             self._uart.deinit()
             self._uart = None
         self.ser = None
-
 
     def _uart_write(self, data):
         """Write data to UART
@@ -81,7 +76,6 @@ class TmcComUartMicroPython(TmcComUartBase):
         """
         return self._uart.write(bytes(data))
 
-
     def _uart_read(self, length):
         """Read data from UART
 
@@ -92,13 +86,12 @@ class TmcComUartMicroPython(TmcComUartBase):
             Bytes read or empty bytes if timeout
         """
         # Wait a bit for data to arrive
-        time.sleep_ms(10)   # pylint: disable=no-member
+        time.sleep_ms(10)  # pylint: disable=no-member
 
         result = self._uart.read(length)
         if result is None:
             return bytes()
         return result
-
 
     def _uart_flush(self):
         """Flush UART receive buffer"""

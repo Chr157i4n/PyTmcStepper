@@ -1,5 +1,5 @@
-#pylint: disable=protected-access
-#pylint: skip-file
+# pylint: disable=protected-access
+# pylint: skip-file
 """
 Tmc2209 stepper driver logger module
 """
@@ -14,26 +14,26 @@ if not MICROPYTHON:
     import logging
 
 
-
-
-
 class Loglevel(IntEnum):
     """loglevel"""
-    ALL = 1             # all messages will be logged
-    MOVEMENT = 5        # error, warning, info, debug and movement messages will be logged
-    DEBUG = 10          # error, warning, info and debug messages will be logged
-    INFO = 20           # error, warning and info messages will be logged
-    WARNING = 30        # error and warning messages will be logged
-    ERROR = 40          # only error messages will be logged
-    NONE = -1           # no messages will be logged
 
+    ALL = 1  # all messages will be logged
+    MOVEMENT = 5  # error, warning, info, debug and movement messages will be logged
+    DEBUG = 10  # error, warning, info and debug messages will be logged
+    INFO = 20  # error, warning and info messages will be logged
+    WARNING = 30  # error and warning messages will be logged
+    ERROR = 40  # only error messages will be logged
+    NONE = -1  # no messages will be logged
 
 
 if MICROPYTHON:
+
     class TmcLogger:
         """minimal logger for MicroPython"""
 
-        def __init__(self, loglevel=None, logprefix=None, handlers=None, formatter=None):
+        def __init__(
+            self, loglevel=None, logprefix=None, handlers=None, formatter=None
+        ):
             self._loglevel = Loglevel.NONE
 
         @property
@@ -68,7 +68,9 @@ if MICROPYTHON:
         def log(self, message, loglevel=None):
             if loglevel is None or self.loglevel is None or loglevel >= self._loglevel:
                 print(message)
+
 else:
+
     class TmcLogger:
         """Tmc2209_logger
 
@@ -87,12 +89,13 @@ else:
             self._loglevel = loglevel
             self.logger.setLevel(int(loglevel))
 
-
-        def __init__(self,
-                     loglevel: Loglevel = Loglevel.INFO,
-                     logprefix: str = "TMC2209",
-                     handlers: list|None = None,
-                     formatter: logging.Formatter|None = None):
+        def __init__(
+            self,
+            loglevel: Loglevel = Loglevel.INFO,
+            logprefix: str = "TMC2209",
+            handlers: list | None = None,
+            formatter: logging.Formatter | None = None,
+        ):
             """constructor
 
             Args:
@@ -114,7 +117,9 @@ else:
 
             self.loglevel = loglevel
             if formatter is None:
-                formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                formatter = logging.Formatter(
+                    "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+                )
             self.formatter = formatter
 
             if handlers is None:
@@ -127,16 +132,13 @@ else:
 
             self.logger.propagate = True
 
-
         def __del__(self):
             """destructor"""
             self.deinit()
 
-
         def deinit(self):
             """destructor"""
             self.remove_all_handlers()
-
 
         def set_logprefix(self, logprefix: str):
             """set the logprefix.
@@ -145,7 +147,6 @@ else:
                 logprefix (string): new logprefix
             """
             self.logger.name = logprefix
-
 
         def add_handler(self, handler, formatter=None):
             """add a handler to the logger
@@ -160,7 +161,6 @@ else:
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
 
-
         def remove_handler(self, handler):
             """remove a handler from the logger
 
@@ -169,12 +169,10 @@ else:
             """
             self.logger.removeHandler(handler)
 
-
         def remove_all_handlers(self):
             """remove all handlers from the logger"""
             for handler in self.logger.handlers:
                 self.logger.removeHandler(handler)
-
 
         def set_formatter(self, formatter, handlers=None):
             """set a new formatter for the log messages
@@ -191,9 +189,10 @@ else:
             for handler in handlers:
                 handler.setFormatter(formatter)
 
-
         @staticmethod
-        def _add_logging_level(level_name: str, level_num: int, method_name: str|None = None):
+        def _add_logging_level(
+            level_name: str, level_num: int, method_name: str | None = None
+        ):
             if not method_name:
                 method_name = level_name.lower()
 
@@ -208,7 +207,6 @@ else:
             setattr(logging, level_name, level_num)
             setattr(logging.getLoggerClass(), method_name, logForLevel)
             setattr(logging, method_name, logToRoot)
-
 
         def log(self, message, loglevel: Loglevel = Loglevel.INFO):
             """logs a message

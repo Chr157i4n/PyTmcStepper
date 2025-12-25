@@ -1,6 +1,6 @@
-#pylint: disable=unused-import
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
+# pylint: disable=unused-import
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 TmcComSpiBase - Abstract base class for SPI communication
 This class contains no hardware-specific imports (no spidev, no pyftdi)
@@ -19,9 +19,7 @@ class TmcComSpiBase(TmcCom):
     Subclasses must implement the actual SPI transfer methods.
     """
 
-    def __init__(self,
-                 mtr_id: int = 0
-                 ):
+    def __init__(self, mtr_id: int = 0):
         """constructor
 
         Args:
@@ -35,16 +33,13 @@ class TmcComSpiBase(TmcCom):
         self._r_frame = [0x55, 0, 0, 0, 0]
         self._w_frame = [0x55, 0, 0, 0, 0]
 
-
     @abstractmethod
     def init(self):
         """init - to be implemented by subclass"""
 
-
     @abstractmethod
     def deinit(self):
         """destructor - to be implemented by subclass"""
-
 
     @abstractmethod
     def _spi_transfer(self, data: list) -> list:
@@ -56,7 +51,6 @@ class TmcComSpiBase(TmcCom):
         Returns:
             Received data
         """
-
 
     def read_reg(self, addr: int):
         """reads the registry on the TMC with a given address.
@@ -75,10 +69,10 @@ class TmcComSpiBase(TmcCom):
         rtn = self._spi_transfer(dummy_data)
 
         flags = {
-            "reset_flag":      rtn[0] >> 0 & 0x01,
-            "driver_error":    rtn[0] >> 1 & 0x01,
-            "sg2":             rtn[0] >> 2 & 0x01,
-            "standstill":      rtn[0] >> 3 & 0x01
+            "reset_flag": rtn[0] >> 0 & 0x01,
+            "driver_error": rtn[0] >> 1 & 0x01,
+            "sg2": rtn[0] >> 2 & 0x01,
+            "standstill": rtn[0] >> 3 & 0x01,
         }
 
         if flags["reset_flag"]:
@@ -92,7 +86,6 @@ class TmcComSpiBase(TmcCom):
 
         return rtn[1:], flags
 
-
     def read_int(self, addr: int, tries: int = 10):
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
@@ -105,8 +98,7 @@ class TmcComSpiBase(TmcCom):
             Dict: flags
         """
         data, flags = self.read_reg(addr)
-        return int.from_bytes(bytes(data), 'big'), flags
-
+        return int.from_bytes(bytes(data), "big"), flags
 
     def write_reg(self, addr: int, val: int):
         """this function can write a value to the register of the tmc
@@ -127,7 +119,6 @@ class TmcComSpiBase(TmcCom):
 
         self._spi_transfer(self._w_frame)
 
-
     def write_reg_check(self, addr: int, val: int, tries: int = 10):
         """IFCNT is disabled in SPI mode. Therefore, no check is possible.
         This only calls the write_reg function
@@ -142,7 +133,6 @@ class TmcComSpiBase(TmcCom):
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
 
-
     def handle_error(self):
         """error handling"""
         if self.error_handler_running:
@@ -152,7 +142,6 @@ class TmcComSpiBase(TmcCom):
         self._tmc_registers["gstat"].log(self.tmc_logger)
         self._tmc_registers["gstat"].check()
         raise TmcDriverException("TMC220X: unknown error detected")
-
 
     def test_com(self, addr):
         """test com connection

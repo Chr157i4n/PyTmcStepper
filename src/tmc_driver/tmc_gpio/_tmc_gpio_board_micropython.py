@@ -1,4 +1,4 @@
-#pylint: skip-file
+# pylint: skip-file
 """
 MicroPython GPIO module
 """
@@ -79,7 +79,7 @@ class MicroPythonGPIOWrapper(BaseGPIOWrapper):
         self._pwms[pin] = PWM(Pin(pin))
         self._pwms[pin].freq(frequency)
         # MicroPython uses 0-65535 for duty, convert from percent
-        self._pwms[pin].duty_u16(int(duty_cycle /100 *65535))
+        self._pwms[pin].duty_u16(int(duty_cycle / 100 * 65535))
 
     def gpio_pwm_set_frequency(self, pin, frequency):
         """set PWM frequency"""

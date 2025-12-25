@@ -1,5 +1,5 @@
-#pylint: disable=unused-import
-#pylint: disable=too-few-public-methods
+# pylint: disable=unused-import
+# pylint: disable=too-few-public-methods
 """
 TmcComSpiFtdi stepper driver spi module
 """
@@ -7,8 +7,6 @@ TmcComSpiFtdi stepper driver spi module
 from pyftdi.spi import SpiPort
 from .._tmc_exceptions import TmcComException, TmcDriverException
 from ._tmc_com_spi_base import TmcComSpiBase, TmcLogger
-
-
 
 
 class TmcComSpiFtdi(TmcComSpiBase):
@@ -19,10 +17,7 @@ class TmcComSpiFtdi(TmcComSpiBase):
     like the current or the microsteppingmode
     """
 
-    def __init__(self,
-                 spi_port:SpiPort,
-                 mtr_id:int = 0
-                 ):
+    def __init__(self, spi_port: SpiPort, mtr_id: int = 0):
         """constructor
 
         Args:
@@ -34,18 +29,14 @@ class TmcComSpiFtdi(TmcComSpiBase):
 
         self.spi = spi_port
 
-
     def init(self):
         """init - SPI port is already configured via pyftdi"""
-
 
     def __del__(self):
         self.deinit()
 
-
     def deinit(self):
         """destructor"""
-
 
     def _spi_transfer(self, data: list) -> list:
         """Perform SPI transfer using pyftdi

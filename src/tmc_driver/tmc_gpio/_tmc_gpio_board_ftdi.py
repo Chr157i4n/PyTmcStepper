@@ -1,11 +1,12 @@
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 FTDI GPIO module for FT232H and similar chips using pyftdi.
 """
 
 from pyftdi.spi import SpiGpioPort
 from ._tmc_gpio_board_base import *
+
 
 class FtdiWrapper(BaseGPIOWrapper):
     """FTDI GPIO wrapper for FT232H and similar chips using pyftdi.
@@ -17,7 +18,7 @@ class FtdiWrapper(BaseGPIOWrapper):
     When using with SPI, only pins 4-7 are available as GPIO.
     """
 
-    def __init__(self, gpio_port:SpiGpioPort):
+    def __init__(self, gpio_port: SpiGpioPort):
         """constructor, imports pyftdi
 
         Args:
@@ -41,9 +42,17 @@ class FtdiWrapper(BaseGPIOWrapper):
         """update GPIO direction on the device"""
         if self._gpio_port is not None:
             # Pins 4-7 are available (directly accent 0xF0), apply direction directly accent
-            self._gpio_port.set_direction(pins=0xF0, direction=self._gpio_direction & 0xF0)
+            self._gpio_port.set_direction(
+                pins=0xF0, direction=self._gpio_direction & 0xF0
+            )
 
-    def gpio_setup(self, pin:int, mode:GpioMode, initial:Gpio=Gpio.LOW, pull_up_down:GpioPUD=GpioPUD.PUD_OFF):
+    def gpio_setup(
+        self,
+        pin: int,
+        mode: GpioMode,
+        initial: Gpio = Gpio.LOW,
+        pull_up_down: GpioPUD = GpioPUD.PUD_OFF,
+    ):
         """setup GPIO pin
 
         Args:
@@ -53,7 +62,10 @@ class FtdiWrapper(BaseGPIOWrapper):
             pull_up_down: Not supported on FTDI, ignored
         """
         if pin < 4 or pin > 7:
-            dependencies_logger.log(f"FTDI GPIO: Pin {pin} not available (use pins 4-7, 0-3 reserved for SPI)", Loglevel.WARNING)
+            dependencies_logger.log(
+                f"FTDI GPIO: Pin {pin} not available (use pins 4-7, 0-3 reserved for SPI)",
+                Loglevel.WARNING,
+            )
             return
 
         self._pin_modes[pin] = mode
@@ -73,7 +85,7 @@ class FtdiWrapper(BaseGPIOWrapper):
         if mode == GpioMode.OUT:
             self.gpio_output(pin, initial)
 
-    def gpio_cleanup(self, pin:int):
+    def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin - set to input"""
         if pin < 4 or pin > 7:
             return
@@ -83,7 +95,7 @@ class FtdiWrapper(BaseGPIOWrapper):
         self._pin_modes.pop(pin, None)
         self._update_gpio_direction()
 
-    def gpio_input(self, pin:int) -> int:
+    def gpio_input(self, pin: int) -> int:
         """read GPIO pin
 
         Args:
@@ -93,14 +105,16 @@ class FtdiWrapper(BaseGPIOWrapper):
             Pin state (0 or 1)
         """
         if pin < 4 or pin > 7:
-            dependencies_logger.log(f"FTDI GPIO: Pin {pin} not available", Loglevel.WARNING)
+            dependencies_logger.log(
+                f"FTDI GPIO: Pin {pin} not available", Loglevel.WARNING
+            )
             return 0
         if self._gpio_port is None:
             return 0
         value = self._gpio_port.read()
         return (value >> pin) & 0x01
 
-    def gpio_output(self, pin:int, value):
+    def gpio_output(self, pin: int, value):
         """write GPIO pin
 
         Args:
@@ -108,7 +122,9 @@ class FtdiWrapper(BaseGPIOWrapper):
             value: Gpio.HIGH/LOW or 1/0
         """
         if pin < 4 or pin > 7:
-            dependencies_logger.log(f"FTDI GPIO: Pin {pin} not available", Loglevel.WARNING)
+            dependencies_logger.log(
+                f"FTDI GPIO: Pin {pin} not available", Loglevel.WARNING
+            )
             return
         if self._gpio_port is None:
             return
@@ -122,15 +138,15 @@ class FtdiWrapper(BaseGPIOWrapper):
         # Write only the GPIO pins (directly accent 4-7)
         self._gpio_port.write(self._gpio_state & 0xF0)
 
-    def gpio_pwm_setup(self, pin:int, frequency:int = 10, duty_cycle:int = 0):
+    def gpio_pwm_setup(self, pin: int, frequency: int = 10, duty_cycle: int = 0):
         """setup PWM"""
         raise NotImplementedError
 
-    def gpio_pwm_set_frequency(self, pin:int, frequency:int):
+    def gpio_pwm_set_frequency(self, pin: int, frequency: int):
         """set PWM frequency"""
         raise NotImplementedError
 
-    def gpio_pwm_set_duty_cycle(self, pin:int, duty_cycle:int):
+    def gpio_pwm_set_duty_cycle(self, pin: int, duty_cycle: int):
         """set PWM duty cycle
 
         Args:
@@ -139,10 +155,10 @@ class FtdiWrapper(BaseGPIOWrapper):
         """
         raise NotImplementedError
 
-    def gpio_add_event_detect(self, pin:int, callback:types.FunctionType):
+    def gpio_add_event_detect(self, pin: int, callback: types.FunctionType):
         """add event detect"""
         raise NotImplementedError
 
-    def gpio_remove_event_detect(self, pin:int):
+    def gpio_remove_event_detect(self, pin: int):
         """remove event detect"""
         raise NotImplementedError

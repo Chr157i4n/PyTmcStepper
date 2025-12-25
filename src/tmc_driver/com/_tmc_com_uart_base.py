@@ -1,6 +1,6 @@
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
-#pylint: disable=unused-import
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
+# pylint: disable=unused-import
 """
 TmcComUartBase - Abstract base class for UART communication
 This class contains no hardware-specific imports (no serial/pyserial)
@@ -19,9 +19,7 @@ class TmcComUartBase(TmcCom):
     Subclasses must implement the actual UART transfer methods.
     """
 
-    def __init__(self,
-                 mtr_id: int = 0
-                 ):
+    def __init__(self, mtr_id: int = 0):
         """constructor
 
         Args:
@@ -34,7 +32,6 @@ class TmcComUartBase(TmcCom):
 
         self.r_frame = [0x55, 0, 0, 0]
         self.w_frame = [0x55, 0, 0, 0, 0, 0, 0, 0]
-
 
     @abstractmethod
     def init(self):
@@ -65,6 +62,7 @@ class TmcComUartBase(TmcCom):
         Returns:
             Received data
         """
+
     @abstractmethod
     def _uart_flush(self):
         """Flush UART buffers - to be implemented by subclass"""
@@ -80,10 +78,14 @@ class TmcComUartBase(TmcCom):
             Dict: flags (None for UART)
         """
         if self.ser is None:
-            self._tmc_logger.log("Cannot read reg, serial is not initialized", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot read reg, serial is not initialized", Loglevel.ERROR
+            )
             return None, None
         if not self.ser.is_open:
-            self._tmc_logger.log("Cannot read reg, serial port is closed", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot read reg, serial port is closed", Loglevel.ERROR
+            )
             return None, None
 
         self._uart_flush()
@@ -118,7 +120,9 @@ class TmcComUartBase(TmcCom):
             Dict: flags
         """
         if self.ser is None:
-            self._tmc_logger.log("Cannot read int, serial is not initialized", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot read int, serial is not initialized", Loglevel.ERROR
+            )
             return -1, None
 
         while True:
@@ -130,11 +134,16 @@ class TmcComUartBase(TmcCom):
             not_zero_count = len([elem for elem in rtn if elem != 0])
 
             if len(rtn) < 12 or not_zero_count == 0:
-                self._tmc_logger.log(f"""UART Communication Error:
+                self._tmc_logger.log(
+                    f"""UART Communication Error:
                                     {len(rtn_data)} data bytes |
-                                    {len(rtn)} total bytes""", Loglevel.ERROR)
+                                    {len(rtn)} total bytes""",
+                    Loglevel.ERROR,
+                )
             elif rtn[11] != compute_crc8_atm(rtn[4:11]):
-                self._tmc_logger.log("UART Communication Error: CRC MISMATCH", Loglevel.ERROR)
+                self._tmc_logger.log(
+                    "UART Communication Error: CRC MISMATCH", Loglevel.ERROR
+                )
             else:
                 break
 
@@ -159,10 +168,14 @@ class TmcComUartBase(TmcCom):
             val (int): value for that register
         """
         if self.ser is None:
-            self._tmc_logger.log("Cannot write reg, serial is not initialized", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot write reg, serial is not initialized", Loglevel.ERROR
+            )
             return False
         if not self.ser.is_open:
-            self._tmc_logger.log("Cannot read reg, serial port is closed", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot read reg, serial port is closed", Loglevel.ERROR
+            )
             return None, None
 
         self._uart_flush()
@@ -197,7 +210,9 @@ class TmcComUartBase(TmcCom):
             tries: how many tries, before error is raised (Default value = 10)
         """
         if self.ser is None:
-            self._tmc_logger.log("Cannot write reg check, serial is not initialized", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot write reg check, serial is not initialized", Loglevel.ERROR
+            )
             return False
 
         self._tmc_registers["ifcnt"].read()
@@ -217,7 +232,9 @@ class TmcComUartBase(TmcCom):
             else:
                 return True
             if tries <= 0:
-                self._tmc_logger.log("after 10 tries no valid write access", Loglevel.ERROR)
+                self._tmc_logger.log(
+                    "after 10 tries no valid write access", Loglevel.ERROR
+                )
                 self.handle_error()
                 return False
 
@@ -244,7 +261,9 @@ class TmcComUartBase(TmcCom):
             addr (int):  HEX, which register to test
         """
         if self.ser is None:
-            self._tmc_logger.log("Cannot test UART, serial is not initialized", Loglevel.ERROR)
+            self._tmc_logger.log(
+                "Cannot test UART, serial is not initialized", Loglevel.ERROR
+            )
             return False
 
         self._uart_flush()
@@ -261,7 +280,9 @@ class TmcComUartBase(TmcCom):
         snd = bytes(self.r_frame)
 
         rtn = self._uart_read(12)
-        self._tmc_logger.log(f"received {len(rtn)} bytes; {len(rtn)*8} bits", Loglevel.DEBUG)
+        self._tmc_logger.log(
+            f"received {len(rtn)} bytes; {len(rtn)*8} bits", Loglevel.DEBUG
+        )
         self._tmc_logger.log(f"hex: {rtn.hex()}", Loglevel.DEBUG)
         rtn_bin = format(int(rtn.hex(), 16), f"0>{len(rtn)*8}b")
         self._tmc_logger.log(f"bin: {rtn_bin}", Loglevel.DEBUG)
@@ -280,27 +301,40 @@ class TmcComUartBase(TmcCom):
         status = True
 
         if len(rtn) == 12:
-            self.tmc_logger.log("""the Raspberry Pi received the sent
-                                bytes and the answer from the TMC""", Loglevel.DEBUG)
+            self.tmc_logger.log(
+                """the Raspberry Pi received the sent
+                                bytes and the answer from the TMC""",
+                Loglevel.DEBUG,
+            )
         elif len(rtn) == 4:
-            self.tmc_logger.log("the Raspberry Pi received only the sent bytes",
-                                Loglevel.ERROR)
+            self.tmc_logger.log(
+                "the Raspberry Pi received only the sent bytes", Loglevel.ERROR
+            )
             status = False
         elif len(rtn) == 0:
-            self.tmc_logger.log("the Raspberry Pi did not receive anything",
-                                Loglevel.ERROR)
+            self.tmc_logger.log(
+                "the Raspberry Pi did not receive anything", Loglevel.ERROR
+            )
             status = False
         else:
-            self.tmc_logger.log(f"the Raspberry Pi received an unexpected amount of bytes: {len(rtn)}",
-                                Loglevel.ERROR)
+            self.tmc_logger.log(
+                f"the Raspberry Pi received an unexpected amount of bytes: {len(rtn)}",
+                Loglevel.ERROR,
+            )
             status = False
 
         if snd[0:4] == rtn[0:4]:
-            self.tmc_logger.log("""the Raspberry Pi received exactly the bytes it has send.
-                        the first 4 bytes are the same""", Loglevel.DEBUG)
+            self.tmc_logger.log(
+                """the Raspberry Pi received exactly the bytes it has send.
+                        the first 4 bytes are the same""",
+                Loglevel.DEBUG,
+            )
         else:
-            self.tmc_logger.log("""the Raspberry Pi did not received the bytes it has send.
-                        the first 4 bytes are different""", Loglevel.DEBUG)
+            self.tmc_logger.log(
+                """the Raspberry Pi did not received the bytes it has send.
+                        the first 4 bytes are different""",
+                Loglevel.DEBUG,
+            )
             status = False
 
         self.tmc_logger.log("---")

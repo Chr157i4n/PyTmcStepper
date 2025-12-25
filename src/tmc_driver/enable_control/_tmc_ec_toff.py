@@ -10,7 +10,6 @@ from .._tmc_logger import Loglevel
 class TmcEnableControlToff(TmcEnableControl):
     """Enable Control base class"""
 
-
     @property
     def tmc_com(self):
         """get the tmc_logger"""
@@ -21,13 +20,11 @@ class TmcEnableControlToff(TmcEnableControl):
         """set the tmc_logger"""
         self._tmc_com = tmc_com
 
-
     def __init__(self):
         """constructor"""
         super().__init__()
-        self._tmc_com:TmcCom|None = None
+        self._tmc_com: TmcCom | None = None
         self._default_toff = 3
-
 
     def set_motor_enabled(self, en):
         """enables or disables the motor current output
