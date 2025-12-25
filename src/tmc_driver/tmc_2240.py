@@ -296,16 +296,14 @@ class Tmc2240(TmcStepperDriver, StallGuard):
     def _set_current_range(self, current_range: int):
         """sets the current range
 
-        0x0 = 1 A
-        0x1 = 2 A
-        0x2 = 3 A
-        0x3 = 3 A (maximum of driver)
+        0 = 1 A
+        1 = 2 A
+        2 = 3 A
+        3 = 3 A (maximum of driver)
 
         Args:
             current_range (int): current range in A
         """
-        if current_range > 0:
-            current_range -= 1
         self.drv_conf.current_range = current_range
         self.drv_conf.modify("current_range", current_range)
 
@@ -331,29 +329,24 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         """
         self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
 
-        current_range_a = math.ceil(run_current / 1000)
+        K_IFS_TABLE = [11.75, 24, 36, 36]  # A*kOhm
+        current_fs_table = [k_ifs / rref * 1000 for k_ifs in K_IFS_TABLE]
 
-        current_range_a = min(current_range_a, 3)
-        current_range_a = max(current_range_a, 0)
+        current_range_reg_value = 3
+        for i, current_fs in enumerate(current_fs_table):
+            if run_current < current_fs:
+                current_range_reg_value = i
+                break
 
-        K_IFS_TABLE = [None, 11.75, 24, 36]  # A*kOhm
-        k_ifs = K_IFS_TABLE[current_range_a]
-
-        current_fs = k_ifs / rref  # max possible current (fullscale) in A
-
-        current_fs_ma = current_fs * 1000
+        current_fs = current_fs_table[current_range_reg_value]
 
         self.tmc_logger.log(
-            f"current_range: {current_range_a} A | {current_range_a* 1000} mA",
-            Loglevel.DEBUG,
+            f"current_fs: {current_fs:.0f} mA | {current_fs/1000:.1f} A", Loglevel.DEBUG
         )
-        self.tmc_logger.log(
-            f"current_fs: {current_fs:.1f} A | {current_fs_ma:.0f} mA", Loglevel.DEBUG
-        )
-        self._set_current_range(current_range_a)
+        self._set_current_range(current_range_reg_value)
 
         # 256 == 0  -> max current
-        global_scaler = round(run_current / current_fs_ma * 256)
+        global_scaler = round(run_current / current_fs * 256)
 
         global_scaler = min(global_scaler, 256)
         global_scaler = max(global_scaler, 0)
@@ -361,7 +354,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         self.tmc_logger.log(f"global_scaler: {global_scaler}", Loglevel.DEBUG)
         self._set_global_scaler(global_scaler)
 
-        ct_current_ma = round(current_fs_ma * global_scaler / 256)
+        ct_current_ma = round(current_fs * global_scaler / 256)
         self.tmc_logger.log(
             f"Calculated theoretical current after gscaler: {ct_current_ma} mA",
             Loglevel.DEBUG,
