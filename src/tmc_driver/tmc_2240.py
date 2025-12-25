@@ -353,15 +353,14 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         current_range_a = min(current_range_a, 3)
         current_range_a = max(current_range_a, 0)
 
-        k_ifs_table = [None, 11.75, 24, 36]  # A*kOhm
-        k_ifs = k_ifs_table[current_range_a]
+        K_IFS_TABLE = [None, 11.75, 24, 36]  # A*kOhm
+        k_ifs = K_IFS_TABLE[current_range_a]
 
         current_fs = k_ifs / rref  # max possible current (fullscale) in A
 
-        current_range_ma = current_range_a * 1000
         current_fs_ma = current_fs * 1000
 
-        self.tmc_logger.log(f"current_range: {current_range_a} A | {current_range_ma} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"current_range: {current_range_a} A | {current_range_a* 1000} mA", Loglevel.DEBUG)
         self.tmc_logger.log(f"current_fs: {current_fs:.1f} A | {current_fs_ma:.0f} mA", Loglevel.DEBUG)
         self._set_current_range(current_range_a)
 
