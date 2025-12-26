@@ -100,6 +100,11 @@ class TmcMotionControl:
         """_speed property"""
         return self._speed
 
+    @speed.setter
+    def speed(self, speed: float):
+        """_speed setter"""
+        self._speed = speed
+
     @property
     def speed_fullstep(self):
         """_speed property"""
@@ -211,7 +216,9 @@ class TmcMotionControl:
         self._stop = stop_mode
 
     @abstractmethod
-    def run_to_position_steps(self, steps, movement_abs_rel: MovementAbsRel = None):
+    def run_to_position_steps(
+        self, steps: int, movement_abs_rel: MovementAbsRel | None = None
+    ) -> StopMode:
         """runs the motor to the given position.
         with acceleration and deceleration
         blocks the code until finished or stopped from a different thread!

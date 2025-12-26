@@ -72,8 +72,10 @@ class TmcReg:
 
         return data
 
-    def log(self, logger: TmcLogger):
+    def log(self, logger: TmcLogger | None):
         """log this register"""
+        if logger is None:
+            return
         logger.log(f"{self._name} | {hex(self._addr)} | {bin(self._data_int)}")
 
         for reg in self._reg_map:

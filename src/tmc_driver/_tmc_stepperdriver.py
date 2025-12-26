@@ -70,7 +70,7 @@ class TmcStepperDriver:
         self.BOARD: Board = tmc_gpio.BOARD
         self.tmc_mc: TmcMotionControl | None = None
         self.tmc_ec: TmcEnableControl | None = None
-        self.tmc_logger: TmcLogger | None = None
+        self.tmc_logger: TmcLogger
 
         self._deinit_finished: bool = False
 
@@ -140,12 +140,15 @@ class TmcStepperDriver:
     @property
     def current_pos_fullstep(self):
         """_current_pos as fullstep property"""
+        if self.current_pos is None or self.mres is None:
+            return None
         return self.current_pos // self.mres
 
     @current_pos_fullstep.setter
     def current_pos_fullstep(self, current_pos: int):
         """_current_pos as fullstep setter"""
-        self.current_pos = current_pos * self.mres
+        if self.mres is not None:
+            self.current_pos = current_pos * self.mres
 
     @property
     def mres(self):
@@ -289,6 +292,8 @@ class TmcStepperDriver:
     # ----------------------------
     def test_step(self):
         """test method"""
+        if self.tmc_mc is None:
+            return
         for _ in range(100):
             self.tmc_mc.set_direction(Direction.CW)
             self.tmc_mc.make_a_step()
