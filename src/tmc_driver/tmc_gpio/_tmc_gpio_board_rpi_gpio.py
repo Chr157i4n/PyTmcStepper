@@ -76,17 +76,14 @@ class BaseRPiGPIOWrapper(BaseGPIOWrapper):
         self,
         pin: int,
         mode: GpioMode,
-        initial: Gpio = Gpio.LOW,
+        initial: Gpio | int = Gpio.LOW,
         pull_up_down: GpioPUD = GpioPUD.PUD_OFF,
     ):
         """setup GPIO pin"""
-        initial = int(initial)
-        pull_up_down = int(pull_up_down)
-        mode = int(mode)
         if mode == GpioMode.OUT:
-            self.GPIO.setup(pin, mode, initial=initial)
+            self.GPIO.setup(int(pin), int(mode), initial=int(initial))
         else:
-            self.GPIO.setup(pin, mode, pull_up_down=pull_up_down)
+            self.GPIO.setup(int(pin), int(mode), pull_up_down=int(pull_up_down))
 
     def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin"""

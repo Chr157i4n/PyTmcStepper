@@ -30,7 +30,7 @@ if MICROPYTHON:
     tmc_gpio = MicroPythonGPIOWrapper()
     BOARD = Board.MICROPYTHON
 else:
-    from os.path import exists
+    import os
     from ._tmc_gpio_board_ftdi import FtdiWrapper
 
     # Board mapping: (module_path, class_name, Board enum)
@@ -61,7 +61,7 @@ else:
     # Determine the board and instantiate the appropriate GPIO class
     def get_board_model_name():
         """get board model name from /proc/device-tree/model file"""
-        if not exists("/proc/device-tree/model"):
+        if not os.path.exists("/proc/device-tree/model"):  # type: ignore[attr-defined]
             return "mock"
         with open("/proc/device-tree/model", encoding="utf-8") as f:
             return f.readline().lower()

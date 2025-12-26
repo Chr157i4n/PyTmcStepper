@@ -127,7 +127,7 @@ class TmcMotionControlStepDir(TmcMotionControl):
         self._pin_step = pin_step
         self._pin_dir = pin_dir
 
-        self._movement_thread: threading.Thread = None
+        self._movement_thread: threading.Thread | None = None
 
         self._sqrt_twoa: float = 1.0  # Precomputed sqrt(2*_acceleration)
         self._step_interval: int = 0  # the current interval between two steps

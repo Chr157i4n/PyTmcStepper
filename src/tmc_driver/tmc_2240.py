@@ -149,8 +149,6 @@ class Tmc2240(TmcStepperDriver, StallGuard):
 
                 setattr(self.__class__, name, property(create_getter(name)))
 
-        if tmc_com is not None:
-            # Setup Registers
             self.tmc_com.tmc_registers = self.tmc_registers
 
             self.clear_gstat()
@@ -628,6 +626,15 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         this function checks the connection to a pin
         by toggling it and reading the IOIN register
         """
+        if self.tmc_mc is None or self.tmc_ec is None:
+            raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir) or not isinstance(
+            self.tmc_ec, TmcEnableControlPin
+        ):
+            raise TmcDriverException(
+                "tmc_mc or tmc_ec is not of correct type; cannot test pins"
+            )
+
         pin_ok = True
 
         # turn on all pins
@@ -657,8 +664,16 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         this sets the EN, DIR and STEP pin to HIGH, LOW and HIGH
         and checks the IOIN Register of the TMC meanwhile
         """
-        # test each pin on their own
+        if self.tmc_mc is None or self.tmc_ec is None:
+            raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir) or not isinstance(
+            self.tmc_ec, TmcEnableControlPin
+        ):
+            raise TmcDriverException(
+                "tmc_mc or tmc_ec is not of correct type; cannot test pins"
+            )
 
+        # test each pin on their own
         pin_dir_ok = self.test_pin(self.tmc_mc.pin_dir, 1)
         pin_step_ok = self.test_pin(self.tmc_mc.pin_step, 0)
         pin_en_ok = self.test_pin(self.tmc_ec.pin_en, 4)
@@ -673,6 +688,9 @@ class Tmc2240(TmcStepperDriver, StallGuard):
 
     def test_com(self):
         """test method"""
+        if self.tmc_com is None:
+            raise TmcDriverException("tmc_com is None; cannot test communication")
+
         self.tmc_logger.log("---")
         self.tmc_logger.log("TEST COM")
 

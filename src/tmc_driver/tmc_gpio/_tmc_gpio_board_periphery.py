@@ -21,7 +21,7 @@ class peripheryWrapper(BaseGPIOWrapper):
     def __init__(self):
         """constructor, imports periphery"""
         dependencies_logger.log("using periphery for GPIO control", Loglevel.INFO)
-        self._gpios: list[GPIO] = [None] * 200
+        self._gpios: list[GPIO | None] = [None] * 200
 
     def init(self, gpio_mode=None):
         """initialize GPIO library. pass on periphery"""
@@ -37,8 +37,8 @@ class peripheryWrapper(BaseGPIOWrapper):
         pull_up_down: GpioPUD = GpioPUD.PUD_OFF,
     ):
         """setup GPIO pin"""
-        mode = "out" if (mode == GpioMode.OUT) else "in"
-        self._gpios[pin] = GPIO(pin, mode)
+        mode_str = "out" if (mode == GpioMode.OUT) else "in"
+        self._gpios[pin] = GPIO(pin, mode_str)
 
     def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin"""

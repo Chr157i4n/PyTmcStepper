@@ -25,8 +25,8 @@ class GpiozeroWrapper(BaseGPIOWrapper):
 
     def __init__(self):
         """constructor, imports gpiozero"""
-        self._gpios: list[GPIODevice] = [None] * 200
-        self._gpios_pwm: list[GPIODevice] = [None] * 200
+        self._gpios: list[GPIODevice | None] = [None] * 200
+        self._gpios_pwm: list[GPIODevice | None] = [None] * 200
         dependencies_logger.log("using gpiozero for GPIO control", Loglevel.INFO)
 
     def init(self, gpio_mode=None):

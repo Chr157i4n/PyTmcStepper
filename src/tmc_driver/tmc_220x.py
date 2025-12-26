@@ -137,17 +137,12 @@ class Tmc220x(TmcStepperDriver):
 
                 setattr(self.__class__, name, property(create_getter(name)))
 
-        if tmc_com is not None:
-            # Setup Registers
             self.tmc_com.tmc_registers = self.tmc_registers
 
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
             self.tmc_com.flush_serial_buffer()
-
-        self.max_speed_fullstep = 100
-        self.acceleration_fullstep = 100
 
         self.tmc_logger.log("TMC220x Init finished", Loglevel.INFO)
 
@@ -626,6 +621,15 @@ class Tmc220x(TmcStepperDriver):
         this sets the EN, DIR and STEP pin to HIGH, LOW and HIGH
         and checks the IOIN Register of the TMC meanwhile
         """
+        if self.tmc_mc is None or self.tmc_ec is None:
+            raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir) or not isinstance(
+            self.tmc_ec, TmcEnableControlPin
+        ):
+            raise TmcDriverException(
+                "tmc_mc or tmc_ec is not of correct type; cannot test pins"
+            )
+
         # test each pin on their own
         pin_dir_ok = self.test_pin(self.tmc_mc.pin_dir, 9)
         pin_step_ok = self.test_pin(self.tmc_mc.pin_step, 7)
@@ -641,6 +645,9 @@ class Tmc220x(TmcStepperDriver):
 
     def test_com(self):
         """test method"""
+        if self.tmc_com is None:
+            raise TmcDriverException("tmc_com is None; cannot test communication")
+
         self.tmc_logger.log("---")
         self.tmc_logger.log("TEST COM")
 
