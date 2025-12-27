@@ -17,16 +17,17 @@ class TmcComUart(TmcComUartBase):
     like the current or the microsteppingmode
     """
 
-    def __init__(self, serialport: str, baudrate: int = 115200, mtr_id: int = 0):
+    def __init__(
+        self, serialport: str, baudrate: int = 115200, driver_address: int = 0
+    ):
         """constructor
 
         Args:
-            tmc_logger (class): TMCLogger class
             serialport (string): serialport path
             baudrate (int): baudrate
-            mtr_id (int, optional): driver address [0-3]. Defaults to 0.
+            driver_address (int, optional): driver address. Defaults to 0.
         """
-        super().__init__(mtr_id)
+        super().__init__(driver_address)
 
         self.ser = serial.Serial()
 

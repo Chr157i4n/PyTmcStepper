@@ -53,14 +53,14 @@ class TmcCom:
         """set the tmc_logger"""
         self._tmc_logger = tmc_logger
 
-    def __init__(self, mtr_id: int = 0):
+    def __init__(self, driver_address: int = 0):
         """constructor
 
         Args:
-            mtr_id (int, optional): driver address [0-3]. Defaults to 0.
+            driver_address (int, optional): driver address. Defaults to 0.
         """
         self._tmc_logger: TmcLogger
-        self.mtr_id = mtr_id
+        self.driver_address = driver_address
         self.ifcnt: IfcntRegister | None = None
         self.communication_pause: int = 0
         self.error_handler_running: bool = False
@@ -125,10 +125,6 @@ class TmcCom:
     @abstractmethod
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
-
-    @abstractmethod
-    def handle_error(self):
-        """error handling"""
 
     @abstractmethod
     def test_com(self, addr):

@@ -19,14 +19,13 @@ class TmcComUartBase(TmcCom):
     Subclasses must implement the actual UART transfer methods.
     """
 
-    def __init__(self, mtr_id: int = 0):
+    def __init__(self, driver_address: int = 0):
         """constructor
 
         Args:
-            tmc_logger (class): TMCLogger class
-            mtr_id (int, optional): driver address [0-3]. Defaults to 0.
+            driver_address (int, optional): driver address. Defaults to 0.
         """
-        super().__init__(mtr_id)
+        super().__init__(driver_address)
 
         self.ser = None  # To be set by subclass
 
@@ -88,7 +87,7 @@ class TmcComUartBase(TmcCom):
 
         self._uart_flush()
 
-        self.r_frame[1] = self.mtr_id
+        self.r_frame[1] = self.driver_address
         self.r_frame[2] = addr
         self.r_frame[3] = compute_crc8_atm(self.r_frame[:-1])
 
@@ -179,7 +178,7 @@ class TmcComUartBase(TmcCom):
 
         self._uart_flush()
 
-        self.w_frame[1] = self.mtr_id
+        self.w_frame[1] = self.driver_address
         self.w_frame[2] = addr | 0x80  # set write bit
 
         self.w_frame[3] = 0xFF & (val >> 24)
@@ -260,7 +259,7 @@ class TmcComUartBase(TmcCom):
 
         self._uart_flush()
 
-        self.r_frame[1] = self.mtr_id
+        self.r_frame[1] = self.driver_address
         self.r_frame[2] = addr
         self.r_frame[3] = compute_crc8_atm(self.r_frame[:-1])
 

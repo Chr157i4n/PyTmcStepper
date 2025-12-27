@@ -96,7 +96,7 @@ class Tmc220x(TmcStepperDriver):
         if tmc_com is not None:
             self.tmc_com = tmc_com
             self.tmc_com.tmc_logger = self.tmc_logger
-            self.tmc_com.mtr_id = driver_address
+            self.tmc_com.driver_address = driver_address
 
             self.tmc_com.init()
 

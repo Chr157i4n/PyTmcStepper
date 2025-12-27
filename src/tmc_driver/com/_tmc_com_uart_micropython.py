@@ -27,7 +27,9 @@ class TmcComUartMicroPython(TmcComUartBase):
     For single-wire UART, connect TX to the TMC UART pin through a 1k resistor.
     """
 
-    def __init__(self, uart_id=0, tx_pin=0, rx_pin=1, baudrate=115200, mtr_id=0):
+    def __init__(
+        self, uart_id=0, tx_pin=0, rx_pin=1, baudrate=115200, driver_address=0
+    ):
         """Initialize UART communication
 
         Args:
@@ -35,10 +37,9 @@ class TmcComUartMicroPython(TmcComUartBase):
             tx_pin: TX GPIO pin
             rx_pin: RX GPIO pin
             baudrate: UART baudrate
-            mtr_id: Motor/slave address (0-3)
-            tmc_logger: Logger instance (optional)
+            driver_address: driver address (default 0)
         """
-        super().__init__(mtr_id)
+        super().__init__(driver_address)
 
         self._uart_id = uart_id
         self._tx_pin = tx_pin

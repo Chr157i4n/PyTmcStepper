@@ -21,15 +21,21 @@ class TmcComSpi(TmcComSpiBase):
     """
 
     def __init__(
-        self, spi_bus: int, spi_dev: int, spi_speed: int = 8000000, mtr_id: int = 0
+        self,
+        spi_bus: int,
+        spi_dev: int,
+        spi_speed: int = 8000000,
+        driver_address: int = 0,
     ):
         """constructor
 
         Args:
-            _tmc_logger (class): TMCLogger class
-            mtr_id (int, optional): driver address [0-3]. Defaults to 0.
+            spi_bus (int): SPI bus number
+            spi_dev (int): SPI device number
+            spi_speed (int, optional): SPI speed in Hz. Defaults to 8000000.
+            driver_address (int, optional): driver address. Defaults to 0.
         """
-        super().__init__(mtr_id)
+        super().__init__(driver_address)
 
         self.spi = spidev.SpiDev()
 

@@ -19,14 +19,13 @@ class TmcComSpiBase(TmcCom):
     Subclasses must implement the actual SPI transfer methods.
     """
 
-    def __init__(self, mtr_id: int = 0):
+    def __init__(self, driver_address: int = 0):
         """constructor
 
         Args:
-            tmc_logger (class): TMCLogger class
-            mtr_id (int, optional): driver address [0-3]. Defaults to 0.
+            driver_address (int, optional): driver address. Defaults to 0.
         """
-        super().__init__(mtr_id)
+        super().__init__(driver_address)
 
         self.spi = None  # To be set by subclass
 
