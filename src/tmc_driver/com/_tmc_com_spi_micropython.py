@@ -10,6 +10,7 @@ Uses the machine.SPI interface available on RP2040 and similar boards.
 # Detect if we're running on MicroPython
 from machine import SPI, Pin  # pylint: disable=import-error
 from ._tmc_com_spi_base import TmcComSpiBase
+from .._tmc_exceptions import TmcComException
 
 
 class TmcComSpiMicroPython(TmcComSpiBase):
@@ -52,7 +53,7 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         self._miso_pin = miso_pin
         self._baudrate = baudrate
 
-        self._spi = None
+        self._spi: SPI | None = None
         self._cs = None
 
     def init(self):
@@ -87,6 +88,9 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         Returns:
             List of received bytes
         """
+        if self._spi is None or self._cs is None:
+            raise TmcComException("SPI not initialized")
+
         tx_data = bytes(data)
         rx_data = bytearray(len(data))
 

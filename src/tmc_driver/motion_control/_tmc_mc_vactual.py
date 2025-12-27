@@ -105,9 +105,10 @@ class TmcMotionControlVActual(TmcMotionControl):
         Args:
             vactual (int): value for VACTUAL
         """
-        if "vactual" not in self.tmc_com.tmc_registers:
+        vactual_reg = self.get_register("vactual")
+        if vactual_reg is None:
             raise TmcMotionControlException("TMC register VACTUAL not available")
-        self.tmc_com.tmc_registers["vactual"].modify("vactual", vactual)
+        vactual_reg.modify("vactual", vactual)
 
     def set_vactual_dur(
         self,

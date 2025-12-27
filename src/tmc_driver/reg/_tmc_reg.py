@@ -5,7 +5,22 @@ Register module
 """
 
 from .._tmc_logger import TmcLogger, Loglevel
-from ..com._tmc_com import TmcCom
+
+
+class TmcCom:
+    """Stub for type hints"""
+
+    def read_int(self, address: int):
+        """Stub for type hints"""
+        raise NotImplementedError
+
+    def write_reg(self, address: int, data: int):
+        """Stub for type hints"""
+        raise NotImplementedError
+
+    def write_reg_check(self, address: int, data: int):
+        """Stub for type hints"""
+        raise NotImplementedError
 
 
 class TmcReg:

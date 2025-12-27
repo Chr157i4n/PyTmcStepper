@@ -13,6 +13,7 @@ import sys
 import time
 from machine import UART, Pin  # pylint: disable=import-error
 from ._tmc_com_uart_base import TmcComUartBase
+from .._tmc_exceptions import TmcComException
 
 MICROPYTHON = sys.implementation.name == "micropython"
 
@@ -75,6 +76,8 @@ class TmcComUartMicroPython(TmcComUartBase):
         Returns:
             Number of bytes written
         """
+        if self._uart is None:
+            raise TmcComException("UART not initialized")
         return self._uart.write(bytes(data))
 
     def _uart_read(self, length):
@@ -86,6 +89,8 @@ class TmcComUartMicroPython(TmcComUartBase):
         Returns:
             Bytes read or empty bytes if timeout
         """
+        if self._uart is None:
+            raise TmcComException("UART not initialized")
         # Wait a bit for data to arrive
         time.sleep_ms(10)  # pylint: disable=no-member
 
@@ -96,6 +101,8 @@ class TmcComUartMicroPython(TmcComUartBase):
 
     def _uart_flush(self):
         """Flush UART receive buffer"""
+        if self._uart is None:
+            raise TmcComException("UART not initialized")
         # Read and discard any pending data
         while self._uart.any():
             self._uart.read()

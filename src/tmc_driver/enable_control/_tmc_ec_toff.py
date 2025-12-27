@@ -5,6 +5,7 @@ Enable Control base module
 from ._tmc_ec import TmcEnableControl
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
+from .._tmc_exceptions import TmcEnableControlException
 
 
 class TmcEnableControlToff(TmcEnableControl):
@@ -36,4 +37,8 @@ class TmcEnableControlToff(TmcEnableControl):
 
         val = self._default_toff if en else 0
 
-        self._tmc_com.tmc_registers["chopconf"].modify("toff", val)
+        chopconf = self.get_register("chopconf")
+        if chopconf is None:
+            raise TmcEnableControlException("TMC register CHOPCONF not available")
+
+        chopconf.modify("toff", val)
