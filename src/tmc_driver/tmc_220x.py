@@ -132,7 +132,7 @@ class Tmc220x(TmcStepperDriver):
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
-            self.tmc_com.flush_serial_buffer()
+            self.tmc_com.flush_com_buffer()
 
         self.tmc_logger.log("TMC220x Init finished", Loglevel.INFO)
 

@@ -61,18 +61,21 @@ class TmcComUart(TmcComUartBase):
                 )
                 raise SystemExit from e
 
+        if self.ser.baudrate is None:
+            raise TmcComException("Baudrate is not set")
+
         # adjust per baud and hardware. Sequential reads without some delay fail.
-        self.communication_pause = 500 / self.ser.baudrate
+        self.communication_pause = 500 // self.ser.baudrate
 
         if self.ser is None:
             return
 
-        self.ser.BYTESIZES = 1
-        self.ser.PARITIES = serial.PARITY_NONE
-        self.ser.STOPBITS = 1
+        self.ser.bytesize = serial.EIGHTBITS
+        self.ser.parity = serial.PARITY_NONE
+        self.ser.stopbits = serial.STOPBITS_ONE
 
         # adjust per baud and hardware. Sequential reads without some delay fail.
-        self.ser.timeout = 20000 / self.ser.baudrate
+        self.ser.timeout = 20000 // self.ser.baudrate
 
         self._uart_flush()
 

@@ -11,6 +11,14 @@ from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
+class IoinStub(TmcReg):
+    """IOIN Register Stub"""
+
+    # pylint: disable=too-few-public-methods
+
+    version: int
+
+
 class TmcComSpiBase(TmcCom):
     """TmcComSpiBase
 
@@ -138,7 +146,7 @@ class TmcComSpiBase(TmcCom):
         self.write_reg(addr, val)
         return True
 
-    def flush_serial_buffer(self):
+    def flush_com_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
 
     def test_com(self):
@@ -150,7 +158,7 @@ class TmcComSpiBase(TmcCom):
         Raises:
             TmcComException: if TMC register IOIN not available
         """
-        ioin = self.get_register("ioin")
+        ioin: IoinStub = self.get_register("ioin")  # type: ignore
         if ioin is None:
             raise TmcComException("TMC register IOIN not available")
         data, flags = ioin.read()

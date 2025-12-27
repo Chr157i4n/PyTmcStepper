@@ -11,6 +11,22 @@ from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
+class IfcntStub(TmcReg):
+    """IFCNT Register Stub"""
+
+    # pylint: disable=too-few-public-methods
+
+    ifcnt: int
+
+
+class IoinStub(TmcReg):
+    """IOIN Register Stub"""
+
+    # pylint: disable=too-few-public-methods
+
+    version: int
+
+
 class TmcComUartBase(TmcCom):
     """TmcComUartBase
 
@@ -212,7 +228,7 @@ class TmcComUartBase(TmcCom):
         Raises:
             TmcComException: if IFCNT register is not set or write fails after retries
         """
-        ifcnt = self.get_register("ifcnt")
+        ifcnt: IfcntStub = self.get_register("ifcnt")  # type: ignore
         if ifcnt is None:
             raise TmcComException("TMC register IFCNT not available")
 
@@ -234,7 +250,7 @@ class TmcComUartBase(TmcCom):
             if tries <= 0:
                 raise TmcComException("after 10 tries writing not successful")
 
-    def flush_serial_buffer(self):
+    def flush_com_buffer(self):
         """this function clear the communication buffers"""
         if self.ser is None:
             return
@@ -256,7 +272,7 @@ class TmcComUartBase(TmcCom):
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
-        ioin = self.get_register("ioin")
+        ioin: IoinStub = self.get_register("ioin")  # type: ignore
         if ioin is None:
             raise TmcComException("TMC register IOIN not available")
 

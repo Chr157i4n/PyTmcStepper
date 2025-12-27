@@ -135,8 +135,6 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             self.sgresult = SgResult(self.tmc_com)
             self.sgind = SgInd(self.tmc_com)
 
-            self.tmc_com.ifcnt = self.ifcnt
-
             # Register callback for submodules to access registers
             self.tmc_com.set_get_register_callback(self._get_register)
             if self.tmc_mc is not None:
@@ -147,7 +145,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
-            self.tmc_com.flush_serial_buffer()
+            self.tmc_com.flush_com_buffer()
 
         self.max_speed_fullstep = 100
         self.acceleration_fullstep = 100
