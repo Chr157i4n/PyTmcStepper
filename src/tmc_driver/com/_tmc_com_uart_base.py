@@ -274,8 +274,6 @@ class TmcComUartBase(TmcCom):
             f"received {len(rtn)} bytes; {len(rtn)*8} bits", Loglevel.DEBUG
         )
         self._tmc_logger.log(f"hex: {rtn.hex()}", Loglevel.DEBUG)
-        rtn_bin = format(int(rtn.hex(), 16), f"0>{len(rtn)*8}b")
-        self._tmc_logger.log(f"bin: {rtn_bin}", Loglevel.DEBUG)
 
         self.tmc_logger.log(f"length snd: {len(snd)}", Loglevel.DEBUG)
         self.tmc_logger.log(f"length rtn: {len(rtn)}", Loglevel.DEBUG)
