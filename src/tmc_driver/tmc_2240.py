@@ -124,6 +124,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             self.thigh = THigh(self.tmc_com)
             self.adcv_supply_ain = ADCVSupplyAIN(self.tmc_com)
             self.adc_temp = ADCTemp(self.tmc_com)
+            self.mscnt = MsCnt(self.tmc_com)
             self.chopconf = ChopConf(self.tmc_com)
             self.coolconf = CoolConf(self.tmc_com)
             self.drvstatus = DrvStatus(self.tmc_com)
@@ -500,7 +501,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         step = round(step)
         return step + offset
 
-    def get_vsupply(self) -> int:
+    def get_vsupply(self) -> float:
         """reads the ADC_VSUPPLY_AIN register
 
         Returns:

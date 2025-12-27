@@ -16,6 +16,8 @@ class TCoolThrs(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.tcoolthrs: int
+
         reg_map = [["tcoolthrs", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x14, "TCOOLTHRS", tmc_com, reg_map)
 
@@ -25,6 +27,8 @@ class SGThrs(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.sgthrs: int
 
         reg_map = [["sgthrs", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x40, "SGTHRS", tmc_com, reg_map)
@@ -36,6 +40,8 @@ class SGResult(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.sgresult: int
+
         reg_map = [["sgresult", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x41, "SGRESULT", tmc_com, reg_map)
 
@@ -45,6 +51,12 @@ class CoolConf(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.seemin: bool
+        self.sedn: int
+        self.semax: int
+        self.seup: int
+        self.semin: int
 
         reg_map = [
             ["seemin", 15, 0x1, bool, None, ""],

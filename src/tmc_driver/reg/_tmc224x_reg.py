@@ -18,6 +18,22 @@ class GConf(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.direct_mode: bool
+        self.stop_enable: bool
+        self.small_hysteresis: bool
+        self.diag1_pushpull: bool
+        self.diag0_pushpull: bool
+        self.diag1_onstate: bool
+        self.diag1_index: bool
+        self.diag1_stall: bool
+        self.diag0_stall: bool
+        self.diag0_otpw: bool
+        self.diag0_error: bool
+        self.shaft: bool
+        self.multistep_filt: bool
+        self.en_pwm_mode: bool
+        self.fast_standstill: bool
+
         reg_map = [
             ["direct_mode", 16, 0x1, bool, None, ""],
             ["stop_enable", 15, 0x1, bool, None, ""],
@@ -43,6 +59,12 @@ class GStat(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.vm_uvlo: bool
+        self.register_reset: bool
+        self.uv_cp: bool
+        self.drv_err: bool
+        self.reset: bool
 
         reg_map = [
             ["vm_uvlo", 4, 0x1, bool, None, ""],
@@ -74,6 +96,8 @@ class IfCnt(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.ifcnt: int
+
         reg_map = [["ifcnt", 0, 0xFF, int, None, ""]]
         super().__init__(0x2, "IFCNT", tmc_com, reg_map)
 
@@ -83,6 +107,24 @@ class Ioin(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.version: int
+        self.silicon_rv: int
+        self.adc_err: bool
+        self.ext_clk: bool
+        self.ext_res_det: bool
+        self.output: bool
+        self.comp_b1_b2: bool
+        self.comp_a1_a2: bool
+        self.comp_b: bool
+        self.comp_a: bool
+        self.uart_en: bool
+        self.encn: bool
+        self.drv_enn: bool
+        self.enca: bool
+        self.encb: bool
+        self.dir: bool
+        self.step: bool
 
         reg_map = [
             ["version", 24, 0xFF, int, None, ""],
@@ -112,6 +154,9 @@ class DrvConf(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.slope_control: int
+        self.current_range: int
+
         reg_map = [
             ["slope_control", 4, 0x3, int, None, ""],
             ["current_range", 0, 0x3, int, None, ""],
@@ -125,6 +170,8 @@ class GlobalScaler(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.global_scaler: int
+
         reg_map = [["global_scaler", 0, 0xFF, int, None, ""]]
         super().__init__(0xB, "GLOBAL_SCALER", tmc_com, reg_map)
 
@@ -134,6 +181,11 @@ class IHoldIRun(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.irundelay: int
+        self.iholddelay: int
+        self.irun: int
+        self.ihold: int
 
         reg_map = [
             ["irundelay", 24, 0xF, int, None, ""],
@@ -150,6 +202,8 @@ class TPowerDown(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.tpowerdown: int
+
         reg_map = [["tpowerdown", 0, 0xFF, int, None, ""]]
         super().__init__(0x11, "TPOWERDOWN", tmc_com, reg_map)
 
@@ -159,6 +213,8 @@ class TStep(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.tstep: int
 
         reg_map = [["tstep", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x12, "TSTEP", tmc_com, reg_map)
@@ -170,6 +226,8 @@ class THigh(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.thigh: int
+
         reg_map = [["thigh", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x13, "THIGH", tmc_com, reg_map)
 
@@ -180,6 +238,9 @@ class ADCVSupplyAIN(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.adc_ain: int
+        self.adc_vsupply: int
+
         reg_map = [
             ["adc_ain", 16, 0xFFFF, int, lambda: self.adc_ain_v, "V"],
             ["adc_vsupply", 0, 0xFFFF, int, lambda: self.adc_vsupply_v, "V"],
@@ -189,16 +250,12 @@ class ADCVSupplyAIN(TmcReg):
     @property
     def adc_vsupply_v(self) -> float:
         """return Supplyvoltage in V"""
-        if hasattr(self, "adc_vsupply"):
-            return round(self.adc_vsupply * 9.732 / 1000, 2)
-        return None
+        return round(self.adc_vsupply * 9.732 / 1000, 2)
 
     @property
     def adc_ain_v(self) -> float:
         """return voltage on AIN in V"""
-        if hasattr(self, "adc_ain"):
-            return round(self.adc_ain * 305.2 / 1000 / 1000, 2)
-        return None
+        return round(self.adc_ain * 305.2 / 1000 / 1000, 2)
 
 
 class ADCTemp(TmcReg):
@@ -207,15 +264,26 @@ class ADCTemp(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.adc_temp: int
+
         reg_map = [["adc_temp", 0, 0xFFFF, int, lambda: self.adc_temp_c, "°C"]]
         super().__init__(0x51, "ADC_TEMP", tmc_com, reg_map)
 
     @property
     def adc_temp_c(self) -> float:
         """return temperature in °C"""
-        if hasattr(self, "adc_temp"):
-            return round((self.adc_temp - 2038) / 7.7, 1)
-        return None
+        return round((self.adc_temp - 2038) / 7.7, 1)
+
+
+class MsCnt(TmcReg):
+    """MSCNT register class"""
+
+    def __init__(self, tmc_com: TmcCom):
+        """constructor"""
+        self.mscnt: int
+
+        reg_map = [["mscnt", 0, 0xFF, int, None, ""]]
+        super().__init__(0x6A, "MSCNT", tmc_com, reg_map)
 
 
 class ChopConf(TmcReg):
@@ -223,6 +291,22 @@ class ChopConf(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.diss2vs: bool
+        self.diss2g: bool
+        self.dedge: bool
+        self.intpol: bool
+        self.mres: int
+        self.tpfd: int
+        self.vhighchm: bool
+        self.vhighfs: bool
+        self.tbl: int
+        self.chm: int
+        self.disfdcc: bool
+        self.fd3: bool
+        self.hend_offset: int
+        self.hstrt_tfd210: int
+        self.toff: int
 
         reg_map = [
             ["diss2vs", 31, 0x1, bool, None, ""],
@@ -246,14 +330,12 @@ class ChopConf(TmcReg):
     @property
     def mres_ms(self) -> int:
         """return µstep resolution"""
-        if hasattr(self, "mres"):
-            return int(math.pow(2, 8 - self.mres))
-        return None
+        return int(math.pow(2, 8 - self.mres))
 
     @mres_ms.setter
     def mres_ms(self, mres: int):
         """set µstep resolution"""
-        mres_bit = int(math.log(mres, 2))
+        mres_bit = int(math.log2(mres))
         mres_bit = 8 - mres_bit
         self.mres = mres_bit
 
@@ -263,6 +345,14 @@ class CoolConf(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.sfilt: bool
+        self.sgt: int
+        self.seimin: bool
+        self.sedn: int
+        self.semax: int
+        self.seup: int
+        self.semin: int
 
         reg_map = [
             ["sfilt", 24, 0x1, bool, None, ""],
@@ -281,6 +371,21 @@ class DrvStatus(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.stst: bool
+        self.olb: bool
+        self.ola: bool
+        self.s2gb: bool
+        self.s2ga: bool
+        self.otpw: bool
+        self.ot: bool
+        self.stallguard: bool
+        self.cs_actual: int
+        self.fsactive: bool
+        self.stealth: bool
+        self.s2vsb: bool
+        self.s2vsa: bool
+        self.sgresult: int
 
         reg_map = [
             ["stst", 31, 0x1, bool, None, ""],
@@ -307,6 +412,8 @@ class TCoolThrs(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.tcoolthrs: int
+
         reg_map = [["tcoolthrs", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x14, "TCOOLTHRS", tmc_com, reg_map)
 
@@ -316,6 +423,10 @@ class SgThrs(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.sg_angle_offset: bool
+        self.sg4_filt_en: bool
+        self.sgthrs: int
 
         reg_map = [
             ["sg_angle_offset", 9, 0x1, bool, None, ""],
@@ -331,6 +442,8 @@ class SgResult(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.sgresult: int
+
         reg_map = [["sgresult", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x75, "SGRESULT", tmc_com, reg_map)
 
@@ -340,6 +453,10 @@ class SgInd(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+
+        self.sg_ind_2: int
+        self.sg_ind_1: int
+        self.sg_ind_0: int
 
         reg_map = [
             ["sg_ind_2", 16, 0xFF, int, None, ""],

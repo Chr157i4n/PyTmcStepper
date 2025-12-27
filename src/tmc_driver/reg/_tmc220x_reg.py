@@ -17,6 +17,16 @@ class GConf(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.test_mode: bool
+        self.multistep_filt: bool
+        self.mstep_reg_select: bool
+        self.pdn_disable: bool
+        self.index_step: bool
+        self.index_otpw: bool
+        self.shaft: bool
+        self.en_spreadcycle: bool
+        self.internal_rsense: bool
+        self.i_scale_analog: bool
 
         reg_map = [
             ["test_mode", 9, 0x1, bool, None, ""],
@@ -38,6 +48,9 @@ class GStat(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.uv_cp: bool
+        self.drv_err: bool
+        self.reset: bool
 
         reg_map = [
             ["uv_cp", 2, 0x1, bool, None, ""],
@@ -62,6 +75,7 @@ class IfCnt(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.ifcnt: int
 
         reg_map = [["ifcnt", 0, 0xFF, int, None, ""]]
         super().__init__(0x2, "IFCNT", tmc_com, reg_map)
@@ -72,6 +86,13 @@ class Ioin(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.version: int
+        self.dir: bool
+        self.spread: bool
+        self.step: bool
+        self.ms2: bool
+        self.ms1: bool
+        self.enn: bool
 
         reg_map = [
             ["version", 24, 0xFF, int, None, ""],
@@ -90,6 +111,9 @@ class IHoldIRun(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.iholddelay: int
+        self.irun: int
+        self.ihold: int
 
         reg_map = [
             ["iholddelay", 16, 0xF, int, None, ""],
@@ -104,6 +128,7 @@ class TPowerDown(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.tpowerdown: int
 
         reg_map = [["tpowerdown", 0, 0xFF, int, None, ""]]
         super().__init__(0x11, "TPowerDown", tmc_com, reg_map)
@@ -114,6 +139,7 @@ class TStep(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.tstep: int
 
         reg_map = [["tstep", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x12, "TSTEP", tmc_com, reg_map)
@@ -124,6 +150,7 @@ class TPwmThrs(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.tpwmthrs: int
 
         reg_map = [["tpwmthrs", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x13, "TPWMTHRS", tmc_com, reg_map)
@@ -134,6 +161,7 @@ class VActual(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.vactual: int
 
         reg_map = [["vactual", 0, 0xFFFFFF, int, None, ""]]
         super().__init__(0x22, "VACTUAL", tmc_com, reg_map)
@@ -144,6 +172,7 @@ class MsCnt(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.mscnt: int
 
         reg_map = [["mscnt", 0, 0xFF, int, None, ""]]
         super().__init__(0x6A, "MSCNT", tmc_com, reg_map)
@@ -154,6 +183,16 @@ class ChopConf(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.diss2vs: bool
+        self.diss2g: bool
+        self.dedge: bool
+        self.intpol: bool
+        self.mres: int
+        self.vsense: bool
+        self.tbl: int
+        self.hend: int
+        self.hstrt: int
+        self.toff: int
 
         reg_map = [
             ["diss2vs", 31, 0x1, bool, None, ""],
@@ -172,14 +211,12 @@ class ChopConf(TmcReg):
     @property
     def mres_ms(self) -> int:
         """return µstep resolution"""
-        if hasattr(self, "mres"):
-            return int(math.pow(2, 8 - self.mres))
-        return None
+        return int(math.pow(2, 8 - self.mres))
 
     @mres_ms.setter
     def mres_ms(self, mres: int):
         """set µstep resolution"""
-        mres_bit = int(math.log(mres, 2))
+        mres_bit = int(math.log2(mres))
         mres_bit = 8 - mres_bit
         self.mres = mres_bit
 
@@ -189,6 +226,14 @@ class PwmConf(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.pwm_lim: int
+        self.pwm_reg: int
+        self.freewheel: int
+        self.pwm_autograd: bool
+        self.pwm_autoscale: bool
+        self.pwm_freq: int
+        self.pwm_grad: int
+        self.pwm_ofs: int
 
         reg_map = [
             ["pwm_lim", 28, 0xF, int, None, ""],
@@ -208,6 +253,21 @@ class DrvStatus(TmcReg):
 
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
+        self.stst: bool
+        self.stealth: bool
+        self.cs_actual: int
+        self.t157: bool
+        self.t150: bool
+        self.t143: bool
+        self.t120: bool
+        self.olb: bool
+        self.ola: bool
+        self.s2vsb: bool
+        self.s2vsa: bool
+        self.s2gb: bool
+        self.s2ga: bool
+        self.ot: bool
+        self.otpw: bool
 
         reg_map = [
             ["stst", 31, 0x1, bool, None, ""],

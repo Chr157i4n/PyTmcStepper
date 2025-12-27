@@ -46,6 +46,8 @@ class TmcReg:
         self._tmc_com = tmc_com
         self._reg_map = reg_map
 
+        self.deserialise(0)
+
     def deserialise(self, data: int):
         """Deserialises the register value
 
