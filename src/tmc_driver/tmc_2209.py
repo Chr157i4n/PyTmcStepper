@@ -20,7 +20,7 @@ class Tmc2209(Tmc220x, StallGuard):
         self,
         tmc_ec: TmcEnableControl,
         tmc_mc: TmcMotionControl,
-        tmc_com: TmcCom | None = None,
+        tmc_com: TmcComUartBase | None = None,
         driver_address: int = 0,
         gpio_mode=None,
         loglevel: Loglevel = Loglevel.INFO,
@@ -59,25 +59,9 @@ class Tmc2209(Tmc220x, StallGuard):
         StallGuard.__init__(self)
 
         if tmc_com is not None:
-
-            registers_classes = {
-                TCoolThrs,
-                SGThrs,
-                SGResult,
-            }
-
-            for register_class in registers_classes:
-                register = register_class(self.tmc_com)
-                name = register.name.lower()
-                self.tmc_registers[name] = register
-
-                def create_getter(name):
-                    def getter(self):
-                        return self.tmc_registers[name]
-
-                    return getter
-
-                setattr(self.__class__, name, property(create_getter(name)))
+            self.tcool_thrs = TCoolThrs(self.tmc_com)
+            self.sg_thrs = SGThrs(self.tmc_com)
+            self.sg_result = SGResult(self.tmc_com)
 
         self.tmc_logger.log("TMC2209 Init finished", Loglevel.INFO)
 

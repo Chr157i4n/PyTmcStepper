@@ -112,44 +112,25 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             if hasattr(self.tmc_ec, "tmc_com"):
                 self.tmc_ec.tmc_com = tmc_com
 
-            registers_classes = {
-                GConf,
-                GStat,
-                IfCnt,
-                Ioin,
-                DrvConf,
-                GlobalScaler,
-                IHoldIRun,
-                TPowerDown,
-                TStep,
-                THigh,
-                ADCVSupplyAIN,
-                ADCTemp,
-                ChopConf,
-                CoolConf,
-                DrvStatus,
-                TCoolThrs,
-                SgThrs,
-                SgResult,
-                SgInd,
-            }
-
-            self.tmc_registers = {}
-
-            for register_class in registers_classes:
-                register = register_class(self.tmc_com)
-                name = register.name.lower()
-                self.tmc_registers[name] = register
-
-                def create_getter(name):
-                    def getter(self):
-                        return self.tmc_registers[name]
-
-                    return getter
-
-                setattr(self.__class__, name, property(create_getter(name)))
-
-            self.tmc_com.tmc_registers = self.tmc_registers
+            self.gconf = GConf(self.tmc_com)
+            self.gstat = GStat(self.tmc_com)
+            self.ifcnt = IfCnt(self.tmc_com)
+            self.ioin = Ioin(self.tmc_com)
+            self.drv_conf = DrvConf(self.tmc_com)
+            self.global_scaler = GlobalScaler(self.tmc_com)
+            self.ihold_irun = IHoldIRun(self.tmc_com)
+            self.tpowerdown = TPowerDown(self.tmc_com)
+            self.tstep = TStep(self.tmc_com)
+            self.thigh = THigh(self.tmc_com)
+            self.adcv_supply_ain = ADCVSupplyAIN(self.tmc_com)
+            self.adc_temp = ADCTemp(self.tmc_com)
+            self.chopconf = ChopConf(self.tmc_com)
+            self.coolconf = CoolConf(self.tmc_com)
+            self.drvstatus = DrvStatus(self.tmc_com)
+            self.tcoolthrs = TCoolThrs(self.tmc_com)
+            self.sgthrs = SgThrs(self.tmc_com)
+            self.sgresult = SgResult(self.tmc_com)
+            self.sgind = SgInd(self.tmc_com)
 
             self.clear_gstat()
             if self.tmc_mc is not None:

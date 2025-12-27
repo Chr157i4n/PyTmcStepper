@@ -49,7 +49,7 @@ class Tmc220x(TmcStepperDriver):
         self,
         tmc_ec: TmcEnableControl,
         tmc_mc: TmcMotionControl,
-        tmc_com: TmcCom | None = None,
+        tmc_com: TmcComUartBase | None = None,
         driver_address: int = 0,
         gpio_mode=None,
         loglevel: Loglevel = Loglevel.INFO,
@@ -106,38 +106,19 @@ class Tmc220x(TmcStepperDriver):
             if hasattr(self.tmc_ec, "tmc_com"):
                 self.tmc_ec.tmc_com = tmc_com
 
-            registers_classes = {
-                GConf,
-                GStat,
-                IfCnt,
-                Ioin,
-                IHoldIRun,
-                TPowerDown,
-                TStep,
-                TPwmThrs,
-                VActual,
-                MsCnt,
-                ChopConf,
-                PwmConf,
-                DrvStatus,
-            }
-
-            self.tmc_registers = {}
-
-            for register_class in registers_classes:
-                register = register_class(self.tmc_com)
-                name = register.name.lower()
-                self.tmc_registers[name] = register
-
-                def create_getter(name):
-                    def getter(self):
-                        return self.tmc_registers[name]
-
-                    return getter
-
-                setattr(self.__class__, name, property(create_getter(name)))
-
-            self.tmc_com.tmc_registers = self.tmc_registers
+            self.gconf = GConf(self.tmc_com)
+            self.gstat = GStat(self.tmc_com)
+            self.ifcnt = IfCnt(self.tmc_com)
+            self.ioin = Ioin(self.tmc_com)
+            self.ihold_irun = IHoldIRun(self.tmc_com)
+            self.tpowerdown = TPowerDown(self.tmc_com)
+            self.tstep = TStep(self.tmc_com)
+            self.tpwmthrs = TPwmThrs(self.tmc_com)
+            self.vactual = VActual(self.tmc_com)
+            self.mscnt = MsCnt(self.tmc_com)
+            self.chopconf = ChopConf(self.tmc_com)
+            self.pwmconf = PwmConf(self.tmc_com)
+            self.drvstatus = DrvStatus(self.tmc_com)
 
             self.clear_gstat()
             if self.tmc_mc is not None:
