@@ -1,12 +1,16 @@
 # Changelog
 
+## version 0.9.3
+
+- fixed reg access in submodules (with callback)
+
 ## version 0.9.2
 
 - added validation of submodules
 - enhanced TMC2240 set_current function (added rref as argument)
 - formatting and linting
 - added typehints for register definitions
-- fixed wrong reg acces (TMC2209 iholddelay and en_spreadcycle)
+- fixed wrong reg access (TMC2209 iholddelay and en_spreadcycle)
 
 ## version 0.9.1
 
