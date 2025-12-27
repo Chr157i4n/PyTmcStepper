@@ -1,4 +1,4 @@
-#pylint: disable=unused-import
+# pylint: disable=unused-import
 """
 TmcCom stepper driver communication module
 """
@@ -7,6 +7,7 @@ import time
 import struct
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
+from .._tmc_exceptions import TmcComException
 
 
 def compute_crc8_atm(datagram, initial_value=0):
@@ -30,10 +31,20 @@ def compute_crc8_atm(datagram, initial_value=0):
     return crc
 
 
+class IfcntRegister:
+    """Interface for IFCNT register - defines only what tmc_com needs to know"""
+
+    # pylint: disable=too-few-public-methods
+
+    ifcnt: int
+
+    def read(self):
+        """Read the register"""
+
 
 class TmcCom:
-    """TmcCom
-    """
+    """TmcCom"""
+
     @property
     def tmc_logger(self) -> TmcLogger:
         """get the tmc_logger"""
@@ -44,39 +55,28 @@ class TmcCom:
         """set the tmc_logger"""
         self._tmc_logger = tmc_logger
 
-    @property
-    def tmc_registers(self):
-        """get the tmc_registers"""
-        return self._tmc_registers
-
-    @tmc_registers.setter
-    def tmc_registers(self, tmc_registers):
-        """set the tmc_registers"""
-        self._tmc_registers = tmc_registers
-
-
-
-    def __init__(self,
-                 mtr_id:int = 0
-                 ):
+    def __init__(self, driver_address: int = 0):
         """constructor
 
         Args:
-            mtr_id (int, optional): driver address [0-3]. Defaults to 0.
+            driver_address (int, optional): driver address. Defaults to 0.
         """
-        self._tmc_logger:TmcLogger
-        self.mtr_id = mtr_id
-        self._tmc_registers = None
-
-        self.mtr_id:int = 0
-        # self.r_frame:list[int]
-        # self.w_frame:list[int]
-        self.communication_pause:int = 0
-        self.error_handler_running:bool = False
-
+        self._tmc_logger: TmcLogger
+        self.driver_address = driver_address
+        self.ifcnt: IfcntRegister | None = None
+        self.communication_pause: int = 0
+        self.error_handler_running: bool = False
 
     @abstractmethod
-    def read_reg(self, addr:int):
+    def init(self):
+        """init communication"""
+
+    @abstractmethod
+    def deinit(self):
+        """deinit communication"""
+
+    @abstractmethod
+    def read_reg(self, addr: int) -> tuple[int, dict]:
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -87,9 +87,8 @@ class TmcCom:
             Dict: flags
         """
 
-
     @abstractmethod
-    def read_int(self, addr:int, tries:int = 10):
+    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -101,9 +100,8 @@ class TmcCom:
             Dict: flags
         """
 
-
     @abstractmethod
-    def write_reg(self, addr:int, val:int):
+    def write_reg(self, addr: int, val: int):
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -114,9 +112,8 @@ class TmcCom:
             val (int): value for that register
         """
 
-
     @abstractmethod
-    def write_reg_check(self, addr:int, val:int, tries:int=10):
+    def write_reg_check(self, addr: int, val: int, tries: int = 10):
         """this function als writes a value to the register of the TMC
         but it also checks if the writing process was successfully by checking
         the InterfaceTransmissionCounter before and after writing
@@ -127,16 +124,9 @@ class TmcCom:
             tries: how many tries, before error is raised (Default value = 10)
         """
 
-
     @abstractmethod
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
-
-
-    @abstractmethod
-    def handle_error(self):
-        """error handling"""
-
 
     @abstractmethod
     def test_com(self, addr):

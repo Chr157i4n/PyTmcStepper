@@ -1,12 +1,12 @@
-#pylint: disable=too-many-arguments
-#pylint: disable=too-many-public-methods
-#pylint: disable=too-many-branches
-#pylint: disable=too-many-positional-arguments
-#pylint: disable=import-outside-toplevel
-#pylint: disable=bare-except
-#pylint: disable=unused-import
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=import-outside-toplevel
+# pylint: disable=bare-except
+# pylint: disable=unused-import
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """TmcStepperDriver module
 
 this module has the function to move the motor via STEP/DIR pins
@@ -14,14 +14,19 @@ this module has the function to move the motor via STEP/DIR pins
 
 from .tmc_gpio import Gpio, GpioMode, Board
 from . import tmc_gpio
-from .motion_control._tmc_mc import TmcMotionControl, MovementAbsRel, MovementPhase, StopMode, Direction
+from .motion_control._tmc_mc import (
+    TmcMotionControl,
+    MovementAbsRel,
+    MovementPhase,
+    StopMode,
+    Direction,
+)
 from .enable_control._tmc_ec import TmcEnableControl
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from .motion_control._tmc_mc_step_dir import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 from ._tmc_logger import *
 from . import _tmc_math as tmc_math
-
 
 
 class TmcStepperDriver:
@@ -32,18 +37,18 @@ class TmcStepperDriver:
     2. move the motor via STEP/DIR pins
     """
 
-
-# Constructor/Destructor
-# ----------------------------
-    def __init__(self,
-                    tmc_ec:TmcEnableControl,
-                    tmc_mc:TmcMotionControl,
-                    gpio_mode = None,
-                    loglevel:Loglevel = Loglevel.INFO,
-                    logprefix:str|None = None,
-                    log_handlers:list|None = None,
-                    log_formatter:logging.Formatter|None = None
-                    ):
+    # Constructor/Destructor
+    # ----------------------------
+    def __init__(
+        self,
+        tmc_ec: TmcEnableControl,
+        tmc_mc: TmcMotionControl,
+        gpio_mode=None,
+        loglevel: Loglevel = Loglevel.INFO,
+        logprefix: str | None = None,
+        log_handlers: list | None = None,
+        log_formatter: logging.Formatter | None = None,
+    ):
         """constructor
 
         Args:
@@ -62,12 +67,12 @@ class TmcStepperDriver:
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.BOARD:Board = tmc_gpio.BOARD
-        self.tmc_mc:TmcMotionControl|None = None
-        self.tmc_ec:TmcEnableControl|None = None
-        self.tmc_logger:TmcLogger|None = None
+        self.BOARD: Board = tmc_gpio.BOARD
+        self.tmc_mc: TmcMotionControl | None = None
+        self.tmc_ec: TmcEnableControl | None = None
+        self.tmc_logger: TmcLogger
 
-        self._deinit_finished:bool = False
+        self._deinit_finished: bool = False
 
         if logprefix is None:
             logprefix = "StepperDriver"
@@ -87,16 +92,10 @@ class TmcStepperDriver:
 
         self.tmc_logger.log("GPIO Init finished", Loglevel.INFO)
 
-
-
         self.tmc_logger.log("Init finished", Loglevel.INFO)
-
-
 
     def __del__(self):
         self.deinit()
-
-
 
     def deinit(self):
         """destructor"""
@@ -106,7 +105,7 @@ class TmcStepperDriver:
             self.set_motor_enabled(False)
 
             self.tmc_logger.log("Deinit finished", Loglevel.INFO)
-            self._deinit_finished= True
+            self._deinit_finished = True
         else:
             self.tmc_logger.log("Deinit already finished", Loglevel.INFO)
         if self.tmc_ec is not None:
@@ -116,17 +115,15 @@ class TmcStepperDriver:
         if self.tmc_logger is not None:
             self.tmc_logger.deinit()
 
-
-# TmcEnableControl Wrapper
-# ----------------------------
-    def set_motor_enabled(self, en:bool):
+    # TmcEnableControl Wrapper
+    # ----------------------------
+    def set_motor_enabled(self, en: bool):
         """enable control wrapper"""
         if self.tmc_ec is not None:
             self.tmc_ec.set_motor_enabled(en)
 
-
-# TmcMotionControl Wrapper
-# ----------------------------
+    # TmcMotionControl Wrapper
+    # ----------------------------
     @property
     def current_pos(self):
         """_current_pos property"""
@@ -135,7 +132,7 @@ class TmcStepperDriver:
         return None
 
     @current_pos.setter
-    def current_pos(self, current_pos:int):
+    def current_pos(self, current_pos: int):
         """_current_pos setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.current_pos = current_pos
@@ -143,13 +140,15 @@ class TmcStepperDriver:
     @property
     def current_pos_fullstep(self):
         """_current_pos as fullstep property"""
+        if self.current_pos is None or self.mres is None:
+            return None
         return self.current_pos // self.mres
 
     @current_pos_fullstep.setter
-    def current_pos_fullstep(self, current_pos:int):
+    def current_pos_fullstep(self, current_pos: int):
         """_current_pos as fullstep setter"""
-        self.current_pos = current_pos * self.mres
-
+        if self.mres is not None:
+            self.current_pos = current_pos * self.mres
 
     @property
     def mres(self):
@@ -159,7 +158,7 @@ class TmcStepperDriver:
         return None
 
     @mres.setter
-    def mres(self, mres:int):
+    def mres(self, mres: int):
         """_mres setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.mres = mres
@@ -179,7 +178,7 @@ class TmcStepperDriver:
         return None
 
     @fullsteps_per_rev.setter
-    def fullsteps_per_rev(self, fullsteps_per_rev:int):
+    def fullsteps_per_rev(self, fullsteps_per_rev: int):
         """_fullsteps_per_rev setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.fullsteps_per_rev = fullsteps_per_rev
@@ -192,7 +191,7 @@ class TmcStepperDriver:
         return None
 
     @movement_abs_rel.setter
-    def movement_abs_rel(self, movement_abs_rel:MovementAbsRel):
+    def movement_abs_rel(self, movement_abs_rel: MovementAbsRel):
         """_movement_abs_rel setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.movement_abs_rel = movement_abs_rel
@@ -212,7 +211,7 @@ class TmcStepperDriver:
         return None
 
     @speed.setter
-    def speed(self, speed:int):
+    def speed(self, speed: int):
         """_speed setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.speed = speed
@@ -225,7 +224,7 @@ class TmcStepperDriver:
         return None
 
     @max_speed.setter
-    def max_speed(self, speed:int):
+    def max_speed(self, speed: int):
         """_max_speed setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.max_speed = speed
@@ -238,7 +237,7 @@ class TmcStepperDriver:
         return None
 
     @max_speed_fullstep.setter
-    def max_speed_fullstep(self, max_speed_fullstep:int):
+    def max_speed_fullstep(self, max_speed_fullstep: int):
         """_max_speed_fullstep setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.max_speed_fullstep = max_speed_fullstep
@@ -251,7 +250,7 @@ class TmcStepperDriver:
         return None
 
     @acceleration.setter
-    def acceleration(self, acceleration:int):
+    def acceleration(self, acceleration: int):
         """_acceleration setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.acceleration = acceleration
@@ -264,33 +263,37 @@ class TmcStepperDriver:
         return None
 
     @acceleration_fullstep.setter
-    def acceleration_fullstep(self, acceleration_fullstep:int):
+    def acceleration_fullstep(self, acceleration_fullstep: int):
         """_acceleration_fullstep setter"""
         if self.tmc_mc is not None:
             self.tmc_mc.acceleration_fullstep = acceleration_fullstep
 
-
-    def run_to_position_steps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
+    def run_to_position_steps(
+        self, steps, movement_abs_rel: MovementAbsRel | None = None
+    ) -> StopMode:
         """motioncontrol wrapper"""
         if self.tmc_mc is not None:
             return self.tmc_mc.run_to_position_steps(steps, movement_abs_rel)
         return StopMode.NO
 
-
-    def run_to_position_fullsteps(self, steps, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
+    def run_to_position_fullsteps(
+        self, steps, movement_abs_rel: MovementAbsRel | None = None
+    ) -> StopMode:
         """motioncontrol wrapper"""
         return self.run_to_position_steps(steps * self.mres, movement_abs_rel)
 
-
-    def run_to_position_revolutions(self, revs, movement_abs_rel:MovementAbsRel|None = None) -> StopMode:
+    def run_to_position_revolutions(
+        self, revs, movement_abs_rel: MovementAbsRel | None = None
+    ) -> StopMode:
         """motioncontrol wrapper"""
         return self.run_to_position_steps(revs * self.steps_per_rev, movement_abs_rel)
 
-
-# StepperDriver methods
-# ----------------------------
+    # StepperDriver methods
+    # ----------------------------
     def test_step(self):
         """test method"""
+        if self.tmc_mc is None:
+            return
         for _ in range(100):
             self.tmc_mc.set_direction(Direction.CW)
             self.tmc_mc.make_a_step()

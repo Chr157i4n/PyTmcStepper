@@ -6,6 +6,7 @@ import time
 import unittest
 from src.tmc_driver.tmc_2209 import *
 
+
 class TestTMCMove(unittest.TestCase):
     """TestTMCMove"""
 
@@ -41,35 +42,39 @@ class TestTMCMove(unittest.TestCase):
 
     def test_run_to_position_other(self):
         """test_run_to_position_other"""
-        self.tmc.run_to_position_fullsteps(200)                              #move to position 200 (fullsteps)
+        self.tmc.run_to_position_fullsteps(200)  # move to position 200 (fullsteps)
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 400, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_fullsteps(0)                                #move to position 0
+        self.tmc.run_to_position_fullsteps(0)  # move to position 0
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 0, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_fullsteps(200, MovementAbsRel.RELATIVE)     #move 200 fullsteps forward
+        self.tmc.run_to_position_fullsteps(
+            200, MovementAbsRel.RELATIVE
+        )  # move 200 fullsteps forward
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 400, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_fullsteps(-200, MovementAbsRel.RELATIVE)    #move 200 fullsteps backward
+        self.tmc.run_to_position_fullsteps(
+            -200, MovementAbsRel.RELATIVE
+        )  # move 200 fullsteps backward
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 0, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_steps(400)                                  #move to position 400 (µsteps)
+        self.tmc.run_to_position_steps(400)  # move to position 400 (µsteps)
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 400, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_steps(0)                                    #move to position 0
+        self.tmc.run_to_position_steps(0)  # move to position 0
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 0, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_revolutions(1)                              #move 1 revolution forward
+        self.tmc.run_to_position_revolutions(1)  # move 1 revolution forward
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 400, f"actual position: {pos}, expected position: 400")
 
-        self.tmc.run_to_position_revolutions(0)                              #move 1 revolution backward
+        self.tmc.run_to_position_revolutions(0)  # move 1 revolution backward
         pos = self.tmc.tmc_mc.current_pos
         self.assertEqual(pos, 0, f"actual position: {pos}, expected position: 400")
 
@@ -95,7 +100,11 @@ class TestTMCMove(unittest.TestCase):
         self.tmc.tmc_mc.stop()
         pos = self.tmc.tmc_mc.current_pos
         print(f"motorposition: {pos}")
-        self.assertTrue(400 < pos < 800, f"actual position: {pos}, expected position: 400 < pos < 800")
+        self.assertTrue(
+            400 < pos < 800,
+            f"actual position: {pos}, expected position: 400 < pos < 800",
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

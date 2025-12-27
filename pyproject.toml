@@ -1,16 +1,11 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "PyTmcStepper"
-version = "0.9.1"
-authors = [
-    { name = "Christian Köhlke", email = "christian@koehlke.de" }
-]
+version = "0.9.2"
+authors = [{ name = "Christian Köhlke", email = "christian@koehlke.de" }]
 description = "This is a Python libary to drive a stepper motor with a Trinamic stepper driver and a single board computer like a Raspberry Pi"
 readme = "README.md"
 license = "GPL-3.0"
@@ -23,9 +18,7 @@ classifiers = [
     "Natural Language :: English",
     "Topic :: System :: Hardware :: Hardware Drivers",
 ]
-dependencies = [
-    "pyserial",
-]
+dependencies = ["pyserial"]
 
 [project.urls]
 Homepage = "https://github.com/Chr157i4n/PyTmcStepper"

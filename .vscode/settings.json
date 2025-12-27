@@ -31,5 +31,8 @@
     "micropico.syncFolder": "src",
     "micropico.additionalSyncFolders": [
         "micropython"
-    ]
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }

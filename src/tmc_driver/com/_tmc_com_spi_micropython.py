@@ -1,6 +1,6 @@
-#pylint: disable=too-many-instance-attributes
-#pylint: disable=too-many-arguments
-#pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
 """
 TmcComSpiPico - SPI communication for MicroPython
 
@@ -10,7 +10,6 @@ Uses the machine.SPI interface available on RP2040 and similar boards.
 # Detect if we're running on MicroPython
 from machine import SPI, Pin  # pylint: disable=import-error
 from ._tmc_com_spi_base import TmcComSpiBase
-
 
 
 class TmcComSpiMicroPython(TmcComSpiBase):
@@ -23,15 +22,16 @@ class TmcComSpiMicroPython(TmcComSpiBase):
     TMC2240 uses SPI Mode 3: CPOL=1, CPHA=1
     """
 
-    def __init__(self,
-                 spi_id=0,
-                 cs_pin=17,
-                 sck_pin=18,
-                 mosi_pin=19,
-                 miso_pin=16,
-                 baudrate=1000000,
-                 mtr_id=0
-                 ):
+    def __init__(
+        self,
+        spi_id=0,
+        cs_pin=17,
+        sck_pin=18,
+        mosi_pin=19,
+        miso_pin=16,
+        baudrate=1000000,
+        driver_address=0,
+    ):
         """Initialize SPI communication
 
         Args:
@@ -41,10 +41,9 @@ class TmcComSpiMicroPython(TmcComSpiBase):
             mosi_pin: MOSI GPIO pin
             miso_pin: MISO GPIO pin
             baudrate: SPI clock frequency (default 1MHz)
-            mtr_id: Motor/driver ID (default 0)
-            tmc_logger: Logger instance (optional)
+            driver_address: driver address (default 0)
         """
-        super().__init__(mtr_id)
+        super().__init__(driver_address)
 
         self._spi_id = spi_id
         self._cs_pin = cs_pin
@@ -56,16 +55,21 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         self._spi = None
         self._cs = None
 
-
     def init(self):
         """Initialize SPI hardware"""
         # TMC2240 uses SPI Mode 3: CPOL=1, CPHA=1
-        self._spi = SPI(self._spi_id, baudrate=self._baudrate, polarity=1, phase=1,
-                        sck=Pin(self._sck_pin), mosi=Pin(self._mosi_pin), miso=Pin(self._miso_pin))
+        self._spi = SPI(
+            self._spi_id,
+            baudrate=self._baudrate,
+            polarity=1,
+            phase=1,
+            sck=Pin(self._sck_pin),
+            mosi=Pin(self._mosi_pin),
+            miso=Pin(self._miso_pin),
+        )
 
         # Setup CS pin (active low)
         self._cs = Pin(self._cs_pin, Pin.OUT, value=1)
-
 
     def deinit(self):
         """Deinitialize SPI hardware"""
@@ -73,7 +77,6 @@ class TmcComSpiMicroPython(TmcComSpiBase):
             self._spi.deinit()
             self._spi = None
         self._cs = None
-
 
     def _spi_transfer(self, data):
         """Perform SPI transfer

@@ -1,8 +1,6 @@
-#pylint: disable=wildcard-import
-#pylint: disable=unused-wildcard-import
-#pylint: disable=unused-import
-#pylint: disable=attribute-defined-outside-init
-#pylint: disable=no-member
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-instance-attributes
 """
 Register module
 """
@@ -16,9 +14,9 @@ class TCoolThrs(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
-        reg_map = [
-            ["tcoolthrs",           0,  0xFFFFF, int, None, ""]
-        ]
+        self.tcoolthrs: int
+
+        reg_map = [["tcoolthrs", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x14, "TCOOLTHRS", tmc_com, reg_map)
 
 
@@ -28,9 +26,9 @@ class SGThrs(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
-        reg_map = [
-            ["sgthrs",              0,  0xFFFFF, int, None, ""]
-        ]
+        self.sgthrs: int
+
+        reg_map = [["sgthrs", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x40, "SGTHRS", tmc_com, reg_map)
 
 
@@ -40,9 +38,9 @@ class SGResult(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
-        reg_map = [
-            ["sgresult",            0,  0xFFFFF, int, None, ""]
-        ]
+        self.sgresult: int
+
+        reg_map = [["sgresult", 0, 0xFFFFF, int, None, ""]]
         super().__init__(0x41, "SGRESULT", tmc_com, reg_map)
 
 
@@ -52,11 +50,17 @@ class CoolConf(TmcReg):
     def __init__(self, tmc_com: TmcCom):
         """constructor"""
 
+        self.seemin: bool
+        self.sedn: int
+        self.semax: int
+        self.seup: int
+        self.semin: int
+
         reg_map = [
-            ["seemin",              15, 0x1,    bool,   None, ""],
-            ["sedn",                13, 0x3,    int,    None, ""],
-            ["semax",               8, 0xF,     int,    None, ""],
-            ["seup",                5, 0x3,     int,    None, ""],
-            ["semin",               0, 0xF,     int,    None, ""]
+            ["seemin", 15, 0x1, bool, None, ""],
+            ["sedn", 13, 0x3, int, None, ""],
+            ["semax", 8, 0xF, int, None, ""],
+            ["seup", 5, 0x3, int, None, ""],
+            ["semin", 0, 0xF, int, None, ""],
         ]
         super().__init__(0x42, "COOLCONF", tmc_com, reg_map)

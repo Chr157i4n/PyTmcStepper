@@ -3,6 +3,7 @@ debug file for debuging the UART connection
 """
 
 import time
+
 try:
     from src.tmc_driver.tmc_2209 import *
     from src.tmc_driver.com._tmc_com_uart import *
@@ -16,13 +17,10 @@ print("SCRIPT START")
 print("---")
 
 
-
-
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 if tmc_gpio.BOARD == Board.RASPBERRY_PI:
     tmc = Tmc2209(None, None)
 elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
@@ -45,23 +43,18 @@ tmc.tmc_com.tmc_logger = tmc.tmc_logger
 tmc.tmc_com.init()
 
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # set the loglevel of the libary (currently only printed)
 # set whether the movement should be relative or absolute
 # both optional
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 tmc.tmc_logger.loglevel = Loglevel.DEBUG
 tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 
 
-
-
-
-
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # these functions read and print the current settings in the TMC register
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 print("---\n---")
 
 tmc.test_com()
@@ -70,12 +63,9 @@ tmc.test_com()
 print("---\n---")
 
 
-
-
-
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # deinitiate the Tmc2209 class
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 del tmc
 
 print("---")

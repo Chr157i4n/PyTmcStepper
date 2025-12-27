@@ -1,5 +1,5 @@
-#pylint: disable=too-many-instance-attributes
-#pylint: disable=unused-import
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=unused-import
 """
 Register module
 """
@@ -8,9 +8,8 @@ from .._tmc_logger import TmcLogger, Loglevel
 from ..com._tmc_com import TmcCom
 
 
-class TmcReg():
+class TmcReg:
     """Register class"""
-
 
     @property
     def addr(self) -> int:
@@ -37,8 +36,7 @@ class TmcReg():
         """flags property"""
         return self._flags
 
-
-    def __init__(self, address: int, name:str, tmc_com:TmcCom, reg_map:list):
+    def __init__(self, address: int, name: str, tmc_com: TmcCom, reg_map: list):
         """Constructor"""
         self._data_int: int
         self._flags: dict
@@ -48,8 +46,9 @@ class TmcReg():
         self._tmc_com = tmc_com
         self._reg_map = reg_map
 
+        self.deserialise(0)
 
-    def deserialise(self, data:int):
+    def deserialise(self, data: int):
         """Deserialises the register value
 
         Args:
@@ -59,7 +58,6 @@ class TmcReg():
             name, pos, mask, reg_class, _, _ = reg
             value = data >> pos & mask
             setattr(self, name, reg_class(value))
-
 
     def serialise(self) -> int:
         """Serialises the object to a register value
@@ -76,9 +74,10 @@ class TmcReg():
 
         return data
 
-
-    def log(self, logger: TmcLogger):
+    def log(self, logger: TmcLogger | None):
         """log this register"""
+        if logger is None:
+            return
         logger.log(f"{self._name} | {hex(self._addr)} | {bin(self._data_int)}")
 
         for reg in self._reg_map:
@@ -88,7 +87,6 @@ class TmcReg():
             if conv_func is not None:
                 log_string += f" {conv_func()} {unit}"
             logger.log(log_string)
-
 
     def read(self):
         """read this register"""
@@ -100,20 +98,17 @@ class TmcReg():
         self.deserialise(data)
         return data, flags
 
-
     def write(self):
         """write this register"""
         data = self.serialise()
         self._tmc_com.write_reg(self._addr, data)
-
 
     def write_check(self):
         """write this register and checks that the write was successful"""
         data = self.serialise()
         self._tmc_com.write_reg_check(self._addr, data)
 
-
-    def modify(self, name:str, value):
+    def modify(self, name: str, value):
         """modify a register value
 
         Args:
