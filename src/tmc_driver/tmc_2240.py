@@ -247,22 +247,22 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         """
         self.gconf.modify("shaft", direction)
 
-    def _set_irun_ihold(self, ihold: int, irun: int, ihold_delay: int, irun_delay: int):
+    def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int, irundelay: int):
         """sets the current scale (CS) for Running and Holding
         and the delay, when to be switched to Holding current
 
         Args:
         ihold (int): multiplicator for current while standstill [0-31]
         irun (int): current while running [0-31]
-        ihold_delay (int): delay after standstill for switching to ihold [0-15]
+        iholddelay (int): delay after standstill for switching to ihold [0-15]
 
         """
         self.ihold_irun.read()
 
         self.ihold_irun.ihold = ihold
         self.ihold_irun.irun = irun
-        self.ihold_irun.iholddelay = ihold_delay
-        self.ihold_irun.irundelay = irun_delay
+        self.ihold_irun.iholddelay = iholddelay
+        self.ihold_irun.irundelay = irundelay
 
         self.ihold_irun.write_check()
 
@@ -549,6 +549,11 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         Args:
             steps (int):
         """
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir):
+            raise TmcMotionControlException(
+                "tmc_mc is not of type TmcMotionControlStepDir; cannot test stallguard threshold"
+            )
+
         self.tmc_logger.log("---", Loglevel.INFO)
         self.tmc_logger.log("test_stallguard_threshold", Loglevel.INFO)
 

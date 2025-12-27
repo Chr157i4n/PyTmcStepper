@@ -216,6 +216,11 @@ class Tmc2209(Tmc220x, StallGuard):
         Args:
             steps (int):
         """
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir):
+            raise TmcMotionControlException(
+                "tmc_mc is not of type TmcMotionControlStepDir; cannot test stallguard threshold"
+            )
+
         self.tmc_logger.log("---", Loglevel.INFO)
         self.tmc_logger.log("test_stallguard_threshold", Loglevel.INFO)
 

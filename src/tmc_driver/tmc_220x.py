@@ -305,21 +305,21 @@ class Tmc220x(TmcStepperDriver):
 
         self.gconf.modify("internal_rsense", en)
 
-    def _set_irun_ihold(self, ihold: int, irun: int, ihold_delay: int):
+    def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int):
         """sets the current scale (CS) for Running and Holding
         and the delay, when to be switched to Holding current
 
         Args:
         ihold (int): multiplicator for current while standstill [0-31]
         irun (int): current while running [0-31]
-        ihold_delay (int): delay after standstill for switching to ihold [0-15]
+        iholddelay (int): delay after standstill for switching to ihold [0-15]
 
         """
         self.ihold_irun.read()
 
         self.ihold_irun.ihold = ihold
         self.ihold_irun.irun = irun
-        self.ihold_irun.ihold_delay = ihold_delay
+        self.ihold_irun.iholddelay = iholddelay
 
         self.ihold_irun.write_check()
 
@@ -405,7 +405,7 @@ class Tmc220x(TmcStepperDriver):
             bool: True = spreadcycle; False = stealthchop
         """
         self.gconf.read()
-        return self.gconf.spreadcycle
+        return self.gconf.en_spreadcycle
 
     def set_spreadcycle(self, en: bool):
         """enables spreadcycle (1) or stealthchop (0)
@@ -414,7 +414,7 @@ class Tmc220x(TmcStepperDriver):
         en (bool): true to enable spreadcycle; false to enable stealthchop
 
         """
-        self.gconf.modify("spreadcycle", en)
+        self.gconf.modify("en_spreadcycle", en)
 
     def get_interpolation(self) -> bool:
         """return whether the tmc inbuilt interpolation is active
