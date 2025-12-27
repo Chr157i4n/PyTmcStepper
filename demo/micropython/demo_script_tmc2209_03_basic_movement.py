@@ -60,7 +60,7 @@ print("---\n---")
 # set the Acceleration and maximal Speed in fullsteps
 # -----------------------------------------------------------------------
 tmc.acceleration_fullstep = 1000
-tmc.max_speed_fullstep = 100
+tmc.max_speed_fullstep = 250
 
 
 # -----------------------------------------------------------------------
