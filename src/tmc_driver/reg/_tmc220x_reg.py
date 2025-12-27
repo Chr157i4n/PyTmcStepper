@@ -1,8 +1,6 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=unused-import
-# pylint: disable=attribute-defined-outside-init
-# pylint: disable=no-member
+# pylint: disable=too-many-instance-attributes
 """
 Register module
 """

@@ -34,6 +34,8 @@ def compute_crc8_atm(datagram, initial_value=0):
 class IfcntRegister:
     """Interface for IFCNT register - defines only what tmc_com needs to know"""
 
+    # pylint: disable=too-few-public-methods
+
     ifcnt: int
 
     def read(self):
