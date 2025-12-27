@@ -31,7 +31,6 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         mosi_pin=19,
         miso_pin=16,
         baudrate=1000000,
-        driver_address=0,
     ):
         """Initialize SPI communication
 
@@ -42,9 +41,8 @@ class TmcComSpiMicroPython(TmcComSpiBase):
             mosi_pin: MOSI GPIO pin
             miso_pin: MISO GPIO pin
             baudrate: SPI clock frequency (default 1MHz)
-            driver_address: driver address (default 0)
         """
-        super().__init__(driver_address)
+        super().__init__()
 
         self._spi_id = spi_id
         self._cs_pin = cs_pin
