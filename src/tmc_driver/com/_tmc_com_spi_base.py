@@ -52,7 +52,7 @@ class TmcComSpiBase(TmcCom):
             Received data
         """
 
-    def read_reg(self, addr: int):
+    def read_reg(self, addr: int) -> tuple[list, dict]:
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -86,7 +86,7 @@ class TmcComSpiBase(TmcCom):
 
         return rtn[1:], flags
 
-    def read_int(self, addr: int, tries: int = 10):
+    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -100,7 +100,7 @@ class TmcComSpiBase(TmcCom):
         data, flags = self.read_reg(addr)
         return int.from_bytes(bytes(data), "big"), flags
 
-    def write_reg(self, addr: int, val: int):
+    def write_reg(self, addr: int, val: int) -> bool:
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -109,6 +109,9 @@ class TmcComSpiBase(TmcCom):
         Args:
             addr (int): HEX, which register to write
             val (int): value for that register
+
+        Returns:
+            bool: always True (no check possible)
         """
         self._w_frame[0] = addr | 0x80  # set write bit
 
@@ -119,7 +122,9 @@ class TmcComSpiBase(TmcCom):
 
         self._spi_transfer(self._w_frame)
 
-    def write_reg_check(self, addr: int, val: int, tries: int = 10):
+        return True
+
+    def write_reg_check(self, addr: int, val: int, tries: int = 10) -> bool:
         """IFCNT is disabled in SPI mode. Therefore, no check is possible.
         This only calls the write_reg function
 
@@ -127,21 +132,15 @@ class TmcComSpiBase(TmcCom):
             addr: HEX, which register to write
             val: value for that register
             tries: how many tries, before error is raised (Default value = 10)
+
+        Returns:
+            bool: always True (no check possible)
         """
         self.write_reg(addr, val)
+        return True
 
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
-
-    def handle_error(self):
-        """error handling"""
-        if self.error_handler_running:
-            return
-        self.error_handler_running = True
-        self._tmc_registers["gstat"].read()
-        self._tmc_registers["gstat"].log(self.tmc_logger)
-        self._tmc_registers["gstat"].check()
-        raise TmcDriverException("TMC220X: unknown error detected")
 
     def test_com(self, addr):
         """test com connection
@@ -149,13 +148,13 @@ class TmcComSpiBase(TmcCom):
         Args:
             addr (int):  HEX, which register to test
         """
-        del addr  # addr is not used here
-        self._tmc_registers["ioin"].read()
-        self._tmc_registers["ioin"].log(self.tmc_logger)
-        if self._tmc_registers["ioin"].data_int == 0:
+        data, flags = self.read_int(addr)
+        del flags  # unused
+
+        if data == 0:
             self._tmc_logger.log("No answer from TMC received", Loglevel.ERROR)
             return False
-        if self._tmc_registers["ioin"].version < 0x40:
-            self._tmc_logger.log("No correct Version from TMC received", Loglevel.ERROR)
-            return False
+        # if self._tmc_registers["ioin"].version < 0x40:
+        #     self._tmc_logger.log("No correct Version from TMC received", Loglevel.ERROR)
+        #     return False
         return True

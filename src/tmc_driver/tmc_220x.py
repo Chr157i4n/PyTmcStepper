@@ -120,6 +120,8 @@ class Tmc220x(TmcStepperDriver):
             self.pwmconf = PwmConf(self.tmc_com)
             self.drvstatus = DrvStatus(self.tmc_com)
 
+            self.tmc_com.ifcnt = self.ifcnt
+
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()

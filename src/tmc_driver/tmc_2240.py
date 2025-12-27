@@ -133,6 +133,8 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             self.sgresult = SgResult(self.tmc_com)
             self.sgind = SgInd(self.tmc_com)
 
+            self.tmc_com.ifcnt = self.ifcnt
+
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()

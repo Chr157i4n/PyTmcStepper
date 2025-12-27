@@ -67,26 +67,24 @@ class TmcComUartBase(TmcCom):
     def _uart_flush(self):
         """Flush UART buffers - to be implemented by subclass"""
 
-    def read_reg(self, addr: int):
+    def read_reg(self, addr: int) -> tuple[bytes, dict]:
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
         Args:
             addr (int): HEX, which register to read
+
         Returns:
             bytes: raw response
             Dict: flags (None for UART)
+
+        Raises:
+            TmcComException: if serial is not initialized or port is closed
         """
         if self.ser is None:
-            self._tmc_logger.log(
-                "Cannot read reg, serial is not initialized", Loglevel.ERROR
-            )
-            return None, None
+            raise TmcComException("Cannot read reg, serial is not initialized")
         if not self.ser.is_open:
-            self._tmc_logger.log(
-                "Cannot read reg, serial port is closed", Loglevel.ERROR
-            )
-            return None, None
+            raise TmcComException("Cannot read reg, serial port is closed")
 
         self._uart_flush()
 
@@ -108,22 +106,25 @@ class TmcComUartBase(TmcCom):
 
         return rtn, None
 
-    def read_int(self, addr: int, tries: int = 10):
+    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
         Args:
             addr (int): HEX, which register to read
             tries (int): how many tries, before error is raised (Default value = 10)
+
         Returns:
             int: register value
             Dict: flags
+
+        Raises:
+            TmcComException: if serial is not initialized or port is closed
         """
         if self.ser is None:
-            self._tmc_logger.log(
-                "Cannot read int, serial is not initialized", Loglevel.ERROR
-            )
-            return -1, None
+            raise TmcComException("Cannot read reg, serial is not initialized")
+        if not self.ser.is_open:
+            raise TmcComException("Cannot read reg, serial port is closed")
 
         while True:
             tries -= 1
@@ -148,16 +149,14 @@ class TmcComUartBase(TmcCom):
                 break
 
             if tries <= 0:
-                self._tmc_logger.log("after 10 tries not valid answer", Loglevel.ERROR)
-                self._tmc_logger.log(f"addr:\t{addr}", Loglevel.DEBUG)
-                self._tmc_logger.log(f"rtn:\t{rtn}", Loglevel.DEBUG)
-                self.handle_error()
-                return -1, None
+                raise TmcComException(
+                    f"after 10 tries not valid answer; addr: {addr}; rtn: {rtn}"
+                )
 
         val = struct.unpack(">i", rtn_data)[0]
         return val, flags
 
-    def write_reg(self, addr: int, val: int):
+    def write_reg(self, addr: int, val: int) -> bool:
         """this function can write a value to the register of the tmc
         1. use read_int to get the current setting of the TMC
         2. then modify the settings as wished
@@ -166,17 +165,17 @@ class TmcComUartBase(TmcCom):
         Args:
             addr (int): HEX, which register to write
             val (int): value for that register
+
+        Returns:
+            True if write was successful
+
+        Raises:
+            TmcComException: if serial is not initialized or port is closed
         """
         if self.ser is None:
-            self._tmc_logger.log(
-                "Cannot write reg, serial is not initialized", Loglevel.ERROR
-            )
-            return False
+            raise TmcComException("Cannot write reg, serial is not initialized")
         if not self.ser.is_open:
-            self._tmc_logger.log(
-                "Cannot read reg, serial port is closed", Loglevel.ERROR
-            )
-            return None, None
+            raise TmcComException("Cannot write reg, serial port is closed")
 
         self._uart_flush()
 
@@ -199,7 +198,7 @@ class TmcComUartBase(TmcCom):
 
         return True
 
-    def write_reg_check(self, addr: int, val: int, tries: int = 10):
+    def write_reg_check(self, addr: int, val: int, tries: int = 10) -> bool:
         """this function als writes a value to the register of the TMC
         but it also checks if the writing process was successfully by checking
         the InterfaceTransmissionCounter before and after writing
@@ -208,15 +207,18 @@ class TmcComUartBase(TmcCom):
             addr: HEX, which register to write
             val: value for that register
             tries: how many tries, before error is raised (Default value = 10)
-        """
-        if self.ser is None:
-            self._tmc_logger.log(
-                "Cannot write reg check, serial is not initialized", Loglevel.ERROR
-            )
-            return False
 
-        self._tmc_registers["ifcnt"].read()
-        ifcnt1 = self._tmc_registers["ifcnt"].ifcnt
+        Returns:
+            True if write was successful
+
+        Raises:
+            TmcComException: if IFCNT register is not set or write fails after retries
+        """
+        if self.ifcnt is None:
+            raise TmcComException("IFCNT register not set for UART communication")
+
+        self.ifcnt.read()
+        ifcnt1 = self.ifcnt.ifcnt
 
         if ifcnt1 == 255:
             ifcnt1 = -1
@@ -224,19 +226,14 @@ class TmcComUartBase(TmcCom):
         while True:
             self.write_reg(addr, val)
             tries -= 1
-            self._tmc_registers["ifcnt"].read()
-            ifcnt2 = self._tmc_registers["ifcnt"].ifcnt
-            if ifcnt1 >= ifcnt2:
-                self._tmc_logger.log("writing not successful!", Loglevel.ERROR)
-                self._tmc_logger.log(f"ifcnt: {ifcnt1}, {ifcnt2}", Loglevel.DEBUG)
-            else:
+            self.ifcnt.read()
+            ifcnt2 = self.ifcnt.ifcnt
+            if ifcnt2 >= ifcnt1:
                 return True
+            self._tmc_logger.log("writing not successful!", Loglevel.ERROR)
+            self._tmc_logger.log(f"ifcnt: {ifcnt1}, {ifcnt2}", Loglevel.DEBUG)
             if tries <= 0:
-                self._tmc_logger.log(
-                    "after 10 tries no valid write access", Loglevel.ERROR
-                )
-                self.handle_error()
-                return False
+                raise TmcComException("after 10 tries writing not successful")
 
     def flush_serial_buffer(self):
         """this function clear the communication buffers"""
@@ -244,27 +241,22 @@ class TmcComUartBase(TmcCom):
             return
         self._uart_flush()
 
-    def handle_error(self):
-        """error handling"""
-        if self.error_handler_running:
-            return
-        self.error_handler_running = True
-        self._tmc_registers["gstat"].read()
-        self._tmc_registers["gstat"].log(self.tmc_logger)
-        self._tmc_registers["gstat"].check()
-        raise TmcDriverException("TMC220X: unknown error detected")
-
     def test_com(self, addr):
         """test UART connection
 
         Args:
             addr (int):  HEX, which register to test
+
+        Returns:
+            bool: True if communication is OK, False otherwise
+
+        Raises:
+            TmcComException: if serial is not initialized or port is closed
         """
         if self.ser is None:
-            self._tmc_logger.log(
-                "Cannot test UART, serial is not initialized", Loglevel.ERROR
-            )
-            return False
+            raise TmcComException("Cannot test com, serial is not initialized")
+        if not self.ser.is_open:
+            raise TmcComException("Cannot test com, serial port is closed")
 
         self._uart_flush()
 

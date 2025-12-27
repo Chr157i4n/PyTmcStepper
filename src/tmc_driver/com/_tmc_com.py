@@ -7,6 +7,7 @@ import time
 import struct
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
+from .._tmc_exceptions import TmcComException
 
 
 def compute_crc8_atm(datagram, initial_value=0):
@@ -30,6 +31,15 @@ def compute_crc8_atm(datagram, initial_value=0):
     return crc
 
 
+class IfcntRegister:
+    """Interface for IFCNT register - defines only what tmc_com needs to know"""
+
+    ifcnt: int
+
+    def read(self):
+        """Read the register"""
+
+
 class TmcCom:
     """TmcCom"""
 
@@ -43,16 +53,6 @@ class TmcCom:
         """set the tmc_logger"""
         self._tmc_logger = tmc_logger
 
-    @property
-    def tmc_registers(self):
-        """get the tmc_registers"""
-        return self._tmc_registers
-
-    @tmc_registers.setter
-    def tmc_registers(self, tmc_registers):
-        """set the tmc_registers"""
-        self._tmc_registers = tmc_registers
-
     def __init__(self, mtr_id: int = 0):
         """constructor
 
@@ -61,11 +61,7 @@ class TmcCom:
         """
         self._tmc_logger: TmcLogger
         self.mtr_id = mtr_id
-        self._tmc_registers = None
-
-        self.mtr_id: int = 0
-        # self.r_frame:list[int]
-        # self.w_frame:list[int]
+        self.ifcnt: IfcntRegister | None = None
         self.communication_pause: int = 0
         self.error_handler_running: bool = False
 
@@ -78,7 +74,7 @@ class TmcCom:
         """deinit communication"""
 
     @abstractmethod
-    def read_reg(self, addr: int):
+    def read_reg(self, addr: int) -> tuple[int, dict]:
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -90,7 +86,7 @@ class TmcCom:
         """
 
     @abstractmethod
-    def read_int(self, addr: int, tries: int = 10):
+    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 

@@ -8,6 +8,19 @@ from src.tmc_driver._tmc_logger import *
 from src.tmc_driver.com._tmc_com_uart import *
 
 
+class _FakeSerial:
+    """Fake serial object for compatibility with base class"""
+
+    def __init__(self, uart):
+        """Constructor for fake serial object"""
+        self._uart = uart
+        self.is_open = True
+
+    def close(self):
+        """Close the fake serial port"""
+        self.is_open = False
+
+
 class TestTmcComUart(unittest.TestCase):
     """TestTmcComUart"""
 
@@ -17,7 +30,7 @@ class TestTmcComUart(unittest.TestCase):
 
     def test_read_int(self):
         """test_read_int"""
-        self.tmc_uart.ser = 1  # to avoid early return, due to ser being None
+        self.tmc_uart.ser = _FakeSerial(None)
         with mock.patch.object(
             TmcComUart,
             "read_reg",
