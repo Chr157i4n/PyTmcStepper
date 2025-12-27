@@ -1,4 +1,3 @@
-# pylint: disable=too-many-instance-attributes
 """
 STEP/REG Motion Control module
 """
@@ -6,9 +5,9 @@ STEP/REG Motion Control module
 from ._tmc_mc import Direction
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
-from .._tmc_logger import TmcLogger, Loglevel
-from ..tmc_gpio import Gpio, GpioMode
+from .._tmc_logger import Loglevel
 from .. import tmc_gpio
+from .._tmc_exceptions import TmcMotionControlException
 
 
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
@@ -29,15 +28,6 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         super().__init__(pin_step, None)
         self._tmc_com: TmcCom | None = None
 
-    def init(self, tmc_logger: TmcLogger):
-        """init: called by the Tmc class"""
-        super().init(tmc_logger)
-        self._tmc_logger.log(f"STEP Pin: {self._pin_step}", Loglevel.DEBUG)
-        tmc_gpio.tmc_gpio.gpio_setup(self._pin_step, GpioMode.OUT, initial=Gpio.LOW)
-
-        self.max_speed_fullstep = 100
-        self.acceleration_fullstep = 100
-
     def __del__(self):
         self.deinit()
 
@@ -56,4 +46,8 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         self._direction = direction
         self._tmc_logger.log(f"New Direction is: {direction}", Loglevel.MOVEMENT)
 
-        self._tmc_com.tmc_registers["gconf"].modify("shaft", bool(int(direction)))
+        gconf = self.get_register("gconf")
+        if gconf is None:
+            raise TmcMotionControlException("TMC register GCONF not available")
+
+        gconf.modify("shaft", bool(int(direction)))

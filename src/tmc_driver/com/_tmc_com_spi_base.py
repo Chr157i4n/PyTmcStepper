@@ -141,19 +141,25 @@ class TmcComSpiBase(TmcCom):
     def flush_serial_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
 
-    def test_com(self, addr):
+    def test_com(self):
         """test com connection
 
-        Args:
-            addr (int):  HEX, which register to test
+        Returns:
+            bool: True if communication is OK, False otherwise
+
+        Raises:
+            TmcComException: if TMC register IOIN not available
         """
-        data, flags = self.read_int(addr)
+        ioin = self.get_register("ioin")
+        if ioin is None:
+            raise TmcComException("TMC register IOIN not available")
+        data, flags = ioin.read()
         del flags  # unused
 
         if data == 0:
             self._tmc_logger.log("No answer from TMC received", Loglevel.ERROR)
             return False
-        # if self._tmc_registers["ioin"].version < 0x40:
-        #     self._tmc_logger.log("No correct Version from TMC received", Loglevel.ERROR)
-        #     return False
+        if ioin.version < 0x21:
+            self._tmc_logger.log("No correct Version from TMC received", Loglevel.ERROR)
+            return False
         return True

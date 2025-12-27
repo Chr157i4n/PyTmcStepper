@@ -8,6 +8,7 @@ import struct
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException
+from ..reg._tmc_reg import TmcReg
 
 
 def compute_crc8_atm(datagram, initial_value=0):
@@ -31,17 +32,6 @@ def compute_crc8_atm(datagram, initial_value=0):
     return crc
 
 
-class IfcntRegister:
-    """Interface for IFCNT register - defines only what tmc_com needs to know"""
-
-    # pylint: disable=too-few-public-methods
-
-    ifcnt: int
-
-    def read(self):
-        """Read the register"""
-
-
 class TmcCom:
     """TmcCom"""
 
@@ -63,9 +53,8 @@ class TmcCom:
         """
         self._tmc_logger: TmcLogger
         self.driver_address = driver_address
-        self.ifcnt: IfcntRegister | None = None
         self.communication_pause: int = 0
-        self.error_handler_running: bool = False
+        self._get_register_callback = None
 
     @abstractmethod
     def init(self):
@@ -75,8 +64,29 @@ class TmcCom:
     def deinit(self):
         """deinit communication"""
 
+    def set_get_register_callback(self, callback):
+        """Set callback to get registers from parent TMC class
+
+        Args:
+            callback: Function that takes register name (str) and returns register object
+        """
+        self._get_register_callback = callback
+
+    def get_register(self, name: str) -> TmcReg | None:
+        """Get register by name from parent TMC class
+
+        Args:
+            name: Register name (e.g. 'gconf', 'chopconf')
+
+        Returns:
+            Register object or None if callback not set
+        """
+        if self._get_register_callback is not None:
+            return self._get_register_callback(name)
+        return None
+
     @abstractmethod
-    def read_reg(self, addr: int) -> tuple[int, dict]:
+    def read_reg(self, addr: int) -> tuple[int, dict | None]:
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -88,7 +98,7 @@ class TmcCom:
         """
 
     @abstractmethod
-    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
+    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict | None]:
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -129,9 +139,5 @@ class TmcCom:
         """this function clear the communication buffers of the Raspberry Pi"""
 
     @abstractmethod
-    def test_com(self, addr):
-        """test com connection
-
-        Args:
-            addr (int):  HEX, which register to test
-        """
+    def test_com(self):
+        """test com connection"""

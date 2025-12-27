@@ -122,6 +122,13 @@ class Tmc220x(TmcStepperDriver):
 
             self.tmc_com.ifcnt = self.ifcnt
 
+            # Register callback for submodules to access registers
+            self.tmc_com.set_get_register_callback(self._get_register)
+            if self.tmc_mc is not None:
+                self.tmc_mc.set_get_register_callback(self._get_register)
+            if self.tmc_ec is not None:
+                self.tmc_ec.set_get_register_callback(self._get_register)
+
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
@@ -142,6 +149,17 @@ class Tmc220x(TmcStepperDriver):
     def set_deinitialize_true(self):
         """set deinitialize to true"""
         self._deinit_finished = True
+
+    def _get_register(self, name: str) -> TmcReg | None:
+        """Get register by name - callback for submodules
+
+        Args:
+            name: Register name (e.g. 'gconf', 'chopconf')
+
+        Returns:
+            Register object or None if not found
+        """
+        return getattr(self, name, None)
 
     # Tmc220x methods
     # ----------------------------
@@ -634,6 +652,4 @@ class Tmc220x(TmcStepperDriver):
         self.tmc_logger.log("---")
         self.tmc_logger.log("TEST COM")
 
-        ioin = Ioin(self.tmc_com)
-
-        return self.tmc_com.test_com(ioin.addr)
+        return self.tmc_com.test_com()

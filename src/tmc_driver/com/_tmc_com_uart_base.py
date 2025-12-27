@@ -66,7 +66,7 @@ class TmcComUartBase(TmcCom):
     def _uart_flush(self):
         """Flush UART buffers - to be implemented by subclass"""
 
-    def read_reg(self, addr: int) -> tuple[bytes, dict]:
+    def read_reg(self, addr: int) -> tuple[bytes, None]:
         """reads the registry on the TMC with a given address.
         returns the binary value of that register
 
@@ -93,8 +93,7 @@ class TmcComUartBase(TmcCom):
 
         rtn = self._uart_write(self.r_frame)
         if rtn != len(self.r_frame):
-            self._tmc_logger.log("Err in write", Loglevel.ERROR)
-            return None, None
+            raise TmcComException("Error in UART write")
 
         # adjust per baud and hardware. Sequential reads without some delay fail.
         time.sleep(self.communication_pause)
@@ -105,7 +104,7 @@ class TmcComUartBase(TmcCom):
 
         return rtn, None
 
-    def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
+    def read_int(self, addr: int, tries: int = 10) -> tuple[int, None]:
         """this function tries to read the registry of the TMC 10 times
         if a valid answer is returned, this function returns it as an integer
 
@@ -213,11 +212,12 @@ class TmcComUartBase(TmcCom):
         Raises:
             TmcComException: if IFCNT register is not set or write fails after retries
         """
-        if self.ifcnt is None:
-            raise TmcComException("IFCNT register not set for UART communication")
+        ifcnt = self.get_register("ifcnt")
+        if ifcnt is None:
+            raise TmcComException("TMC register IFCNT not available")
 
-        self.ifcnt.read()
-        ifcnt1 = self.ifcnt.ifcnt
+        ifcnt.read()
+        ifcnt1 = ifcnt.ifcnt
 
         if ifcnt1 == 255:
             ifcnt1 = -1
@@ -225,8 +225,8 @@ class TmcComUartBase(TmcCom):
         while True:
             self.write_reg(addr, val)
             tries -= 1
-            self.ifcnt.read()
-            ifcnt2 = self.ifcnt.ifcnt
+            ifcnt.read()
+            ifcnt2 = ifcnt.ifcnt
             if ifcnt2 >= ifcnt1:
                 return True
             self._tmc_logger.log("writing not successful!", Loglevel.ERROR)
@@ -240,27 +240,26 @@ class TmcComUartBase(TmcCom):
             return
         self._uart_flush()
 
-    def test_com(self, addr):
+    def test_com(self):
         """test UART connection
-
-        Args:
-            addr (int):  HEX, which register to test
 
         Returns:
             bool: True if communication is OK, False otherwise
 
         Raises:
-            TmcComException: if serial is not initialized or port is closed
+            TmcComException: if TMC register IOIN not available or serial not initialized
         """
         if self.ser is None:
             raise TmcComException("Cannot test com, serial is not initialized")
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
-        self._uart_flush()
+        ioin = self.get_register("ioin")
+        if ioin is None:
+            raise TmcComException("TMC register IOIN not available")
 
         self.r_frame[1] = self.driver_address
-        self.r_frame[2] = addr
+        self.r_frame[2] = ioin.addr
         self.r_frame[3] = compute_crc8_atm(self.r_frame[:-1])
 
         rtn = self._uart_write(self.r_frame)
@@ -327,6 +326,16 @@ class TmcComUartBase(TmcCom):
                 Loglevel.DEBUG,
             )
             status = False
+
+        if status:
+            ioin.read()
+
+            if ioin.version < 0x21:
+                self._tmc_logger.log(
+                    f"No correct Version from TMC received: {ioin.version}",
+                    Loglevel.ERROR,
+                )
+                status = False
 
         self.tmc_logger.log("---")
         if status:
