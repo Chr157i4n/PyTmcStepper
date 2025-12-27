@@ -249,6 +249,8 @@ class TmcComUartBase(TmcCom):
         Raises:
             TmcComException: if TMC register IOIN not available or serial not initialized
         """
+        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-branches
         if self.ser is None:
             raise TmcComException("Cannot test com, serial is not initialized")
         if not self.ser.is_open:

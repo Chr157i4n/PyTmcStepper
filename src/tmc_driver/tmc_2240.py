@@ -77,6 +77,8 @@ class Tmc2240(TmcStepperDriver, StallGuard):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
+        # pylint: disable=too-many-statements
+
         self.tmc_com: TmcCom | None = None
         self._pin_stallguard: int | None = None
         self._sg_callback: types.FunctionType | None = None
