@@ -1,10 +1,9 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-instance-attributes
 """
 Register module
 """
 
+from ._tmc_reg import TmcReg, TmcCom
 from ._tmc220x_reg import *
 
 

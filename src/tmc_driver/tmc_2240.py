@@ -79,7 +79,7 @@ class Tmc2240(TmcStepperDriver, StallGuard):
         """
         # pylint: disable=too-many-statements
 
-        self.tmc_com: TmcCom | None = None
+        self.tmc_com = tmc_com
         self._pin_stallguard: int | None = None
         self._sg_callback: types.FunctionType | None = None
         self._sg_threshold: int = 100  # threshold for stallguard
@@ -101,18 +101,17 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc"
         )
 
-        if tmc_com is not None:
-            self.tmc_com = tmc_com
+        if self.tmc_com is not None:
             self.tmc_com.tmc_logger = self.tmc_logger
             self.tmc_com.driver_address = driver_address
 
             self.tmc_com.init()
 
             if hasattr(self.tmc_mc, "tmc_com"):
-                self.tmc_mc.tmc_com = tmc_com
+                self.tmc_mc.tmc_com = self.tmc_com
 
             if hasattr(self.tmc_ec, "tmc_com"):
-                self.tmc_ec.tmc_com = tmc_com
+                self.tmc_ec.tmc_com = self.tmc_com
 
             self.gconf = GConf(self.tmc_com)
             self.gstat = GStat(self.tmc_com)

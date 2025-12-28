@@ -49,7 +49,7 @@ class Tmc220x(TmcStepperDriver):
         self,
         tmc_ec: TmcEnableControl,
         tmc_mc: TmcMotionControl,
-        tmc_com: TmcComUartBase | None = None,
+        tmc_com: TmcCom | None = None,
         driver_address: int = 0,
         gpio_mode=None,
         loglevel: Loglevel = Loglevel.INFO,
@@ -74,7 +74,7 @@ class Tmc220x(TmcStepperDriver):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.tmc_com: TmcComUartBase | None = None
+        self.tmc_com = tmc_com
 
         if logprefix is None:
             logprefix = f"TMC2209 {driver_address}"
@@ -93,18 +93,17 @@ class Tmc220x(TmcStepperDriver):
             tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc"
         )
 
-        if tmc_com is not None:
-            self.tmc_com = tmc_com
+        if self.tmc_com is not None:
             self.tmc_com.tmc_logger = self.tmc_logger
             self.tmc_com.driver_address = driver_address
 
             self.tmc_com.init()
 
             if hasattr(self.tmc_mc, "tmc_com"):
-                self.tmc_mc.tmc_com = tmc_com
+                self.tmc_mc.tmc_com = self.tmc_com
 
             if hasattr(self.tmc_ec, "tmc_com"):
-                self.tmc_ec.tmc_com = tmc_com
+                self.tmc_ec.tmc_com = self.tmc_com
 
             self.gconf = GConf(self.tmc_com)
             self.gstat = GStat(self.tmc_com)

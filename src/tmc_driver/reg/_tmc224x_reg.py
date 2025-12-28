@@ -1,12 +1,10 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-instance-attributes
 """
 Register module
 """
 
 import math
-from ._tmc_reg import *
+from ._tmc_reg import TmcReg, TmcCom
 from .._tmc_exceptions import TmcDriverException
 
 

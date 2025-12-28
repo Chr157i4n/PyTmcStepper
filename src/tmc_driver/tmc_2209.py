@@ -20,7 +20,7 @@ class Tmc2209(Tmc220x, StallGuard):
         self,
         tmc_ec: TmcEnableControl,
         tmc_mc: TmcMotionControl,
-        tmc_com: TmcComUartBase | None = None,
+        tmc_com: TmcCom | None = None,
         driver_address: int = 0,
         gpio_mode=None,
         loglevel: Loglevel = Loglevel.INFO,
