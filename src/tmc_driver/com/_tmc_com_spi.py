@@ -25,7 +25,6 @@ class TmcComSpi(TmcComSpiBase):
         spi_bus: int,
         spi_dev: int,
         spi_speed: int = 8000000,
-        driver_address: int = 0,
     ):
         """constructor
 
@@ -33,9 +32,8 @@ class TmcComSpi(TmcComSpiBase):
             spi_bus (int): SPI bus number
             spi_dev (int): SPI device number
             spi_speed (int, optional): SPI speed in Hz. Defaults to 8000000.
-            driver_address (int, optional): driver address. Defaults to 0.
         """
-        super().__init__(driver_address)
+        super().__init__()
 
         self.spi = spidev.SpiDev()
 

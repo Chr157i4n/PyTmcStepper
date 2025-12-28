@@ -1,5 +1,7 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
 """
 TmcXXXX driver module
 """

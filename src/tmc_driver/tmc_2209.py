@@ -1,5 +1,7 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
 """Tmc2209 stepper driver module"""
 
 from .tmc_220x import *

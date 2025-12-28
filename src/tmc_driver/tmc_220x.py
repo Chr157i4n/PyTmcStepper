@@ -1,6 +1,10 @@
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-public-methods
 """Tmc220X stepper driver module
 
 this module has two different functions:
@@ -490,8 +494,8 @@ class Tmc220x(TmcXXXX):
         Returns:
             int: TStep time
         """
-        self.chopconf.read()
-        return self.chopconf.tstep
+        self.tstep.read()
+        return self.tstep.tstep
 
     def set_tpwmthrs(self, tpwmthrs: int):
         """sets the current tpwmthrs

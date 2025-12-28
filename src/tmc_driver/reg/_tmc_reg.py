@@ -101,7 +101,7 @@ class TmcReg:
             log_string = f"  {name:<20}{value:<10}"
             if conv_func is not None:
                 log_string += f" {conv_func()} {unit}"
-            logger.log(log_string)
+            logger.log(log_string, Loglevel.INFO)
 
     def read(self):
         """read this register"""
