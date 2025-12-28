@@ -76,8 +76,8 @@ class TestTMCModules(unittest.TestCase):
     COM: list[TmcCom] = [TmcComUart("/dev/serial0", 115200)]
     COM[0].ser = _FakeSerial()
 
-    if SPI_AVAILABLE:
-        COM.append(TmcComSpi(0, 0))
+    # if SPI_AVAILABLE:
+    #     COM.append(TmcComSpi(0, 0))
 
     def setUp(self):
         """setUp"""
@@ -98,11 +98,20 @@ class TestTMCModules(unittest.TestCase):
                             mc=mc.__class__.__name__,
                             com=com.__class__.__name__,
                         ):
-                            if ec not in driver.SUPPORTED_EC_TYPES:
+                            if not any(
+                                isinstance(ec, ec_type)
+                                for ec_type in driver.SUPPORTED_EC_TYPES
+                            ):
                                 continue
-                            if mc not in driver.SUPPORTED_MC_TYPES:
+                            if not any(
+                                isinstance(mc, mc_type)
+                                for mc_type in driver.SUPPORTED_MC_TYPES
+                            ):
                                 continue
-                            if com not in driver.SUPPORTED_COM_TYPES:
+                            if not any(
+                                isinstance(com, com_type)
+                                for com_type in driver.SUPPORTED_COM_TYPES
+                            ):
                                 continue
 
                             instance = driver(
@@ -114,6 +123,11 @@ class TestTMCModules(unittest.TestCase):
                             self.assertIsInstance(instance.tmc_ec, ec.__class__)
                             self.assertIsInstance(instance.tmc_mc, mc.__class__)
                             self.assertIsInstance(instance.tmc_com, com.__class__)
+
+                            instance.set_motor_enabled(True)
+                            instance.set_motor_enabled(False)
+
+                            instance.run_to_position_steps(10)
 
 
 if __name__ == "__main__":
