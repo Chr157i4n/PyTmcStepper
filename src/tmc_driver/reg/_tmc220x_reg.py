@@ -4,14 +4,14 @@ Register module
 """
 
 import math
-from ._tmc_reg import TmcReg, TmcCom
+from ._tmc_reg import TmcReg, TmcComStub
 from .._tmc_exceptions import TmcDriverException
 
 
 class GConf(TmcReg):
     """GCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.test_mode: bool
         self.multistep_filt: bool
@@ -42,7 +42,7 @@ class GConf(TmcReg):
 class GStat(TmcReg):
     """GSTAT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.uv_cp: bool
         self.drv_err: bool
@@ -69,7 +69,7 @@ class GStat(TmcReg):
 class IfCnt(TmcReg):
     """IFCNT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.ifcnt: int
 
@@ -80,7 +80,7 @@ class IfCnt(TmcReg):
 class Ioin(TmcReg):
     """IOIN register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.version: int
         self.dir: bool
@@ -105,7 +105,7 @@ class Ioin(TmcReg):
 class IHoldIRun(TmcReg):
     """IHOLD_IRUN register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.iholddelay: int
         self.irun: int
@@ -122,7 +122,7 @@ class IHoldIRun(TmcReg):
 class TPowerDown(TmcReg):
     """TPowerDown register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.tpowerdown: int
 
@@ -133,7 +133,7 @@ class TPowerDown(TmcReg):
 class TStep(TmcReg):
     """TSTEP register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.tstep: int
 
@@ -144,7 +144,7 @@ class TStep(TmcReg):
 class TPwmThrs(TmcReg):
     """TPWMTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.tpwmthrs: int
 
@@ -155,7 +155,7 @@ class TPwmThrs(TmcReg):
 class VActual(TmcReg):
     """VACTUAL register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.vactual: int
 
@@ -166,7 +166,7 @@ class VActual(TmcReg):
 class MsCnt(TmcReg):
     """MSCNT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.mscnt: int
 
@@ -177,7 +177,7 @@ class MsCnt(TmcReg):
 class ChopConf(TmcReg):
     """CHOPCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.diss2vs: bool
         self.diss2g: bool
@@ -220,7 +220,7 @@ class ChopConf(TmcReg):
 class PwmConf(TmcReg):
     """PWMCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.pwm_lim: int
         self.pwm_reg: int
@@ -247,7 +247,7 @@ class PwmConf(TmcReg):
 class DrvStatus(TmcReg):
     """DRVSTATUS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.stst: bool
         self.stealth: bool

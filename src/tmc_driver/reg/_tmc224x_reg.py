@@ -4,14 +4,14 @@ Register module
 """
 
 import math
-from ._tmc_reg import TmcReg, TmcCom
+from ._tmc_reg import TmcReg, TmcComStub
 from .._tmc_exceptions import TmcDriverException
 
 
 class GConf(TmcReg):
     """GCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.direct_mode: bool
@@ -53,7 +53,7 @@ class GConf(TmcReg):
 class GStat(TmcReg):
     """GSTAT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.vm_uvlo: bool
@@ -89,7 +89,7 @@ class GStat(TmcReg):
 class IfCnt(TmcReg):
     """IFCNT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.ifcnt: int
@@ -101,7 +101,7 @@ class IfCnt(TmcReg):
 class Ioin(TmcReg):
     """IOIN register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.version: int
@@ -147,7 +147,7 @@ class Ioin(TmcReg):
 class DrvConf(TmcReg):
     """DRV_CONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.slope_control: int
@@ -163,7 +163,7 @@ class DrvConf(TmcReg):
 class GlobalScaler(TmcReg):
     """GLOBAL_SCALER register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.global_scaler: int
@@ -175,7 +175,7 @@ class GlobalScaler(TmcReg):
 class IHoldIRun(TmcReg):
     """IHOLD_IRUN register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.irundelay: int
@@ -195,7 +195,7 @@ class IHoldIRun(TmcReg):
 class TPowerDown(TmcReg):
     """TPOWERDOWN register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.tpowerdown: int
@@ -207,7 +207,7 @@ class TPowerDown(TmcReg):
 class TStep(TmcReg):
     """TSTEP register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.tstep: int
@@ -219,7 +219,7 @@ class TStep(TmcReg):
 class THigh(TmcReg):
     """THIGH register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.thigh: int
@@ -231,7 +231,7 @@ class THigh(TmcReg):
 class ADCVSupplyAIN(TmcReg):
     """ADCV_SUPPLY_AIN register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.adc_ain: int
@@ -257,7 +257,7 @@ class ADCVSupplyAIN(TmcReg):
 class ADCTemp(TmcReg):
     """ADC_TEMP register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.adc_temp: int
@@ -274,7 +274,7 @@ class ADCTemp(TmcReg):
 class MsCnt(TmcReg):
     """MSCNT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
         self.mscnt: int
 
@@ -285,7 +285,7 @@ class MsCnt(TmcReg):
 class ChopConf(TmcReg):
     """CHOPCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.diss2vs: bool
@@ -339,7 +339,7 @@ class ChopConf(TmcReg):
 class CoolConf(TmcReg):
     """COOLCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.sfilt: bool
@@ -365,7 +365,7 @@ class CoolConf(TmcReg):
 class DrvStatus(TmcReg):
     """DRVSTATUS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.stst: bool
@@ -405,7 +405,7 @@ class DrvStatus(TmcReg):
 class TCoolThrs(TmcReg):
     """TCOOLTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.tcoolthrs: int
@@ -417,7 +417,7 @@ class TCoolThrs(TmcReg):
 class SgThrs(TmcReg):
     """SGTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.sg_angle_offset: bool
@@ -435,7 +435,7 @@ class SgThrs(TmcReg):
 class SgResult(TmcReg):
     """SGRESULT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.sgresult: int
@@ -447,7 +447,7 @@ class SgResult(TmcReg):
 class SgInd(TmcReg):
     """SGIND register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.sg_ind_2: int

@@ -3,14 +3,14 @@
 Register module
 """
 
-from ._tmc_reg import TmcReg, TmcCom
+from ._tmc_reg import TmcReg, TmcComStub
 from ._tmc220x_reg import *
 
 
 class TCoolThrs(TmcReg):
     """TCOOLTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.tcoolthrs: int
@@ -22,7 +22,7 @@ class TCoolThrs(TmcReg):
 class SGThrs(TmcReg):
     """SGTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.sgthrs: int
@@ -34,7 +34,7 @@ class SGThrs(TmcReg):
 class SGResult(TmcReg):
     """SGRESULT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.sgresult: int
@@ -46,7 +46,7 @@ class SGResult(TmcReg):
 class CoolConf(TmcReg):
     """COOLCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
+    def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
         self.seemin: bool

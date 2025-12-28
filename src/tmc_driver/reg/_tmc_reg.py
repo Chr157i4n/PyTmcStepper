@@ -7,7 +7,7 @@ Register module
 from .._tmc_logger import TmcLogger, Loglevel
 
 
-class TmcCom:
+class TmcComStub:
     """Stub for type hints"""
 
     def read_int(self, address: int):
@@ -51,7 +51,7 @@ class TmcReg:
         """flags property"""
         return self._flags
 
-    def __init__(self, address: int, name: str, tmc_com: TmcCom, reg_map: list):
+    def __init__(self, address: int, name: str, tmc_com: TmcComStub, reg_map: list):
         """Constructor"""
         self._data_int: int
         self._flags: dict
