@@ -14,6 +14,14 @@ from src.tmc_driver.tmc_2240 import *
 from src.tmc_driver.com._tmc_com_uart import *
 from src.tmc_driver.com._tmc_com_uart_base import compute_crc8_atm
 
+SPI_AVAILABLE = False
+try:
+    from src.tmc_driver.com._tmc_com_spi import *
+
+    SPI_AVAILABLE = True
+except ImportError:
+    pass
+
 
 class _FakeSerial:
     """Fake serial object for compatibility with base class"""
@@ -37,6 +45,7 @@ class _FakeSerial:
         self.com_counter += 1
 
         rtn = [0] * size
+        # Faking IFCNT Value
         rtn[7:11] = [0x00, 0x00, 0x00, self.com_counter & 0xFF]
         if size == 12:
             rtn[11] = compute_crc8_atm(rtn[4:11])
@@ -65,9 +74,13 @@ class TestTMCModules(unittest.TestCase):
         TmcMotionControlVActual(),
     ]
     COM: list[TmcCom] = [TmcComUart("/dev/serial0", 115200)]
+    COM[0].ser = _FakeSerial()
+
+    if SPI_AVAILABLE:
+        COM.append(TmcComSpi(0, 0))
 
     def setUp(self):
-        self.COM[0].ser = _FakeSerial()
+        """setUp"""
 
     def tearDown(self):
         """tearDown"""
