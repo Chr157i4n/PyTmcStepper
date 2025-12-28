@@ -31,6 +31,7 @@ class StallGuard:
         """initialize StallGuard instance variables"""
         self._pin_stallguard: int | None = None
         self._sg_callback: types.FunctionType | None = None
+        self._sg_threshold: int = 100  # threshold for stallguard
 
     def __del__(self):
         self.deinit()

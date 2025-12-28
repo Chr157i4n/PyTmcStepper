@@ -14,6 +14,8 @@ from .reg._tmc2209_reg import *
 class Tmc2209(Tmc220x, StallGuard):
     """Tmc2209"""
 
+    DRIVER_FAMILY = "TMC2209"
+
     # Constructor/Destructor
     # ----------------------------
     def __init__(
@@ -59,14 +61,9 @@ class Tmc2209(Tmc220x, StallGuard):
         StallGuard.__init__(self)
 
         if tmc_com is not None:
-            self.tcool_thrs = TCoolThrs(self.tmc_com)
-            self.sg_thrs = SGThrs(self.tmc_com)
-            self.sg_result = SGResult(self.tmc_com)
-
-        self.tmc_logger.log("TMC2209 Init finished", Loglevel.INFO)
-
-    def __del__(self):
-        self.deinit()
+            self.tcoolthrs = TCoolThrs(self.tmc_com)
+            self.sgthrs = SGThrs(self.tmc_com)
+            self.sgresult = SGResult(self.tmc_com)
 
     def deinit(self):
         """destructor"""

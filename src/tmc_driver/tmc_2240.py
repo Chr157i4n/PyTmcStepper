@@ -17,14 +17,17 @@ this module has two different functions:
 
 import time
 import types
-from ._tmc_stepperdriver import *
+from .tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
 from .tmc_gpio import GpioPUD
 from . import tmc_gpio
+from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
+from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
+from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from ._tmc_logger import *
 from .reg._tmc224x_reg import *
@@ -39,12 +42,17 @@ from ._tmc_exceptions import (
 from ._tmc_validation import validate_submodule
 
 
-class Tmc2240(TmcStepperDriver, StallGuard):
+class Tmc2240(TmcXXXX, StallGuard):
     """Tmc2240"""
 
     SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
     SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
-    SUPPORTED_MC_TYPES = (TmcMotionControlStepDir,)
+    SUPPORTED_MC_TYPES = (
+        TmcMotionControlStepDir,
+        TmcMotionControlStepReg,
+        TmcMotionControlStepPwmDir,
+    )
+    DRIVER_FAMILY = "TMC2240"
 
     # Constructor/Destructor
     # ----------------------------
@@ -77,41 +85,20 @@ class Tmc2240(TmcStepperDriver, StallGuard):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        # pylint: disable=too-many-statements
-
-        self.tmc_com = tmc_com
-        self._pin_stallguard: int | None = None
-        self._sg_callback: types.FunctionType | None = None
-        self._sg_threshold: int = 100  # threshold for stallguard
-
-        if logprefix is None:
-            logprefix = f"TMC2240 {driver_address}"
-
         super().__init__(
-            tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter
+            tmc_ec,
+            tmc_mc,
+            tmc_com,
+            driver_address,
+            gpio_mode,
+            loglevel,
+            logprefix,
+            log_handlers,
+            log_formatter,
         )
-
-        validate_submodule(
-            tmc_com, self.SUPPORTED_COM_TYPES, self.__class__.__name__, "tmc_com"
-        )
-        validate_submodule(
-            tmc_ec, self.SUPPORTED_EC_TYPES, self.__class__.__name__, "tmc_ec"
-        )
-        validate_submodule(
-            tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc"
-        )
+        StallGuard.__init__(self)
 
         if self.tmc_com is not None:
-            self.tmc_com.tmc_logger = self.tmc_logger
-            self.tmc_com.driver_address = driver_address
-
-            self.tmc_com.init()
-
-            if hasattr(self.tmc_mc, "tmc_com"):
-                self.tmc_mc.tmc_com = self.tmc_com
-
-            if hasattr(self.tmc_ec, "tmc_com"):
-                self.tmc_ec.tmc_com = self.tmc_com
 
             self.gconf = GConf(self.tmc_com)
             self.gstat = GStat(self.tmc_com)
@@ -134,47 +121,14 @@ class Tmc2240(TmcStepperDriver, StallGuard):
             self.sgresult = SgResult(self.tmc_com)
             self.sgind = SgInd(self.tmc_com)
 
-            # Register callback for submodules to access registers
-            self.tmc_com.set_get_register_callback(self._get_register)
-            if self.tmc_mc is not None:
-                self.tmc_mc.set_get_register_callback(self._get_register)
-            if self.tmc_ec is not None:
-                self.tmc_ec.set_get_register_callback(self._get_register)
-
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
 
-        self.max_speed_fullstep = 100
-        self.acceleration_fullstep = 100
-
-        self.tmc_logger.log("TMC2240 Init finished", Loglevel.INFO)
-
-    def __del__(self):
-        self.deinit()
-
-    def deinit(self):
-        """destructor"""
-        super().deinit()
-        if self.tmc_com is not None:
-            self.tmc_com.deinit()
-            self.tmc_com = None
-
     def set_deinitialize_true(self):
         """set deinitialize to true"""
         self._deinit_finished = True
-
-    def _get_register(self, name: str) -> TmcReg | None:
-        """Get register by name - callback for submodules
-
-        Args:
-            name: Register name (e.g. 'gconf', 'chopconf')
-
-        Returns:
-            Register object or None if not found
-        """
-        return getattr(self, name, None)
 
     # Tmc224x methods
     # ----------------------------

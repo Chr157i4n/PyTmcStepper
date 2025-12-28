@@ -8,3 +8,5 @@ from .tmc_220x import *
 
 class Tmc2208(Tmc220x):
     """Tmc2208"""
+
+    DRIVER_FAMILY = "TMC2208"
