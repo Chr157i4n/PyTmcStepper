@@ -14,6 +14,8 @@ from src.tmc_driver.tmc_2240 import *
 from src.tmc_driver.com._tmc_com_uart import *
 from src.tmc_driver.com._tmc_com_uart_base import compute_crc8_atm
 
+from src.tmc_driver._tmc_exceptions import *
+
 SPI_AVAILABLE = False
 try:
     from src.tmc_driver.com._tmc_com_spi import *
@@ -98,38 +100,51 @@ class TestTMCModules(unittest.TestCase):
                             mc=mc.__class__.__name__,
                             com=com.__class__.__name__,
                         ):
+                            NOT_SUPPORTED = False
                             if not any(
                                 isinstance(ec, ec_type)
                                 for ec_type in driver.SUPPORTED_EC_TYPES
                             ):
-                                continue
+                                NOT_SUPPORTED = True
                             if not any(
                                 isinstance(mc, mc_type)
                                 for mc_type in driver.SUPPORTED_MC_TYPES
                             ):
-                                continue
+                                NOT_SUPPORTED = True
                             if not any(
                                 isinstance(com, com_type)
                                 for com_type in driver.SUPPORTED_COM_TYPES
                             ):
-                                continue
+                                NOT_SUPPORTED = True
 
-                            instance = driver(
-                                copy.deepcopy(ec),
-                                copy.deepcopy(mc),
-                                copy.deepcopy(com),
-                            )
-                            self.assertIsInstance(instance, driver)
-                            self.assertIsInstance(instance.tmc_ec, ec.__class__)
-                            self.assertIsInstance(instance.tmc_mc, mc.__class__)
-                            self.assertIsInstance(instance.tmc_com, com.__class__)
+                            if NOT_SUPPORTED:
+                                with self.assertRaises(Exception) as context:
+                                    instance = driver(
+                                        copy.deepcopy(ec),
+                                        copy.deepcopy(mc),
+                                        copy.deepcopy(com),
+                                    )
 
-                            instance.set_motor_enabled(True)
-                            instance.set_motor_enabled(False)
+                                self.assertEqual(
+                                    type(context.exception), TmcDriverException
+                                )
+                            else:
+                                instance = driver(
+                                    copy.deepcopy(ec),
+                                    copy.deepcopy(mc),
+                                    copy.deepcopy(com),
+                                )
+                                self.assertIsInstance(instance, driver)
+                                self.assertIsInstance(instance.tmc_ec, ec.__class__)
+                                self.assertIsInstance(instance.tmc_mc, mc.__class__)
+                                self.assertIsInstance(instance.tmc_com, com.__class__)
 
-                            instance.run_to_position_steps(10)
+                                instance.set_motor_enabled(True)
+                                instance.set_motor_enabled(False)
 
-                            instance.deinit()
+                                instance.run_to_position_steps(10)
+
+                                instance.deinit()
 
 
 if __name__ == "__main__":
