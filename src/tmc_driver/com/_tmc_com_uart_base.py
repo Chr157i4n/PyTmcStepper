@@ -273,7 +273,7 @@ class TmcComUartBase(TmcCom):
             raise TmcComException("TMC register IOIN not available")
 
         self.r_frame[1] = self.driver_address
-        self.r_frame[2] = ioin.addr
+        self.r_frame[2] = ioin.ADDR
         self.r_frame[3] = compute_crc8_atm(self.r_frame[:-1])
 
         rtn = self._uart_write(self.r_frame)

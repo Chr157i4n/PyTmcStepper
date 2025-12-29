@@ -4,72 +4,66 @@ Register module
 """
 
 import math
-from ._tmc_reg import TmcReg, TmcComStub
+from ._tmc_reg import TmcReg, TmcRegField
 from .._tmc_exceptions import TmcDriverException
 
 
 class GConf(TmcReg):
     """GCONF register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x0
 
-        self.direct_mode: bool
-        self.stop_enable: bool
-        self.small_hysteresis: bool
-        self.diag1_pushpull: bool
-        self.diag0_pushpull: bool
-        self.diag1_onstate: bool
-        self.diag1_index: bool
-        self.diag1_stall: bool
-        self.diag0_stall: bool
-        self.diag0_otpw: bool
-        self.diag0_error: bool
-        self.shaft: bool
-        self.multistep_filt: bool
-        self.en_pwm_mode: bool
-        self.fast_standstill: bool
-
-        reg_map = [
-            ["direct_mode", 16, 0x1, bool, None, ""],
-            ["stop_enable", 15, 0x1, bool, None, ""],
-            ["small_hysteresis", 14, 0x1, bool, None, ""],
-            ["diag1_pushpull", 13, 0x1, bool, None, ""],
-            ["diag0_pushpull", 12, 0x1, bool, None, ""],
-            ["diag1_onstate", 10, 0x1, bool, None, ""],
-            ["diag1_index", 9, 0x1, bool, None, ""],
-            ["diag1_stall", 8, 0x1, bool, None, ""],
-            ["diag0_stall", 7, 0x1, bool, None, ""],
-            ["diag0_otpw", 6, 0x1, bool, None, ""],
-            ["diag0_error", 5, 0x1, bool, None, ""],
-            ["shaft", 4, 0x1, bool, None, ""],
-            ["multistep_filt", 3, 0x1, bool, None, ""],
-            ["en_pwm_mode", 2, 0x1, bool, None, ""],
-            ["fast_standstill", 1, 0x1, bool, None, ""],
-        ]
-        super().__init__(0x0, "GCONF", tmc_com, reg_map)
+    direct_mode: bool
+    stop_enable: bool
+    small_hysteresis: bool
+    diag1_pushpull: bool
+    diag0_pushpull: bool
+    diag1_onstate: bool
+    diag1_index: bool
+    diag1_stall: bool
+    diag0_stall: bool
+    diag0_otpw: bool
+    diag0_error: bool
+    shaft: bool
+    multistep_filt: bool
+    en_pwm_mode: bool
+    fast_standstill: bool
+    _REG_MAP = (
+        TmcRegField("direct_mode", 16, 0x1, bool, None, ""),
+        TmcRegField("stop_enable", 15, 0x1, bool, None, ""),
+        TmcRegField("small_hysteresis", 14, 0x1, bool, None, ""),
+        TmcRegField("diag1_pushpull", 13, 0x1, bool, None, ""),
+        TmcRegField("diag0_pushpull", 12, 0x1, bool, None, ""),
+        TmcRegField("diag1_onstate", 10, 0x1, bool, None, ""),
+        TmcRegField("diag1_index", 9, 0x1, bool, None, ""),
+        TmcRegField("diag1_stall", 8, 0x1, bool, None, ""),
+        TmcRegField("diag0_stall", 7, 0x1, bool, None, ""),
+        TmcRegField("diag0_otpw", 6, 0x1, bool, None, ""),
+        TmcRegField("diag0_error", 5, 0x1, bool, None, ""),
+        TmcRegField("shaft", 4, 0x1, bool, None, ""),
+        TmcRegField("multistep_filt", 3, 0x1, bool, None, ""),
+        TmcRegField("en_pwm_mode", 2, 0x1, bool, None, ""),
+        TmcRegField("fast_standstill", 1, 0x1, bool, None, ""),
+    )
 
 
 class GStat(TmcReg):
     """GSTAT register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x1
 
-        self.vm_uvlo: bool
-        self.register_reset: bool
-        self.uv_cp: bool
-        self.drv_err: bool
-        self.reset: bool
-
-        reg_map = [
-            ["vm_uvlo", 4, 0x1, bool, None, ""],
-            ["register_reset", 3, 0x1, bool, None, ""],
-            ["uv_cp", 2, 0x1, bool, None, ""],
-            ["drv_err", 1, 0x1, bool, None, ""],
-            ["reset", 0, 0x1, bool, None, ""],
-        ]
-        super().__init__(0x1, "GSTAT", tmc_com, reg_map)
+    vm_uvlo: bool
+    register_reset: bool
+    uv_cp: bool
+    drv_err: bool
+    reset: bool
+    _REG_MAP = (
+        TmcRegField("vm_uvlo", 4, 0x1, bool, None, ""),
+        TmcRegField("register_reset", 3, 0x1, bool, None, ""),
+        TmcRegField("uv_cp", 2, 0x1, bool, None, ""),
+        TmcRegField("drv_err", 1, 0x1, bool, None, ""),
+        TmcRegField("reset", 0, 0x1, bool, None, ""),
+    )
 
     def check(self):
         """check if the driver is ok"""
@@ -89,159 +83,132 @@ class GStat(TmcReg):
 class IfCnt(TmcReg):
     """IFCNT register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x2
 
-        self.ifcnt: int
-
-        reg_map = [["ifcnt", 0, 0xFF, int, None, ""]]
-        super().__init__(0x2, "IFCNT", tmc_com, reg_map)
+    ifcnt: int
+    _REG_MAP = (TmcRegField("ifcnt", 0, 0xFF, int, None, ""),)
 
 
 class Ioin(TmcReg):
     """IOIN register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x4
 
-        self.version: int
-        self.silicon_rv: int
-        self.adc_err: bool
-        self.ext_clk: bool
-        self.ext_res_det: bool
-        self.output: bool
-        self.comp_b1_b2: bool
-        self.comp_a1_a2: bool
-        self.comp_b: bool
-        self.comp_a: bool
-        self.uart_en: bool
-        self.encn: bool
-        self.enn: bool
-        self.enca: bool
-        self.encb: bool
-        self.dir: bool
-        self.step: bool
-
-        reg_map = [
-            ["version", 24, 0xFF, int, None, ""],
-            ["silicon_rv", 24, 0xFF, int, None, ""],
-            ["adc_err", 15, 0x1, bool, None, ""],
-            ["ext_clk", 14, 0x1, bool, None, ""],
-            ["ext_res_det", 13, 0x1, bool, None, ""],
-            ["output", 12, 0x1, bool, None, ""],
-            ["comp_b1_b2", 11, 0x1, bool, None, ""],
-            ["comp_a1_a2", 10, 0x1, bool, None, ""],
-            ["comp_b", 9, 0x1, bool, None, ""],
-            ["comp_a", 8, 0x1, bool, None, ""],
-            ["uart_en", 6, 0x1, bool, None, ""],
-            ["encn", 5, 0x1, bool, None, ""],
-            ["enn", 4, 0x1, bool, None, ""],
-            ["enca", 3, 0x1, bool, None, ""],
-            ["encb", 2, 0x1, bool, None, ""],
-            ["dir", 1, 0x1, bool, None, ""],
-            ["step", 0, 0x1, bool, None, ""],
-        ]
-        super().__init__(0x4, "IOIN", tmc_com, reg_map)
+    version: int
+    silicon_rv: int
+    adc_err: bool
+    ext_clk: bool
+    ext_res_det: bool
+    output: bool
+    comp_b1_b2: bool
+    comp_a1_a2: bool
+    comp_b: bool
+    comp_a: bool
+    uart_en: bool
+    encn: bool
+    enn: bool
+    enca: bool
+    encb: bool
+    dir: bool
+    step: bool
+    _REG_MAP = (
+        TmcRegField("version", 24, 0xFF, int, None, ""),
+        TmcRegField("silicon_rv", 24, 0xFF, int, None, ""),
+        TmcRegField("adc_err", 15, 0x1, bool, None, ""),
+        TmcRegField("ext_clk", 14, 0x1, bool, None, ""),
+        TmcRegField("ext_res_det", 13, 0x1, bool, None, ""),
+        TmcRegField("output", 12, 0x1, bool, None, ""),
+        TmcRegField("comp_b1_b2", 11, 0x1, bool, None, ""),
+        TmcRegField("comp_a1_a2", 10, 0x1, bool, None, ""),
+        TmcRegField("comp_b", 9, 0x1, bool, None, ""),
+        TmcRegField("comp_a", 8, 0x1, bool, None, ""),
+        TmcRegField("uart_en", 6, 0x1, bool, None, ""),
+        TmcRegField("encn", 5, 0x1, bool, None, ""),
+        TmcRegField("enn", 4, 0x1, bool, None, ""),
+        TmcRegField("enca", 3, 0x1, bool, None, ""),
+        TmcRegField("encb", 2, 0x1, bool, None, ""),
+        TmcRegField("dir", 1, 0x1, bool, None, ""),
+        TmcRegField("step", 0, 0x1, bool, None, ""),
+    )
 
 
 class DrvConf(TmcReg):
     """DRV_CONF register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x6
 
-        self.slope_control: int
-        self.current_range: int
-
-        reg_map = [
-            ["slope_control", 4, 0x3, int, None, ""],
-            ["current_range", 0, 0x3, int, None, ""],
-        ]
-        super().__init__(0x6, "DRV_CONF", tmc_com, reg_map)
+    slope_control: int
+    current_range: int
+    _REG_MAP = (
+        TmcRegField("slope_control", 4, 0x3, int, None, ""),
+        TmcRegField("current_range", 0, 0x3, int, None, ""),
+    )
 
 
 class GlobalScaler(TmcReg):
     """GLOBAL_SCALER register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0xB
 
-        self.global_scaler: int
-
-        reg_map = [["global_scaler", 0, 0xFF, int, None, ""]]
-        super().__init__(0xB, "GLOBAL_SCALER", tmc_com, reg_map)
+    global_scaler: int
+    _REG_MAP = (TmcRegField("global_scaler", 0, 0xFF, int, None, ""),)
 
 
 class IHoldIRun(TmcReg):
     """IHOLD_IRUN register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x10
 
-        self.irundelay: int
-        self.iholddelay: int
-        self.irun: int
-        self.ihold: int
-
-        reg_map = [
-            ["irundelay", 24, 0xF, int, None, ""],
-            ["iholddelay", 16, 0xF, int, None, ""],
-            ["irun", 8, 0x1F, int, None, ""],
-            ["ihold", 0, 0x1F, int, None, ""],
-        ]
-        super().__init__(0x10, "IHOLD_IRUN", tmc_com, reg_map)
+    irundelay: int
+    iholddelay: int
+    irun: int
+    ihold: int
+    _REG_MAP = (
+        TmcRegField("irundelay", 24, 0xF, int, None, ""),
+        TmcRegField("iholddelay", 16, 0xF, int, None, ""),
+        TmcRegField("irun", 8, 0x1F, int, None, ""),
+        TmcRegField("ihold", 0, 0x1F, int, None, ""),
+    )
 
 
 class TPowerDown(TmcReg):
     """TPOWERDOWN register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x11
 
-        self.tpowerdown: int
-
-        reg_map = [["tpowerdown", 0, 0xFF, int, None, ""]]
-        super().__init__(0x11, "TPOWERDOWN", tmc_com, reg_map)
+    tpowerdown: int
+    _REG_MAP = (TmcRegField("tpowerdown", 0, 0xFF, int, None, ""),)
 
 
 class TStep(TmcReg):
     """TSTEP register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x12
 
-        self.tstep: int
-
-        reg_map = [["tstep", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x12, "TSTEP", tmc_com, reg_map)
+    tstep: int
+    _REG_MAP = (TmcRegField("tstep", 0, 0xFFFFF, int, None, ""),)
 
 
 class THigh(TmcReg):
     """THIGH register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x13
 
-        self.thigh: int
-
-        reg_map = [["thigh", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x13, "THIGH", tmc_com, reg_map)
+    thigh: int
+    _REG_MAP = (TmcRegField("thigh", 0, 0xFFFFF, int, None, ""),)
 
 
 class ADCVSupplyAIN(TmcReg):
     """ADCV_SUPPLY_AIN register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x50
 
-        self.adc_ain: int
-        self.adc_vsupply: int
-
-        reg_map = [
-            ["adc_ain", 16, 0xFFFF, int, lambda: self.adc_ain_v, "V"],
-            ["adc_vsupply", 0, 0xFFFF, int, lambda: self.adc_vsupply_v, "V"],
-        ]
-        super().__init__(0x50, "ADCV_SUPPLY_AIN", tmc_com, reg_map)
+    adc_ain: int
+    adc_vsupply: int
+    _REG_MAP = (
+        TmcRegField("adc_ain", 16, 0xFFFF, int, "adc_ain_v", "V"),
+        TmcRegField("adc_vsupply", 0, 0xFFFF, int, "adc_vsupply_v", "V"),
+    )
 
     @property
     def adc_vsupply_v(self) -> float:
@@ -257,13 +224,10 @@ class ADCVSupplyAIN(TmcReg):
 class ADCTemp(TmcReg):
     """ADC_TEMP register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x51
 
-        self.adc_temp: int
-
-        reg_map = [["adc_temp", 0, 0xFFFF, int, lambda: self.adc_temp_c, "°C"]]
-        super().__init__(0x51, "ADC_TEMP", tmc_com, reg_map)
+    adc_temp: int
+    _REG_MAP = (TmcRegField("adc_temp", 0, 0xFFFF, int, "adc_temp_c", "°C"),)
 
     @property
     def adc_temp_c(self) -> float:
@@ -274,54 +238,49 @@ class ADCTemp(TmcReg):
 class MsCnt(TmcReg):
     """MSCNT register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
-        self.mscnt: int
+    ADDR = 0x6A
 
-        reg_map = [["mscnt", 0, 0xFF, int, None, ""]]
-        super().__init__(0x6A, "MSCNT", tmc_com, reg_map)
+    mscnt: int
+    _REG_MAP = (TmcRegField("mscnt", 0, 0xFF, int, None, ""),)
 
 
 class ChopConf(TmcReg):
     """CHOPCONF register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x6C
 
-        self.diss2vs: bool
-        self.diss2g: bool
-        self.dedge: bool
-        self.intpol: bool
-        self.mres: int
-        self.tpfd: int
-        self.vhighchm: bool
-        self.vhighfs: bool
-        self.tbl: int
-        self.chm: int
-        self.disfdcc: bool
-        self.fd3: bool
-        self.hend_offset: int
-        self.hstrt_tfd210: int
-        self.toff: int
-
-        reg_map = [
-            ["diss2vs", 31, 0x1, bool, None, ""],
-            ["diss2g", 30, 0x1, bool, None, ""],
-            ["dedge", 29, 0x1, bool, None, ""],
-            ["intpol", 28, 0x1, bool, None, ""],
-            ["mres", 24, 0xF, int, lambda: self.mres_ms, "mStep"],
-            ["tpfd", 20, 0xF, int, None, ""],
-            ["vhighchm", 19, 0x1, bool, None, ""],
-            ["vhighfs", 18, 0x1, bool, None, ""],
-            ["tbl", 15, 0x3, int, None, ""],
-            ["chm", 14, 0x3, int, None, ""],
-            ["disfdcc", 12, 0x1, bool, None, ""],
-            ["fd3", 11, 0x1, bool, None, ""],
-            ["hend_offset", 7, 0xF, int, None, ""],
-            ["hstrt_tfd210", 4, 0x7, int, None, ""],
-            ["toff", 0, 0xF, int, None, ""],
-        ]
-        super().__init__(0x6C, "CHOPCONF", tmc_com, reg_map)
+    diss2vs: bool
+    diss2g: bool
+    dedge: bool
+    intpol: bool
+    mres: int
+    tpfd: int
+    vhighchm: bool
+    vhighfs: bool
+    tbl: int
+    chm: int
+    disfdcc: bool
+    fd3: bool
+    hend_offset: int
+    hstrt_tfd210: int
+    toff: int
+    _REG_MAP = (
+        TmcRegField("diss2vs", 31, 0x1, bool, None, ""),
+        TmcRegField("diss2g", 30, 0x1, bool, None, ""),
+        TmcRegField("dedge", 29, 0x1, bool, None, ""),
+        TmcRegField("intpol", 28, 0x1, bool, None, ""),
+        TmcRegField("mres", 24, 0xF, int, "mres_ms", "mStep"),
+        TmcRegField("tpfd", 20, 0xF, int, None, ""),
+        TmcRegField("vhighchm", 19, 0x1, bool, None, ""),
+        TmcRegField("vhighfs", 18, 0x1, bool, None, ""),
+        TmcRegField("tbl", 15, 0x3, int, None, ""),
+        TmcRegField("chm", 14, 0x3, int, None, ""),
+        TmcRegField("disfdcc", 12, 0x1, bool, None, ""),
+        TmcRegField("fd3", 11, 0x1, bool, None, ""),
+        TmcRegField("hend_offset", 7, 0xF, int, None, ""),
+        TmcRegField("hstrt_tfd210", 4, 0x7, int, None, ""),
+        TmcRegField("toff", 0, 0xF, int, None, ""),
+    )
 
     @property
     def mres_ms(self) -> int:
@@ -339,124 +298,106 @@ class ChopConf(TmcReg):
 class CoolConf(TmcReg):
     """COOLCONF register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x6D
 
-        self.sfilt: bool
-        self.sgt: int
-        self.seimin: bool
-        self.sedn: int
-        self.semax: int
-        self.seup: int
-        self.semin: int
-
-        reg_map = [
-            ["sfilt", 24, 0x1, bool, None, ""],
-            ["sgt", 16, 0x7F, int, None, ""],
-            ["seimin", 15, 0x1, bool, None, ""],
-            ["sedn", 13, 0x3, int, None, ""],
-            ["semax", 8, 0xF, int, None, ""],
-            ["seup", 5, 0x3, int, None, ""],
-            ["semin", 0, 0xF, int, None, ""],
-        ]
-        super().__init__(0x6D, "COOLCONF", tmc_com, reg_map)
+    sfilt: bool
+    sgt: int
+    seimin: bool
+    sedn: int
+    semax: int
+    seup: int
+    semin: int
+    _REG_MAP = (
+        TmcRegField("sfilt", 24, 0x1, bool, None, ""),
+        TmcRegField("sgt", 16, 0x7F, int, None, ""),
+        TmcRegField("seimin", 15, 0x1, bool, None, ""),
+        TmcRegField("sedn", 13, 0x3, int, None, ""),
+        TmcRegField("semax", 8, 0xF, int, None, ""),
+        TmcRegField("seup", 5, 0x3, int, None, ""),
+        TmcRegField("semin", 0, 0xF, int, None, ""),
+    )
 
 
 class DrvStatus(TmcReg):
     """DRVSTATUS register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x6F
 
-        self.stst: bool
-        self.olb: bool
-        self.ola: bool
-        self.s2gb: bool
-        self.s2ga: bool
-        self.otpw: bool
-        self.ot: bool
-        self.stallguard: bool
-        self.cs_actual: int
-        self.fsactive: bool
-        self.stealth: bool
-        self.s2vsb: bool
-        self.s2vsa: bool
-        self.sgresult: int
-
-        reg_map = [
-            ["stst", 31, 0x1, bool, None, ""],
-            ["olb", 30, 0x1, bool, None, ""],
-            ["ola", 29, 0x1, bool, None, ""],
-            ["s2gb", 28, 0x1, bool, None, ""],
-            ["s2ga", 27, 0x1, bool, None, ""],
-            ["otpw", 26, 0x1, bool, None, ""],
-            ["ot", 25, 0x1, bool, None, ""],
-            ["stallguard", 24, 0x1, bool, None, ""],
-            ["cs_actual", 16, 0x1F, int, None, ""],
-            ["fsactive", 15, 0x1, bool, None, ""],
-            ["stealth", 14, 0x1, bool, None, ""],
-            ["s2vsb", 13, 0x1, bool, None, ""],
-            ["s2vsa", 12, 0x1, bool, None, ""],
-            ["sgresult", 0, 0x3FF, int, None, ""],
-        ]
-        super().__init__(0x6F, "DRVSTATUS", tmc_com, reg_map)
+    stst: bool
+    olb: bool
+    ola: bool
+    s2gb: bool
+    s2ga: bool
+    otpw: bool
+    ot: bool
+    stallguard: bool
+    cs_actual: int
+    fsactive: bool
+    stealth: bool
+    s2vsb: bool
+    s2vsa: bool
+    sgresult: int
+    _REG_MAP = (
+        TmcRegField("stst", 31, 0x1, bool, None, ""),
+        TmcRegField("olb", 30, 0x1, bool, None, ""),
+        TmcRegField("ola", 29, 0x1, bool, None, ""),
+        TmcRegField("s2gb", 28, 0x1, bool, None, ""),
+        TmcRegField("s2ga", 27, 0x1, bool, None, ""),
+        TmcRegField("otpw", 26, 0x1, bool, None, ""),
+        TmcRegField("ot", 25, 0x1, bool, None, ""),
+        TmcRegField("stallguard", 24, 0x1, bool, None, ""),
+        TmcRegField("cs_actual", 16, 0x1F, int, None, ""),
+        TmcRegField("fsactive", 15, 0x1, bool, None, ""),
+        TmcRegField("stealth", 14, 0x1, bool, None, ""),
+        TmcRegField("s2vsb", 13, 0x1, bool, None, ""),
+        TmcRegField("s2vsa", 12, 0x1, bool, None, ""),
+        TmcRegField("sgresult", 0, 0x3FF, int, None, ""),
+    )
 
 
 class TCoolThrs(TmcReg):
     """TCOOLTHRS register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x14
 
-        self.tcoolthrs: int
-
-        reg_map = [["tcoolthrs", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x14, "TCOOLTHRS", tmc_com, reg_map)
+    tcoolthrs: int
+    _REG_MAP = (TmcRegField("tcoolthrs", 0, 0xFFFFF, int, None, ""),)
 
 
 class SgThrs(TmcReg):
     """SGTHRS register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x74
 
-        self.sg_angle_offset: bool
-        self.sg4_filt_en: bool
-        self.sgthrs: int
-
-        reg_map = [
-            ["sg_angle_offset", 9, 0x1, bool, None, ""],
-            ["sg4_filt_en", 8, 0x1, bool, None, ""],
-            ["sgthrs", 0, 0xFFF, int, None, ""],
-        ]
-        super().__init__(0x74, "SGTHRS", tmc_com, reg_map)
+    sg_angle_offset: bool
+    sg4_filt_en: bool
+    sgthrs: int
+    _REG_MAP = (
+        TmcRegField("sg_angle_offset", 9, 0x1, bool, None, ""),
+        TmcRegField("sg4_filt_en", 8, 0x1, bool, None, ""),
+        TmcRegField("sgthrs", 0, 0xFFF, int, None, ""),
+    )
 
 
 class SgResult(TmcReg):
     """SGRESULT register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x75
 
-        self.sgresult: int
-
-        reg_map = [["sgresult", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x75, "SGRESULT", tmc_com, reg_map)
+    sgresult: int
+    _REG_MAP = (TmcRegField("sgresult", 0, 0xFFFFF, int, None, ""),)
 
 
 class SgInd(TmcReg):
     """SGIND register class"""
 
-    def __init__(self, tmc_com: TmcComStub):
-        """constructor"""
+    ADDR = 0x76
 
-        self.sg_ind_2: int
-        self.sg_ind_1: int
-        self.sg_ind_0: int
-
-        reg_map = [
-            ["sg_ind_2", 16, 0xFF, int, None, ""],
-            ["sg_ind_1", 8, 0xFF, int, None, ""],
-            ["sg_ind_0", 0, 0xFF, int, None, ""],
-        ]
-        super().__init__(0x76, "SG_IND", tmc_com, reg_map)
+    sg_ind_2: int
+    sg_ind_1: int
+    sg_ind_0: int
+    _REG_MAP = (
+        TmcRegField("sg_ind_2", 16, 0xFF, int, None, ""),
+        TmcRegField("sg_ind_1", 8, 0xFF, int, None, ""),
+        TmcRegField("sg_ind_0", 0, 0xFF, int, None, ""),
+    )
