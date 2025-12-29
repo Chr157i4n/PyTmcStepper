@@ -129,6 +129,8 @@ class TestTMCModules(unittest.TestCase):
 
                             instance.run_to_position_steps(10)
 
+                            instance.deinit()
+
 
 if __name__ == "__main__":
     unittest.main()
