@@ -1,5 +1,6 @@
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=unused-import
+
 """
 Register module
 """
@@ -26,6 +27,10 @@ class TmcComStub:
 class TmcRegField:
     """Register field class"""
 
+    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-positional-arguments
+    # pylint: disable=too-few-public-methods
+
     def __init__(
         self,
         name: str,
@@ -49,11 +54,23 @@ class TmcReg:
 
     ADDR: int
     _REG_MAP: tuple[TmcRegField, ...] = ()
+    _data_int: int
+    _flags: dict
 
     @property
     def reg_map(self) -> tuple[TmcRegField, ...]:
         """returns the register map"""
         return self._REG_MAP
+
+    @property
+    def data_int(self) -> int:
+        """returns the raw register data as integer"""
+        return self._data_int
+
+    @property
+    def flags(self) -> dict:
+        """returns the flags from the last read operation"""
+        return self._flags
 
     def __init__(self, tmc_com: TmcComStub):
         """Constructor"""
@@ -100,7 +117,7 @@ class TmcReg:
             value = getattr(self, reg.name)
             log_string = f"  {reg.name:<20}{value:<10}"
             if reg.conv_func is not None:
-                log_string += f" {getattr(self, reg.conv_func, "")} {reg.unit}"
+                log_string += f"{getattr(self, reg.conv_func, '')} {reg.unit}"
             logger.log(log_string, Loglevel.INFO)
 
     def read(self):

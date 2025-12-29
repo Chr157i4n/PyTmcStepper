@@ -1,6 +1,7 @@
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=too-few-public-methods
 """
 Register module with shared registers without implementation
 """
