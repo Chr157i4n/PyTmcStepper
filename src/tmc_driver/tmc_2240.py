@@ -123,9 +123,10 @@ class Tmc2240(TmcXXXX, StallGuard):
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
 
-    def set_deinitialize_true(self):
-        """set deinitialize to true"""
-        self._deinit_finished = True
+    def deinit(self):
+        """destructor"""
+        super().deinit()
+        StallGuard.deinit(self)
 
     # Tmc224x methods
     # ----------------------------

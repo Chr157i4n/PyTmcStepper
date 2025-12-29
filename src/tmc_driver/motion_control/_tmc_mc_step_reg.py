@@ -28,9 +28,6 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         super().__init__(pin_step, None)
         self._tmc_com: TmcCom | None = None
 
-    def __del__(self):
-        self.deinit()
-
     def deinit(self):
         """destructor"""
         if self._pin_step is not None:

@@ -45,11 +45,10 @@ class StallGuard:
 
     def deinit(self):
         """destructor"""
-        if self._deinit_finished is False:
-            if self._pin_stallguard is not None:
-                tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
-                tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
-                self._pin_stallguard = None
+        if self._pin_stallguard is not None:
+            tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
+            tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
+            self._pin_stallguard = None
 
     def set_stallguard_callback(
         self, pin_stallguard, threshold, callback, min_speed=100

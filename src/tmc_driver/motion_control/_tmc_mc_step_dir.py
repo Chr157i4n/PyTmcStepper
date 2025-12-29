@@ -150,9 +150,6 @@ class TmcMotionControlStepDir(TmcMotionControl):
                 self._pin_dir, GpioMode.OUT, initial=int(self._direction)
             )
 
-    def __del__(self):
-        self.deinit()
-
     def deinit(self):
         """destructor"""
         if self._pin_step is not None:

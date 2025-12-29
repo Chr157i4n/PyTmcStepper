@@ -115,10 +115,6 @@ class Tmc220x(TmcXXXX):
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
 
-    def set_deinitialize_true(self):
-        """set deinitialize to true"""
-        self._deinit_finished = True
-
     # Tmc220x methods
     # ----------------------------
     def read_steps_per_rev(self) -> int:

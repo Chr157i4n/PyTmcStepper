@@ -72,8 +72,6 @@ class TmcStepperDriver:
         self.tmc_mc = tmc_mc
         self.tmc_logger: TmcLogger
 
-        self._deinit_finished: bool = False
-
         if logprefix is None:
             logprefix = "StepperDriver"
         self.tmc_logger = TmcLogger(loglevel, logprefix, log_handlers, log_formatter)
@@ -93,21 +91,17 @@ class TmcStepperDriver:
 
     def deinit(self):
         """destructor"""
-        if self._deinit_finished is False:
-            self.tmc_logger.log("Deinit", Loglevel.INFO)
+        self.set_motor_enabled(False)
 
-            self.set_motor_enabled(False)
-
-            self.tmc_logger.log("Deinit finished", Loglevel.INFO)
-            self._deinit_finished = True
-        else:
-            self.tmc_logger.log("Deinit already finished", Loglevel.INFO)
         if self.tmc_ec is not None:
             self.tmc_ec.deinit()
+            self.tmc_ec = None
         if self.tmc_mc is not None:
             self.tmc_mc.deinit()
+            self.tmc_mc = None
         if self.tmc_logger is not None:
             self.tmc_logger.deinit()
+            self.tmc_logger = None
 
     # TmcEnableControl Wrapper
     # ----------------------------

@@ -193,6 +193,12 @@ class TmcMotionControl:
         self.max_speed_fullstep = 100
         self.acceleration_fullstep = 100
 
+    def __del__(self):
+        self.deinit()
+
+    def deinit(self):
+        """destructor"""
+
     def set_get_register_callback(self, callback):
         """Set callback to get registers from parent TMC class
 
@@ -213,9 +219,6 @@ class TmcMotionControl:
         if self._get_register_callback is not None:
             return self._get_register_callback(name)
         return None
-
-    def deinit(self):
-        """destructor"""
 
     @abstractmethod
     def make_a_step(self):
