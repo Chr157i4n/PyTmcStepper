@@ -169,15 +169,6 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.gstat.log(self.tmc_logger)
         return self.gstat
 
-    def clear_gstat(self):
-        """clears the "GSTAT" register"""
-        self.tmc_logger.log("clearing GSTAT", Loglevel.INFO)
-
-        for reg in self.gstat.reg_map:
-            setattr(self.gstat, reg[0], True)
-
-        self.gstat.write_check()
-
     def read_ioin(self) -> Ioin:
         """read the register Adress "IOIN" and logs the reg values
 

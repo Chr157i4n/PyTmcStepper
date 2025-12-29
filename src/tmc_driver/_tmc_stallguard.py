@@ -16,7 +16,7 @@ from .com._tmc_com import TmcCom
 from .tmc_gpio import GpioPUD, GpioMode
 from . import tmc_gpio
 from ._tmc_logger import Loglevel
-from .reg._tmc224x_reg import *
+from .reg import _tmc_shared_regs as tmc_shared_regs
 from . import _tmc_math as tmc_math
 
 
@@ -26,6 +26,13 @@ class StallGuard:
     This class is used to control the stallguard feature of the TMC stepper driver.
     The drivers class needs to inherit from this class to use the stallguard feature (mixin).
     """
+
+    tmc_logger: TmcLogger
+
+    coolconf: tmc_shared_regs.CoolConf
+    sgthrs: tmc_shared_regs.SGThrs
+    sgresult: tmc_shared_regs.SGResult
+    tcoolthrs: tmc_shared_regs.TCoolThrs
 
     def __init__(self):
         """initialize StallGuard instance variables"""
@@ -117,7 +124,7 @@ class StallGuard:
         self.coolconf.read()
         self.coolconf.semin = round(max(0, min(semin_sg / 32, 15)))
         self.coolconf.semax = round(max(0, min(semax_sg / 32, 15)))
-        self.coolconf.seimin = 1  # scale down to until 1/4 of IRun (7 - 31)
+        self.coolconf.seimin = True  # scale down to until 1/4 of IRun (7 - 31)
         self.coolconf.seup = seup
         self.coolconf.sedn = sedn
         self.coolconf.write_check()

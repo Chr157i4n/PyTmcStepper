@@ -12,6 +12,7 @@ from .enable_control._tmc_ec import TmcEnableControl
 from .motion_control._tmc_mc import TmcMotionControl
 from .com._tmc_com import TmcCom
 from .reg._tmc_reg import TmcReg
+from .reg import _tmc220x_reg as tmc_shared_regs
 from ._tmc_validation import validate_submodule
 
 
@@ -22,6 +23,8 @@ class TmcXXXX(TmcStepperDriver):
     SUPPORTED_EC_TYPES = ()
     SUPPORTED_MC_TYPES = ()
     DRIVER_FAMILY = "TMCXXXX"
+
+    gstat: tmc_shared_regs.GStat
 
     def __init__(
         self,
@@ -112,3 +115,12 @@ class TmcXXXX(TmcStepperDriver):
             Register object or None if not found
         """
         return getattr(self, name, None)
+
+    def clear_gstat(self):
+        """clears the "GSTAT" register"""
+        self.tmc_logger.log("clearing GSTAT", Loglevel.INFO)
+
+        for reg in self.gstat.reg_map:
+            setattr(self.gstat, reg.name, True)
+
+        self.gstat.write_check()
