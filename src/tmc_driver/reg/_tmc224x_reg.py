@@ -116,7 +116,7 @@ class Ioin(TmcReg):
         self.comp_a: bool
         self.uart_en: bool
         self.encn: bool
-        self.drv_enn: bool
+        self.enn: bool
         self.enca: bool
         self.encb: bool
         self.dir: bool
@@ -135,7 +135,7 @@ class Ioin(TmcReg):
             ["comp_a", 8, 0x1, bool, None, ""],
             ["uart_en", 6, 0x1, bool, None, ""],
             ["encn", 5, 0x1, bool, None, ""],
-            ["drv_enn", 4, 0x1, bool, None, ""],
+            ["enn", 4, 0x1, bool, None, ""],
             ["enca", 3, 0x1, bool, None, ""],
             ["encb", 2, 0x1, bool, None, ""],
             ["dir", 1, 0x1, bool, None, ""],
