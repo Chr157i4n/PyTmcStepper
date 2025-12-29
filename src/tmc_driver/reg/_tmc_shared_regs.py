@@ -6,26 +6,28 @@
 Register module with shared registers without implementation
 """
 
+from ._tmc_reg import TmcReg
 
-class TCoolThrs:
+
+class TCoolThrs(TmcReg):
     """TCOOLTHRS register class stub"""
 
     tcoolthrs: int
 
 
-class SGThrs:
+class SGThrs(TmcReg):
     """SGTHRS register class stub"""
 
     sgthrs: int
 
 
-class SGResult:
+class SGResult(TmcReg):
     """SGRESULT register class stub"""
 
     sgresult: int
 
 
-class CoolConf:
+class CoolConf(TmcReg):
     """COOLCONF register class stub"""
 
     seimin: bool
@@ -35,7 +37,7 @@ class CoolConf:
     semin: int
 
 
-class GStat:
+class GStat(TmcReg):
     """GSTAT register class stub"""
 
     uv_cp: bool
@@ -43,7 +45,7 @@ class GStat:
     reset: bool
 
 
-class Ioin:
+class Ioin(TmcReg):
     """IOIN register class stub"""
 
     version: int

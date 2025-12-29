@@ -536,35 +536,6 @@ class Tmc220x(TmcXXXX):
 
     # Test methods
     # ----------------------------
-    def test_pin(self, pin, ioin_reg_bp):
-        """tests one pin
-
-        this function checks the connection to a pin
-        by toggling it and reading the IOIN register
-        """
-        pin_ok = True
-
-        # turn on all pins
-        tmc_gpio.tmc_gpio.gpio_output(self.tmc_mc.pin_dir, Gpio.HIGH)
-        tmc_gpio.tmc_gpio.gpio_output(self.tmc_mc.pin_step, Gpio.HIGH)
-        tmc_gpio.tmc_gpio.gpio_output(self.tmc_ec.pin_en, Gpio.HIGH)
-
-        # check that the selected pin is on
-        ioin = self.read_ioin()
-        if not ioin.data_int >> ioin_reg_bp & 0x1:
-            pin_ok = False
-
-        # turn off only the selected pin
-        tmc_gpio.tmc_gpio.gpio_output(pin, Gpio.LOW)
-        time.sleep(0.1)
-
-        # check that the selected pin is off
-        ioin = self.read_ioin()
-        if ioin.data_int >> ioin_reg_bp & 0x1:
-            pin_ok = False
-
-        return pin_ok
-
     def test_dir_step_en(self):
         """tests the EN, DIR and STEP pin
 
@@ -592,13 +563,3 @@ class Tmc220x(TmcXXXX):
         self.tmc_logger.log(f"Pin STEP: \t{'OK' if pin_step_ok else 'not OK'}")
         self.tmc_logger.log(f"Pin EN: \t{'OK' if pin_en_ok else 'not OK'}")
         self.tmc_logger.log("---")
-
-    def test_com(self):
-        """test method"""
-        if self.tmc_com is None:
-            raise TmcDriverException("tmc_com is None; cannot test communication")
-
-        self.tmc_logger.log("---")
-        self.tmc_logger.log("TEST COM")
-
-        return self.tmc_com.test_com()
