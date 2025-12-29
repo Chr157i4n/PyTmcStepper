@@ -63,6 +63,29 @@ class _FakeSerial:
     def reset_input_buffer(self):
         """Reset input buffer"""
 
+class _FakeSpi:
+    """Fake SPI object for compatibility with base class"""
+
+    def __init__(self):
+        """Constructor for fake SPI object"""
+        self.is_open = True
+        self.max_speed_hz = 8000000
+        self.mode = 0b11
+        self.lsbfirst = False
+        self.com_counter = 0
+
+    def open(self, bus: int, dev: int):
+        """Open the fake SPI port"""
+        self.is_open = True
+
+    def close(self):
+        """Close the fake SPI port"""
+        self.is_open = False
+
+    def xfer2(self, data: list[int]) -> list[int]:
+        """Transfer bytes via fake SPI port"""
+        rtn = [0] * len(data)
+        return rtn
 
 class TestTMCModules(unittest.TestCase):
     """TestTMCMove"""
@@ -80,6 +103,7 @@ class TestTMCModules(unittest.TestCase):
 
     if SPI_AVAILABLE:
         COM.append(TmcComSpi(0, 0))
+        COM[1].spi = _FakeSpi()
 
     def setUp(self):
         """setUp"""
