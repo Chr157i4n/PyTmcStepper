@@ -78,8 +78,8 @@ class TestTMCModules(unittest.TestCase):
     COM: list[TmcCom] = [TmcComUart("/dev/serial0", 115200)]
     COM[0].ser = _FakeSerial()
 
-    # if SPI_AVAILABLE:
-    #     COM.append(TmcComSpi(0, 0))
+    if SPI_AVAILABLE:
+        COM.append(TmcComSpi(0, 0))
 
     def setUp(self):
         """setUp"""
@@ -120,9 +120,9 @@ class TestTMCModules(unittest.TestCase):
                             if NOT_SUPPORTED:
                                 with self.assertRaises(Exception) as context:
                                     instance = driver(
-                                        copy.deepcopy(ec),
-                                        copy.deepcopy(mc),
-                                        copy.deepcopy(com),
+                                        copy.copy(ec),
+                                        copy.copy(mc),
+                                        copy.copy(com),
                                     )
 
                                 self.assertEqual(
@@ -130,9 +130,9 @@ class TestTMCModules(unittest.TestCase):
                                 )
                             else:
                                 instance = driver(
-                                    copy.deepcopy(ec),
-                                    copy.deepcopy(mc),
-                                    copy.deepcopy(com),
+                                    copy.copy(ec),
+                                    copy.copy(mc),
+                                    copy.copy(com),
                                 )
                                 self.assertIsInstance(instance, driver)
                                 self.assertIsInstance(instance.tmc_ec, ec.__class__)
