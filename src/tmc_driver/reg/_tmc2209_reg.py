@@ -51,14 +51,14 @@ class CoolConf(TmcReg):
     def __init__(self, tmc_com: TmcComStub):
         """constructor"""
 
-        self.seemin: bool
+        self.seimin: bool
         self.sedn: int
         self.semax: int
         self.seup: int
         self.semin: int
 
         reg_map = [
-            ["seemin", 15, 0x1, bool, None, ""],
+            ["seimin", 15, 0x1, bool, None, ""],
             ["sedn", 13, 0x3, int, None, ""],
             ["semax", 8, 0xF, int, None, ""],
             ["seup", 5, 0x3, int, None, ""],
