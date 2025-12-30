@@ -8,8 +8,9 @@
 """Tmc220X stepper driver module
 
 this module has two different functions:
-1. change setting in the TMC-driver via UART
-2. move the motor via STEP/DIR pins
+1. access register via tmc_com (UART, SPI)
+2. Enable motor control via tmc_ec (TOFF, PIN)
+3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
 """
 
 import threading

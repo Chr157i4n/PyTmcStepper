@@ -2,7 +2,13 @@
 # pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
-"""Tmc2209 stepper driver module"""
+"""Tmc2209 stepper driver module
+
+this module has two different functions:
+1. access register via tmc_com (UART, SPI)
+2. Enable motor control via tmc_ec (TOFF, PIN)
+3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
+"""
 
 from .tmc_220x import *
 from ._tmc_stallguard import StallGuard

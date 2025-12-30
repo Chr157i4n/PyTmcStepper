@@ -9,6 +9,7 @@ from unittest import mock
 from src.tmc_driver.tmc_2208 import *
 from src.tmc_driver.tmc_2209 import *
 from src.tmc_driver.tmc_2240 import *
+from src.tmc_driver.tmc_5160 import *
 
 # from src.tmc_driver.com._tmc_com_spi import *
 from src.tmc_driver.com._tmc_com_uart import *
@@ -92,7 +93,7 @@ class _FakeSpi:
 class TestTMCModules(unittest.TestCase):
     """TestTMCMove"""
 
-    DRIVER: list[TmcXXXX] = [Tmc2208, Tmc2209, Tmc2240]
+    DRIVER: list[TmcXXXX] = [Tmc2208, Tmc2209, Tmc2240, Tmc5160]
     EC: list[TmcEnableControl] = [TmcEnableControlPin(3), TmcEnableControlToff()]
     MC: list[TmcMotionControl] = [
         TmcMotionControlStepDir(1, 2),

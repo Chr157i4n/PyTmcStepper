@@ -3,8 +3,12 @@
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-public-methods
-"""
-TmcXXXX driver module
+"""TmcXXXX driver module
+
+this module has two different functions:
+1. access register via tmc_com (UART, SPI)
+2. Enable motor control via tmc_ec (TOFF, PIN)
+3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
 """
 
 import time

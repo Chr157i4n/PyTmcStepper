@@ -5,7 +5,7 @@
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
-"""Tmc220X stepper driver module
+"""Tmc5160 stepper driver module
 
 this module has two different functions:
 1. access register via tmc_com (UART, SPI)
@@ -28,7 +28,7 @@ from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from ._tmc_logger import *
-from .reg._tmc224x_reg import *
+from .reg._tmc5160_reg import *
 from . import _tmc_math as tmc_math
 from ._tmc_exceptions import (
     TmcException,
@@ -40,8 +40,8 @@ from ._tmc_exceptions import (
 from ._tmc_validation import validate_submodule
 
 
-class Tmc2240(TmcXXXX, StallGuard):
-    """Tmc2240"""
+class Tmc5160(TmcXXXX, StallGuard):
+    """Tmc5160"""
 
     SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
     SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
@@ -50,7 +50,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         TmcMotionControlStepReg,
         TmcMotionControlStepPwmDir,
     )
-    DRIVER_FAMILY = "TMC2240"
+    DRIVER_FAMILY = "TMC5160"
 
     # Constructor/Destructor
     # ----------------------------
@@ -109,16 +109,12 @@ class Tmc2240(TmcXXXX, StallGuard):
             self.tstep = TStep(self.tmc_com)
             self.tpwmthrs = TPwmThrs(self.tmc_com)
             self.thigh = THigh(self.tmc_com)
-            self.adcv_supply_ain = ADCVSupplyAIN(self.tmc_com)
-            self.adc_temp = ADCTemp(self.tmc_com)
             self.mscnt = MsCnt(self.tmc_com)
             self.chopconf = ChopConf(self.tmc_com)
             self.coolconf = CoolConf(self.tmc_com)
             self.drvstatus = DrvStatus(self.tmc_com)
             self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.sgthrs = SgThrs(self.tmc_com)
-            self.sgresult = SgResult(self.tmc_com)
-            self.sgind = SgInd(self.tmc_com)
+            self.lost_steps = LostSteps(self.tmc_com)
 
             self.clear_gstat()
             if self.tmc_mc is not None:
@@ -132,7 +128,7 @@ class Tmc2240(TmcXXXX, StallGuard):
 
     # Register Access
     # ----------------------------
-    def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int, irundelay: int):
+    def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int):
         """sets the current scale (CS) for Running and Holding
         and the delay, when to be switched to Holding current
 
@@ -147,7 +143,6 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.ihold_irun.ihold = ihold
         self.ihold_irun.irun = irun
         self.ihold_irun.iholddelay = iholddelay
-        self.ihold_irun.irundelay = irundelay
 
         self.ihold_irun.write_check()
 
@@ -160,27 +155,11 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.global_scaler.global_scaler = scaler
         self.global_scaler.write_check()
 
-    def _set_current_range(self, current_range: int):
-        """sets the current range
-
-        0 = 1 A
-        1 = 2 A
-        2 = 3 A
-        3 = 3 A (maximum of driver)
-
-        Args:
-            current_range (int): current range in A
-        """
-        self.drv_conf.current_range = current_range
-        self.drv_conf.modify("current_range", current_range)
-
     def set_current(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
-        run_current_delay: int = 0,
-        rref: int = 12,
     ):
         """sets the Peak current for the motor.
 
@@ -196,21 +175,14 @@ class Tmc2240(TmcXXXX, StallGuard):
         """
         self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
 
-        K_IFS_TABLE = [11.75, 24, 36, 36]  # A*kOhm
-        current_fs_table = [k_ifs / rref * 1000 for k_ifs in K_IFS_TABLE]
+        rsense = 0.075  # ohm
+        vfs = 0.325  # V
 
-        current_range_reg_value = 3
-        for i, current_fs in enumerate(current_fs_table):
-            if run_current < current_fs:
-                current_range_reg_value = i
-                break
-
-        current_fs = current_fs_table[current_range_reg_value]
+        current_fs = vfs / (rsense) * 1000  # in mA
 
         self.tmc_logger.log(
             f"current_fs: {current_fs:.0f} mA | {current_fs/1000:.1f} A", Loglevel.DEBUG
         )
-        self._set_current_range(current_range_reg_value)
 
         # 256 == 0  -> max current
         global_scaler = round(run_current / current_fs * 256)
@@ -237,14 +209,12 @@ class Tmc2240(TmcXXXX, StallGuard):
         cs_irun = round(cs_irun)
         cs_ihold = round(cs_ihold)
         hold_current_delay = round(hold_current_delay)
-        run_current_delay = round(run_current_delay)
 
         self.tmc_logger.log(f"CS_IRun: {cs_irun}", Loglevel.DEBUG)
         self.tmc_logger.log(f"CS_IHold: {cs_ihold}", Loglevel.DEBUG)
         self.tmc_logger.log(f"IHold_Delay: {hold_current_delay}", Loglevel.DEBUG)
-        self.tmc_logger.log(f"IRun_Delay: {run_current_delay}", Loglevel.DEBUG)
 
-        self._set_irun_ihold(cs_ihold, cs_irun, hold_current_delay, run_current_delay)
+        self._set_irun_ihold(cs_ihold, cs_irun, hold_current_delay)
 
         ct_current_ma = round(ct_current_ma * cs_irun / 31)
         self.tmc_logger.log(
@@ -305,25 +275,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.tstep.read()
         return self.tstep.tstep
 
-    def get_vsupply(self) -> float:
-        """reads the ADC_VSUPPLY_AIN register
-
-        Returns:
-            int: ADC_VSUPPLY_AIN register value
-        """
-        self.adcv_supply_ain.read()
-        return self.adcv_supply_ain.adc_vsupply_v
-
-    def get_temperature(self) -> float:
-        """reads the ADC_TEMP register and returns the temperature
-
-        Returns:
-            float: temperature in °C
-        """
-        self.adc_temp.read()
-        return self.adc_temp.adc_temp_c
-
-    # TMC224x methods
+    # TMC5160 methods
     # ----------------------------
     def set_stallguard_callback(
         self, pin_stallguard, threshold, callback, min_speed=100
