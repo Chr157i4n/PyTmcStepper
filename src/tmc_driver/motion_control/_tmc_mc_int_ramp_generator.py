@@ -76,6 +76,7 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         Returns:
             stop (enum): how the movement was finished
         """
+        # pylint: disable=too-many-locals
         gconf = self.get_register("gconf")
         gconf.read()
         gconf.en_pwm_mode = 1
