@@ -24,6 +24,7 @@ from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
+from .motion_control._tmc_mc_int_ramp_generator import TmcMotionControlIntRampGenerator
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
@@ -49,6 +50,7 @@ class Tmc5160(TmcXXXX, StallGuard):
         TmcMotionControlStepDir,
         TmcMotionControlStepReg,
         TmcMotionControlStepPwmDir,
+        TmcMotionControlIntRampGenerator,
     )
     DRIVER_FAMILY = "TMC5160"
 
