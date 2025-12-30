@@ -107,20 +107,22 @@ class TmcReg:
 
         return data
 
+    def __str__(self) -> str:
+        """string representation of this register"""
+        out_string = f"{self.__class__.__name__.upper()} | {hex(self.ADDR)} | {bin(self._data_int)}\n"
+        for reg in self._REG_MAP:
+            value = getattr(self, reg.name)
+            out_string += f"  {reg.name:<20}{value:<10}"
+            if reg.conv_func is not None:
+                out_string += f"{getattr(self, reg.conv_func, '')} {reg.unit}"
+            out_string += "\n"
+        return out_string
+
     def log(self, logger: TmcLogger | None):
         """log this register"""
         if logger is None:
             return
-        logger.log(
-            f"{self.__class__.__name__.upper()} | {hex(self.ADDR)} | {bin(self._data_int)}"
-        )
-
-        for reg in self._REG_MAP:
-            value = getattr(self, reg.name)
-            log_string = f"  {reg.name:<20}{value:<10}"
-            if reg.conv_func is not None:
-                log_string += f"{getattr(self, reg.conv_func, '')} {reg.unit}"
-            logger.log(log_string, Loglevel.INFO)
+        logger.log(str(self), Loglevel.INFO)
 
     def read(self) -> tuple[int, dict]:
         """read this register"""
