@@ -261,9 +261,9 @@ class TmcStepperDriver:
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
         """motioncontrol wrapper"""
-        if self.tmc_mc is not None:
-            return self.tmc_mc.run_to_position_steps(steps, movement_abs_rel)
-        return StopMode.NO
+        if self.tmc_mc is None:
+            return StopMode.NO
+        return self.tmc_mc.run_to_position_steps(steps, movement_abs_rel)
 
     def run_to_position_fullsteps(
         self, steps, movement_abs_rel: MovementAbsRel | None = None
