@@ -137,3 +137,11 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         xtarget = self.get_register("xtarget")
         xtarget.xtarget = self._target_pos
         xtarget.write()
+
+        ramp_stat = self.get_register("ramp_stat")
+        while True:
+            ramp_stat.read()
+            if ramp_stat.position_reached:
+                self._tmc_logger.log("position reached", Loglevel.MOVEMENT)
+                return self._stop
+            time.sleep(0.01)  # sleep 10ms to reduce CPU load
