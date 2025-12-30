@@ -7,6 +7,7 @@ TmcXXXX driver module
 """
 
 import time
+from abc import abstractmethod
 from ._tmc_stepperdriver import *
 from ._tmc_logger import Loglevel
 from .enable_control._tmc_ec import TmcEnableControl
@@ -127,6 +128,23 @@ class TmcXXXX(TmcStepperDriver):
             setattr(self.gstat, reg.name, True)
 
         self.gstat.write_check()
+
+    @abstractmethod
+    def get_spreadcycle(self) -> bool:
+        """reads spreadcycle
+
+        Returns:
+            bool: True = spreadcycle; False = stealthchop
+        """
+
+    @abstractmethod
+    def set_spreadcycle(self, en: bool):
+        """enables spreadcycle (1) or stealthchop (0)
+
+        Args:
+        en (bool): true to enable spreadcycle; false to enable stealthchop
+
+        """
 
     def test_pin(self, pin, ioin_reg_bp):
         """tests one pin

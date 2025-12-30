@@ -91,15 +91,16 @@ class TmcStepperDriver:
 
     def deinit(self):
         """destructor"""
-        self.set_motor_enabled(False)
-
-        if self.tmc_ec is not None:
+        if getattr(self, "tmc_ec", None) is not None and self.tmc_ec is not None:
             self.tmc_ec.deinit()
             self.tmc_ec = None
-        if self.tmc_mc is not None:
+        if getattr(self, "tmc_mc", None) is not None and self.tmc_mc is not None:
             self.tmc_mc.deinit()
             self.tmc_mc = None
-        if self.tmc_logger is not None:
+        if (
+            getattr(self, "tmc_logger", None) is not None
+            and self.tmc_logger is not None
+        ):
             self.tmc_logger.deinit()
             self.tmc_logger = None
 

@@ -18,6 +18,7 @@ from . import tmc_gpio
 from ._tmc_logger import Loglevel
 from .reg import _tmc_shared_regs as tmc_shared_regs
 from . import _tmc_math as tmc_math
+from ._tmc_exceptions import TmcComException, TmcMotionControlException
 
 
 class StallGuard:
@@ -28,6 +29,8 @@ class StallGuard:
     """
 
     tmc_logger: TmcLogger
+    tmc_com: TmcCom | None
+    tmc_mc: TmcMotionControl
 
     coolconf: tmc_shared_regs.CoolConf
     sgthrs: tmc_shared_regs.SGThrs
@@ -45,7 +48,10 @@ class StallGuard:
 
     def deinit(self):
         """destructor"""
-        if self._pin_stallguard is not None:
+        if (
+            getattr(self, "_pin_stallguard", None) is not None
+            and self._pin_stallguard is not None
+        ):
             tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
             self._pin_stallguard = None
@@ -124,12 +130,12 @@ class StallGuard:
         self.coolconf.semin = round(max(0, min(semin_sg / 32, 15)))
         self.coolconf.semax = round(max(0, min(semax_sg / 32, 15)))
         self.coolconf.seimin = True  # scale down to until 1/4 of IRun (7 - 31)
-        self.coolconf.seup = seup
-        self.coolconf.sedn = sedn
+        self.coolconf.seup = int(seup)
+        self.coolconf.sedn = int(sedn)
         self.coolconf.write_check()
 
         self._set_coolstep_threshold(
-            tmc_math.steps_to_tstep(min_speed, self.get_microstepping_resolution())
+            tmc_math.steps_to_tstep(int(min_speed), self.get_microstepping_resolution())
         )
 
     def get_stallguard_result(self):
@@ -152,7 +158,7 @@ class StallGuard:
         Args:
             threshold (int): value for SGTHRS
         """
-        self.sgthrs.modify("sgthrs", threshold)
+        self.sgthrs.modify("sgthrs", int(threshold))
 
     def _set_coolstep_threshold(self, threshold):
         """This  is  the  lower  threshold  velocity  for  switching
@@ -161,4 +167,61 @@ class StallGuard:
         Args:
             threshold (int): threshold velocity for coolstep
         """
-        self.tcoolthrs.modify("tcoolthrs", threshold)
+        self.tcoolthrs.modify("tcoolthrs", int(threshold))
+
+    def do_homing(
+        self,
+        diag_pin: int,
+        revolutions=10,
+        threshold=100,
+        max_speed: int | None = None,
+    ) -> bool:
+        """homes the motor in the given direction using stallguard.
+        this method is using vactual to move the motor and an interrupt on the DIAG pin
+
+        Args:
+            diag_pin (int): DIAG pin number
+            revolutions (int): max number of revolutions. Can be negative for inverse direction
+                (Default value = 10)
+            threshold (int): StallGuard detection threshold (Default value = None)
+            speed_rpm (float):speed in revolutions per minute (Default value = None)
+
+        Returns:
+            not homing_failed (bool): true when homing was successful
+        """
+        if self.tmc_com is None:
+            raise TmcComException("tmc_com is None; cannot do homing")
+        if self.tmc_mc is None:
+            raise TmcMotionControlException("tmc_mc is None; cannot do homing")
+
+        self.tmc_logger.log(f"Stallguard threshold: {threshold}", Loglevel.DEBUG)
+
+        if max_speed is None:
+            max_speed = self.tmc_mc.max_speed_homing
+
+        self.tmc_logger.log("---", Loglevel.INFO)
+        self.tmc_logger.log("homing", Loglevel.INFO)
+
+        self.set_spreadcycle(0)
+
+        self.set_stallguard_callback(
+            diag_pin,
+            threshold,
+            self.tmc_mc.stop,
+            round(0.5 * max_speed),
+        )
+
+        stop_mode = self.tmc_mc.run_to_position_steps(
+            revolutions * self.tmc_mc.steps_per_rev,
+        )
+
+        homing_succeeded = stop_mode is StopMode.HARDSTOP
+
+        if homing_succeeded:
+            self.tmc_logger.log("homing successful", Loglevel.INFO)
+        else:
+            self.tmc_logger.log("homing failed", Loglevel.INFO)
+
+        self.tmc_mc.current_pos = 0
+
+        return homing_succeeded
