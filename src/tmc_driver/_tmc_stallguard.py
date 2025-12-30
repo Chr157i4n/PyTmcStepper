@@ -18,7 +18,13 @@ from . import tmc_gpio
 from ._tmc_logger import Loglevel
 from .reg import _tmc_shared_regs as tmc_shared_regs
 from . import _tmc_math as tmc_math
-from ._tmc_exceptions import TmcComException, TmcMotionControlException
+from ._tmc_exceptions import (
+    TmcComException,
+    TmcMotionControlException,
+    TmcDriverException,
+)
+
+_CB_SENTINEL = object()
 
 
 class StallGuard:
@@ -37,10 +43,25 @@ class StallGuard:
     sgresult: tmc_shared_regs.SGResult
     tcoolthrs: tmc_shared_regs.TCoolThrs
 
+    @property
+    def sg_callback(self):
+        """stallguard callback function"""
+        return self._sg_callback
+
+    @sg_callback.setter
+    def sg_callback(self, callback):
+        if self._pin_stallguard is None:
+            raise TmcDriverException(
+                "StallGuard pin not set. Cannot set callback function."
+            )
+        self._sg_callback = callback
+        tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
+        if callback is not None:
+            tmc_gpio.tmc_gpio.gpio_add_event_detect(self._pin_stallguard, callback)
+
     def __init__(self):
         """initialize StallGuard instance variables"""
         self._pin_stallguard: int | None = None
-        self._sg_callback: types.FunctionType | None = None
         self._sg_threshold: int = 100  # threshold for stallguard
 
     def __del__(self):
@@ -84,28 +105,14 @@ class StallGuard:
         self._sg_callback = callback
         self._pin_stallguard = pin_stallguard
 
-        tmc_gpio.tmc_gpio.gpio_setup(
-            self._pin_stallguard, GpioMode.IN, pull_up_down=GpioPUD.PUD_DOWN
-        )
-        # first remove existing events
-        tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
-        tmc_gpio.tmc_gpio.gpio_add_event_detect(
-            self._pin_stallguard, self.stallguard_callback
-        )
-
-    def stallguard_callback(self, gpio_pin):
-        """the callback function for StallGuard.
-        only checks whether the duration of the current movement is longer than
-        _sg_delay and then calls the actual callback
-
-        Args:
-            gpio_pin (int): pin number of the interrupt pin
-        """
-        del gpio_pin
-        if self._sg_callback is None:
-            self.tmc_logger.log("StallGuard callback is None", Loglevel.DEBUG)
-            return
-        self._sg_callback()
+        if self._pin_stallguard is not None:
+            tmc_gpio.tmc_gpio.gpio_setup(
+                self._pin_stallguard, GpioMode.IN, pull_up_down=GpioPUD.PUD_DOWN
+            )
+            # first remove existing events
+            tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
+            if callback is not None:
+                tmc_gpio.tmc_gpio.gpio_add_event_detect(self._pin_stallguard, callback)
 
     def enable_coolstep(
         self,
@@ -169,12 +176,20 @@ class StallGuard:
         """
         self.tcoolthrs.modify("tcoolthrs", int(threshold))
 
+    def _reset_current_pos(self):
+        """resets the current position of the motor to 0"""
+        if self.tmc_mc is None:
+            raise TmcMotionControlException("tmc_mc is None; cannot reset current pos")
+        self.tmc_mc.current_pos = 0
+
     def do_homing(
         self,
         diag_pin: int,
         revolutions=10,
         threshold=100,
         max_speed: int | None = None,
+        cb_success: types.FunctionType | object | None = _CB_SENTINEL,
+        cb_failure: types.FunctionType | object | None = None,
     ) -> bool:
         """homes the motor in the given direction using stallguard.
         this method is using vactual to move the motor and an interrupt on the DIAG pin
@@ -183,8 +198,10 @@ class StallGuard:
             diag_pin (int): DIAG pin number
             revolutions (int): max number of revolutions. Can be negative for inverse direction
                 (Default value = 10)
-            threshold (int): StallGuard detection threshold (Default value = None)
-            speed_rpm (float):speed in revolutions per minute (Default value = None)
+            threshold (int): StallGuard detection threshold (Default value = 100)
+            max_speed (int): max speed for homing in steps/s (Default value = None)
+            cb_success (func|None): callback function on successful homing
+            cb_failure (func|None): callback function on failed homing
 
         Returns:
             not homing_failed (bool): true when homing was successful
@@ -198,6 +215,8 @@ class StallGuard:
 
         if max_speed is None:
             max_speed = self.tmc_mc.max_speed_homing
+        if cb_success is _CB_SENTINEL:
+            cb_success = self._reset_current_pos
 
         self.tmc_logger.log("---", Loglevel.INFO)
         self.tmc_logger.log("homing", Loglevel.INFO)
@@ -207,21 +226,23 @@ class StallGuard:
         self.set_stallguard_callback(
             diag_pin,
             threshold,
-            self.tmc_mc.stop,
+            lambda _: self.tmc_mc.stop(),
             round(0.5 * max_speed),
         )
 
         stop_mode = self.tmc_mc.run_to_position_steps(
-            revolutions * self.tmc_mc.steps_per_rev,
+            revolutions * self.tmc_mc.steps_per_rev, MovementAbsRel.RELATIVE
         )
 
         homing_succeeded = stop_mode is StopMode.HARDSTOP
 
         if homing_succeeded:
             self.tmc_logger.log("homing successful", Loglevel.INFO)
+            if cb_success is not None:
+                cb_success()
         else:
             self.tmc_logger.log("homing failed", Loglevel.INFO)
-
-        self.tmc_mc.current_pos = 0
+            if cb_failure is not None:
+                cb_failure()
 
         return homing_succeeded
