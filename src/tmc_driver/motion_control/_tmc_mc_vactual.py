@@ -9,12 +9,10 @@ VActual Motion Control module
 
 import sys
 import time
-from abc import abstractmethod
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
 from .. import _tmc_math as tmc_math
-from .._tmc_exceptions import TmcMotionControlException
 
 
 # MicroPython compatibility for time functions
@@ -47,9 +45,9 @@ class TmcMotionControlVActual(TmcMotionControl):
         self._tmc_com: TmcCom | None = None
         self._starttime: int = 0
 
-    @abstractmethod
     def make_a_step(self):
         """method that makes on step"""
+        raise NotImplementedError
 
     def stop(self, stop_mode=StopMode.HARDSTOP):
         """stop the current movement
@@ -106,8 +104,6 @@ class TmcMotionControlVActual(TmcMotionControl):
             vactual (int): value for VACTUAL
         """
         vactual_reg = self.get_register("vactual")
-        if vactual_reg is None:
-            raise TmcMotionControlException("TMC register VACTUAL not available")
         vactual_reg.modify("vactual", vactual)
 
     def set_vactual_dur(

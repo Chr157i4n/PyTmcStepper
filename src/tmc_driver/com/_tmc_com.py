@@ -78,7 +78,7 @@ class TmcCom:
         """
         self._get_register_callback = callback
 
-    def get_register(self, name: str) -> TmcReg | None:
+    def get_register(self, name: str) -> TmcReg:
         """Get register by name from parent TMC class
 
         Args:
@@ -87,9 +87,9 @@ class TmcCom:
         Returns:
             Register object or None if callback not set
         """
-        if self._get_register_callback is not None:
-            return self._get_register_callback(name)
-        return None
+        if self._get_register_callback is None:
+            raise TmcComException("Get register callback not set in communication")
+        return self._get_register_callback(name)
 
     @abstractmethod
     def read_reg(self, addr: int) -> tuple[int, dict | None]:

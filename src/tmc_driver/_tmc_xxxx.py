@@ -133,7 +133,7 @@ class TmcXXXX(TmcStepperDriver):
         self.read_microstepping_resolution()
         return self.tmc_mc.steps_per_rev
 
-    def _get_register(self, name: str) -> TmcReg | None:
+    def _get_register(self, name: str) -> TmcReg:
         """Get register by name - callback for submodules
 
         Args:
@@ -143,16 +143,12 @@ class TmcXXXX(TmcStepperDriver):
             Register object or None if not found
         """
         name = name.lower()
-        return getattr(self, name, None)
-
-    def clear_gstat(self):
-        """clears the "GSTAT" register"""
-        self.tmc_logger.log("clearing GSTAT", Loglevel.INFO)
-
-        for reg in self.gstat.reg_map:
-            setattr(self.gstat, reg.name, True)
-
-        self.gstat.write_check()
+        reg = getattr(self, name, None)
+        if reg is None:
+            raise TmcDriverException(
+                f"Register {name} not found in driver {self.DRIVER_FAMILY}"
+            )
+        return reg
 
     @abstractmethod
     def get_spreadcycle(self) -> bool:

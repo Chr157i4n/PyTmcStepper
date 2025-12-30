@@ -7,7 +7,6 @@ from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
 from .. import tmc_gpio
-from .._tmc_exceptions import TmcMotionControlException
 
 
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
@@ -44,7 +43,5 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         self._tmc_logger.log(f"New Direction is: {direction}", Loglevel.MOVEMENT)
 
         gconf = self.get_register("gconf")
-        if gconf is None:
-            raise TmcMotionControlException("TMC register GCONF not available")
 
         gconf.modify("shaft", bool(int(direction)))

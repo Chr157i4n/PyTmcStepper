@@ -225,8 +225,6 @@ class TmcComUartBase(TmcCom):
             TmcComException: if IFCNT register is not set or write fails after retries
         """
         ifcnt: IfcntStub = self.get_register("ifcnt")  # type: ignore
-        if ifcnt is None:
-            raise TmcComException("TMC register IFCNT not available")
 
         ifcnt.read()
         ifcnt1 = ifcnt.ifcnt
@@ -269,8 +267,6 @@ class TmcComUartBase(TmcCom):
             raise TmcComException("Cannot test com, serial port is closed")
 
         ioin: IoinStub = self.get_register("ioin")  # type: ignore
-        if ioin is None:
-            raise TmcComException("TMC register IOIN not available")
 
         self.r_frame[1] = self.driver_address
         self.r_frame[2] = ioin.ADDR

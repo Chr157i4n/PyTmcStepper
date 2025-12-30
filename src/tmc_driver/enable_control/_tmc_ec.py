@@ -5,6 +5,7 @@ Enable Control base module
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger
 from ..reg._tmc_reg import TmcReg
+from .._tmc_exceptions import TmcEnableControlException
 
 
 class TmcEnableControl:
@@ -27,7 +28,7 @@ class TmcEnableControl:
         """
         self._get_register_callback = callback
 
-    def get_register(self, name: str) -> TmcReg | None:
+    def get_register(self, name: str) -> TmcReg:
         """Get register by name from parent TMC class
 
         Args:
@@ -36,9 +37,11 @@ class TmcEnableControl:
         Returns:
             Register object or None if callback not set
         """
-        if self._get_register_callback is not None:
-            return self._get_register_callback(name)
-        return None
+        if self._get_register_callback is None:
+            raise TmcEnableControlException(
+                "Get register callback not set in enable control"
+            )
+        return self._get_register_callback(name)
 
     def __del__(self):
         """destructor"""

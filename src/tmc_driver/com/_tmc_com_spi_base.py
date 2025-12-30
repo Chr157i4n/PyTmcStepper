@@ -155,8 +155,6 @@ class TmcComSpiBase(TmcCom):
             TmcComException: if TMC register IOIN not available
         """
         ioin: IoinStub = self.get_register("ioin")  # type: ignore
-        if ioin is None:
-            raise TmcComException("TMC register IOIN not available")
         data, flags = ioin.read()
         del flags  # unused
 
