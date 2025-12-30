@@ -31,6 +31,7 @@ class TmcXXXX(TmcStepperDriver):
     ioin: tmc_shared_regs.Ioin
     gconf: tmc_shared_regs.GConf
     chopconf: tmc_shared_regs.ChopConf
+    mscnt: tmc_shared_regs.MsCnt
 
     # Constructor/Destructor
     # ----------------------------
@@ -122,6 +123,8 @@ class TmcXXXX(TmcStepperDriver):
         Returns:
             int: Steps per revolution
         """
+        if self.tmc_mc is None:
+            raise TmcDriverException("tmc_mc is None; cannot read steps per revolution")
         self.read_microstepping_resolution()
         return self.tmc_mc.steps_per_rev
 
@@ -268,6 +271,35 @@ class TmcXXXX(TmcStepperDriver):
             int: theoretical final current in mA
         """
 
+    def get_microstep_counter(self) -> int:
+        """returns the current Microstep counter.
+        Indicates actual position in the microstep table for CUR_A
+
+        Returns:
+            int: current Microstep counter
+        """
+        self.mscnt.read()
+        return self.mscnt.mscnt
+
+    def get_microstep_counter_in_steps(self, offset: int = 0) -> int:
+        """returns the current Microstep counter.
+        Indicates actual position in the microstep table for CUR_A
+
+        Args:
+            offset (int): offset in steps (Default value = 0)
+
+        Returns:
+            step (int): current Microstep counter convertet to steps
+        """
+        if self.tmc_mc is None:
+            raise TmcDriverException(
+                "tmc_mc is None; cannot get microstep counter in steps"
+            )
+        step = (self.get_microstep_counter() - 64) * (self.tmc_mc.mres * 4) / 1024
+        step = (4 * self.tmc_mc.mres) - step - 1
+        step = round(step)
+        return step + offset
+
     def read_register(self, name: str, log: bool = True) -> tuple[TmcReg, int, dict]:
         """reads all relevant registers of the driver"""
         if self.tmc_com is None:
@@ -307,6 +339,12 @@ class TmcXXXX(TmcStepperDriver):
             raise TmcDriverException(
                 "tmc_mc or tmc_ec is not of correct type; cannot test pins"
             )
+        if self.tmc_ec.pin_en is None:
+            raise TmcDriverException("tmc_ec pin_en is None; cannot test pins")
+        if self.tmc_mc.pin_dir is None:
+            raise TmcDriverException("tmc_mc pin_dir is None; cannot test pins")
+        if self.tmc_mc.pin_step is None:
+            raise TmcDriverException("tmc_mc pin_step is None; cannot test pins")
 
         pin_ok = True
 

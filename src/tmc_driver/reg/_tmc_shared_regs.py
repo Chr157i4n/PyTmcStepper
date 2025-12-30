@@ -52,3 +52,9 @@ class Ioin(TmcReg):
     dir: bool
     step: bool
     enn: bool
+
+
+class MsCnt(TmcReg):
+    """MSCNT register class stub"""
+
+    mscnt: int

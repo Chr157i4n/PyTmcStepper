@@ -369,28 +369,3 @@ class Tmc220x(TmcXXXX):
         """
         self.vactual.vactual = vactual
         self.vactual.write_check()
-
-    def get_microstep_counter(self) -> int:
-        """returns the current Microstep counter.
-        Indicates actual position in the microstep table for CUR_A
-
-        Returns:
-            int: current Microstep counter
-        """
-        self.mscnt.read()
-        return self.mscnt.mscnt
-
-    def get_microstep_counter_in_steps(self, offset: int = 0) -> int:
-        """returns the current Microstep counter.
-        Indicates actual position in the microstep table for CUR_A
-
-        Args:
-            offset (int): offset in steps (Default value = 0)
-
-        Returns:
-            step (int): current Microstep counter convertet to steps
-        """
-        step = (self.get_microstep_counter() - 64) * (self.tmc_mc.mres * 4) / 1024
-        step = (4 * self.tmc_mc.mres) - step - 1
-        step = round(step)
-        return step + offset
