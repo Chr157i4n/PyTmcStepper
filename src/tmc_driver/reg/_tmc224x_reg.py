@@ -58,11 +58,11 @@ class GStat(TmcReg):
     drv_err: bool
     reset: bool
     _REG_MAP = (
-        TmcRegField("vm_uvlo", 4, 0x1, bool, None, ""),
-        TmcRegField("register_reset", 3, 0x1, bool, None, ""),
-        TmcRegField("uv_cp", 2, 0x1, bool, None, ""),
-        TmcRegField("drv_err", 1, 0x1, bool, None, ""),
-        TmcRegField("reset", 0, 0x1, bool, None, ""),
+        TmcRegField("vm_uvlo", 4, 0x1, bool, None, "", 1),
+        TmcRegField("register_reset", 3, 0x1, bool, None, "", 1),
+        TmcRegField("uv_cp", 2, 0x1, bool, None, "", 1),
+        TmcRegField("drv_err", 1, 0x1, bool, None, "", 1),
+        TmcRegField("reset", 0, 0x1, bool, None, "", 1),
     )
 
     def check(self):

@@ -39,6 +39,7 @@ class TmcRegField:
         reg_class: type,
         conv_func,
         unit: str,
+        clear_value: int | None = None,
     ):
         """Constructor"""
         self.name = name
@@ -47,6 +48,7 @@ class TmcRegField:
         self.reg_class = reg_class
         self.conv_func = conv_func
         self.unit = unit
+        self.clear_value = clear_value
 
 
 class TmcReg:
@@ -162,3 +164,11 @@ class TmcReg:
         """
         self.read()
         return getattr(self, name)
+
+    def clear(self):
+        """clear this register (set to 0)"""
+        self._data_int = 0
+        for reg in self._REG_MAP:
+            if reg.clear_value is not None:
+                setattr(self, reg.name, reg.reg_class(reg.clear_value))
+        self.write_check()

@@ -116,7 +116,7 @@ class Tmc5160(TmcXXXX, StallGuard):
             self.tcoolthrs = TCoolThrs(self.tmc_com)
             self.lost_steps = LostSteps(self.tmc_com)
 
-            self.clear_gstat()
+            self.gstat.clear()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
