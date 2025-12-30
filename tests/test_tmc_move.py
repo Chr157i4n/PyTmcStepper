@@ -23,7 +23,6 @@ class TestTMCMove(unittest.TestCase):
 
     def tearDown(self):
         """tearDown"""
-        self.tmc.set_deinitialize_true()
 
     def test_run_to_position_steps(self):
         """test_run_to_position_steps"""

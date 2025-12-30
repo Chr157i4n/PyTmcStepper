@@ -68,11 +68,9 @@ class TmcStepperDriver:
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
         self.BOARD: Board = tmc_gpio.BOARD
-        self.tmc_mc: TmcMotionControl | None = None
-        self.tmc_ec: TmcEnableControl | None = None
+        self.tmc_ec = tmc_ec
+        self.tmc_mc = tmc_mc
         self.tmc_logger: TmcLogger
-
-        self._deinit_finished: bool = False
 
         if logprefix is None:
             logprefix = "StepperDriver"
@@ -82,38 +80,29 @@ class TmcStepperDriver:
 
         tmc_gpio.tmc_gpio.init(gpio_mode)
 
-        if tmc_mc is not None:
-            self.tmc_mc = tmc_mc
+        if self.tmc_mc is not None:
             self.tmc_mc.init(self.tmc_logger)
 
-        if tmc_ec is not None:
-            self.tmc_ec = tmc_ec
+        if self.tmc_ec is not None:
             self.tmc_ec.init(self.tmc_logger)
-
-        self.tmc_logger.log("GPIO Init finished", Loglevel.INFO)
-
-        self.tmc_logger.log("Init finished", Loglevel.INFO)
 
     def __del__(self):
         self.deinit()
 
     def deinit(self):
         """destructor"""
-        if self._deinit_finished is False:
-            self.tmc_logger.log("Deinit", Loglevel.INFO)
-
-            self.set_motor_enabled(False)
-
-            self.tmc_logger.log("Deinit finished", Loglevel.INFO)
-            self._deinit_finished = True
-        else:
-            self.tmc_logger.log("Deinit already finished", Loglevel.INFO)
-        if self.tmc_ec is not None:
+        if getattr(self, "tmc_ec", None) is not None and self.tmc_ec is not None:
             self.tmc_ec.deinit()
-        if self.tmc_mc is not None:
+            self.tmc_ec = None
+        if getattr(self, "tmc_mc", None) is not None and self.tmc_mc is not None:
             self.tmc_mc.deinit()
-        if self.tmc_logger is not None:
+            self.tmc_mc = None
+        if (
+            getattr(self, "tmc_logger", None) is not None
+            and self.tmc_logger is not None
+        ):
             self.tmc_logger.deinit()
+            self.tmc_logger = None
 
     # TmcEnableControl Wrapper
     # ----------------------------

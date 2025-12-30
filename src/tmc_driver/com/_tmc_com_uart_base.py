@@ -11,6 +11,22 @@ from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
+class IfcntStub(TmcReg):
+    """IFCNT Register Stub"""
+
+    # pylint: disable=too-few-public-methods
+
+    ifcnt: int
+
+
+class IoinStub(TmcReg):
+    """IOIN Register Stub"""
+
+    # pylint: disable=too-few-public-methods
+
+    version: int
+
+
 class TmcComUartBase(TmcCom):
     """TmcComUartBase
 
@@ -19,13 +35,9 @@ class TmcComUartBase(TmcCom):
     Subclasses must implement the actual UART transfer methods.
     """
 
-    def __init__(self, driver_address: int = 0):
-        """constructor
-
-        Args:
-            driver_address (int, optional): driver address. Defaults to 0.
-        """
-        super().__init__(driver_address)
+    def __init__(self):
+        """constructor"""
+        super().__init__()
 
         self.ser = None  # To be set by subclass
 
@@ -212,7 +224,7 @@ class TmcComUartBase(TmcCom):
         Raises:
             TmcComException: if IFCNT register is not set or write fails after retries
         """
-        ifcnt = self.get_register("ifcnt")
+        ifcnt: IfcntStub = self.get_register("ifcnt")  # type: ignore
         if ifcnt is None:
             raise TmcComException("TMC register IFCNT not available")
 
@@ -234,7 +246,7 @@ class TmcComUartBase(TmcCom):
             if tries <= 0:
                 raise TmcComException("after 10 tries writing not successful")
 
-    def flush_serial_buffer(self):
+    def flush_com_buffer(self):
         """this function clear the communication buffers"""
         if self.ser is None:
             return
@@ -256,12 +268,12 @@ class TmcComUartBase(TmcCom):
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
-        ioin = self.get_register("ioin")
+        ioin: IoinStub = self.get_register("ioin")  # type: ignore
         if ioin is None:
             raise TmcComException("TMC register IOIN not available")
 
         self.r_frame[1] = self.driver_address
-        self.r_frame[2] = ioin.addr
+        self.r_frame[2] = ioin.ADDR
         self.r_frame[3] = compute_crc8_atm(self.r_frame[:-1])
 
         rtn = self._uart_write(self.r_frame)

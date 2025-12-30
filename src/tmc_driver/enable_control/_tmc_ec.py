@@ -40,8 +40,13 @@ class TmcEnableControl:
             return self._get_register_callback(name)
         return None
 
+    def __del__(self):
+        """destructor"""
+        self.deinit()
+
     def deinit(self):
         """destructor"""
+        self.set_motor_enabled(False)
 
     @abstractmethod
     def set_motor_enabled(self, en):

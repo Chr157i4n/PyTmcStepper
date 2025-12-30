@@ -1,13 +1,10 @@
-# pylint: disable=too-many-arguments
-# pylint: disable=too-many-public-methods
-# pylint: disable=too-many-branches
-# pylint: disable=too-many-instance-attributes
-# pylint: disable=too-many-positional-arguments
-# pylint: disable=bare-except
-# pylint: disable=no-member
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-public-methods
 """Tmc220X stepper driver module
 
 this module has two different functions:
@@ -17,12 +14,14 @@ this module has two different functions:
 
 import threading
 import time
-from ._tmc_stepperdriver import *
+from .tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_uart_base import TmcComUartBase
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
-from .enable_control._tmc_ec_toff import TmcEnableControlToff
+from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
+from .enable_control._tmc_ec_toff import TmcEnableControlToff
+from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_logger import *
 from .reg._tmc220x_reg import *
 from . import _tmc_math as tmc_math
@@ -36,12 +35,18 @@ from ._tmc_exceptions import (
 from ._tmc_validation import validate_submodule
 
 
-class Tmc220x(TmcStepperDriver):
+class Tmc220x(TmcXXXX):
     """Tmc220X"""
 
     SUPPORTED_COM_TYPES = (TmcComUartBase,)
     SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
-    SUPPORTED_MC_TYPES = (TmcMotionControlStepDir, TmcMotionControlVActual)
+    SUPPORTED_MC_TYPES = (
+        TmcMotionControlStepDir,
+        TmcMotionControlStepReg,
+        TmcMotionControlStepPwmDir,
+        TmcMotionControlVActual,
+    )
+    DRIVER_FAMILY = "TMC220X"
 
     # Constructor/Destructor
     # ----------------------------
@@ -49,7 +54,7 @@ class Tmc220x(TmcStepperDriver):
         self,
         tmc_ec: TmcEnableControl,
         tmc_mc: TmcMotionControl,
-        tmc_com: TmcComUartBase | None = None,
+        tmc_com: TmcCom | None = None,
         driver_address: int = 0,
         gpio_mode=None,
         loglevel: Loglevel = Loglevel.INFO,
@@ -74,37 +79,22 @@ class Tmc220x(TmcStepperDriver):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        self.tmc_com: TmcComUartBase | None = None
-
         if logprefix is None:
-            logprefix = f"TMC2209 {driver_address}"
+            logprefix = f"{self.DRIVER_FAMILY} {driver_address}"
 
         super().__init__(
-            tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter
+            tmc_ec,
+            tmc_mc,
+            tmc_com,
+            driver_address,
+            gpio_mode,
+            loglevel,
+            logprefix,
+            log_handlers,
+            log_formatter,
         )
 
-        validate_submodule(
-            tmc_com, self.SUPPORTED_COM_TYPES, self.__class__.__name__, "tmc_com"
-        )
-        validate_submodule(
-            tmc_ec, self.SUPPORTED_EC_TYPES, self.__class__.__name__, "tmc_ec"
-        )
-        validate_submodule(
-            tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc"
-        )
-
-        if tmc_com is not None:
-            self.tmc_com = tmc_com
-            self.tmc_com.tmc_logger = self.tmc_logger
-            self.tmc_com.driver_address = driver_address
-
-            self.tmc_com.init()
-
-            if hasattr(self.tmc_mc, "tmc_com"):
-                self.tmc_mc.tmc_com = tmc_com
-
-            if hasattr(self.tmc_ec, "tmc_com"):
-                self.tmc_ec.tmc_com = tmc_com
+        if self.tmc_com is not None:
 
             self.gconf = GConf(self.tmc_com)
             self.gstat = GStat(self.tmc_com)
@@ -120,46 +110,10 @@ class Tmc220x(TmcStepperDriver):
             self.pwmconf = PwmConf(self.tmc_com)
             self.drvstatus = DrvStatus(self.tmc_com)
 
-            self.tmc_com.ifcnt = self.ifcnt
-
-            # Register callback for submodules to access registers
-            self.tmc_com.set_get_register_callback(self._get_register)
-            if self.tmc_mc is not None:
-                self.tmc_mc.set_get_register_callback(self._get_register)
-            if self.tmc_ec is not None:
-                self.tmc_ec.set_get_register_callback(self._get_register)
-
             self.clear_gstat()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
-            self.tmc_com.flush_serial_buffer()
-
-        self.tmc_logger.log("TMC220x Init finished", Loglevel.INFO)
-
-    def __del__(self):
-        self.deinit()
-
-    def deinit(self):
-        """destructor"""
-        super().deinit()
-        if self.tmc_com is not None:
-            self.tmc_com.deinit()
-            self.tmc_com = None
-
-    def set_deinitialize_true(self):
-        """set deinitialize to true"""
-        self._deinit_finished = True
-
-    def _get_register(self, name: str) -> TmcReg | None:
-        """Get register by name - callback for submodules
-
-        Args:
-            name: Register name (e.g. 'gconf', 'chopconf')
-
-        Returns:
-            Register object or None if not found
-        """
-        return getattr(self, name, None)
+            self.tmc_com.flush_com_buffer()
 
     # Tmc220x methods
     # ----------------------------
@@ -202,15 +156,6 @@ class Tmc220x(TmcStepperDriver):
         self.gstat.read()
         self.gstat.log(self.tmc_logger)
         return self.gstat
-
-    def clear_gstat(self):
-        """clears the "GSTAT" register"""
-        self.tmc_logger.log("clearing GSTAT", Loglevel.INFO)
-
-        for reg in self.gstat.reg_map:
-            setattr(self.gstat, reg[0], True)
-
-        self.gstat.write_check()
 
     def read_ioin(self) -> Ioin:
         """read the register Adress "IOIN" and logs the reg values
@@ -536,8 +481,8 @@ class Tmc220x(TmcStepperDriver):
         Returns:
             int: TStep time
         """
-        self.chopconf.read()
-        return self.chopconf.tstep
+        self.tstep.read()
+        return self.tstep.tstep
 
     def set_tpwmthrs(self, tpwmthrs: int):
         """sets the current tpwmthrs
@@ -584,72 +529,3 @@ class Tmc220x(TmcStepperDriver):
         step = (4 * self.tmc_mc.mres) - step - 1
         step = round(step)
         return step + offset
-
-    # Test methods
-    # ----------------------------
-    def test_pin(self, pin, ioin_reg_bp):
-        """tests one pin
-
-        this function checks the connection to a pin
-        by toggling it and reading the IOIN register
-        """
-        pin_ok = True
-
-        # turn on all pins
-        tmc_gpio.tmc_gpio.gpio_output(self.tmc_mc.pin_dir, Gpio.HIGH)
-        tmc_gpio.tmc_gpio.gpio_output(self.tmc_mc.pin_step, Gpio.HIGH)
-        tmc_gpio.tmc_gpio.gpio_output(self.tmc_ec.pin_en, Gpio.HIGH)
-
-        # check that the selected pin is on
-        ioin = self.read_ioin()
-        if not ioin.data_int >> ioin_reg_bp & 0x1:
-            pin_ok = False
-
-        # turn off only the selected pin
-        tmc_gpio.tmc_gpio.gpio_output(pin, Gpio.LOW)
-        time.sleep(0.1)
-
-        # check that the selected pin is off
-        ioin = self.read_ioin()
-        if ioin.data_int >> ioin_reg_bp & 0x1:
-            pin_ok = False
-
-        return pin_ok
-
-    def test_dir_step_en(self):
-        """tests the EN, DIR and STEP pin
-
-        this sets the EN, DIR and STEP pin to HIGH, LOW and HIGH
-        and checks the IOIN Register of the TMC meanwhile
-        """
-        if self.tmc_mc is None or self.tmc_ec is None:
-            raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
-        if not isinstance(self.tmc_mc, TmcMotionControlStepDir) or not isinstance(
-            self.tmc_ec, TmcEnableControlPin
-        ):
-            raise TmcDriverException(
-                "tmc_mc or tmc_ec is not of correct type; cannot test pins"
-            )
-
-        # test each pin on their own
-        pin_dir_ok = self.test_pin(self.tmc_mc.pin_dir, 9)
-        pin_step_ok = self.test_pin(self.tmc_mc.pin_step, 7)
-        pin_en_ok = self.test_pin(self.tmc_ec.pin_en, 0)
-
-        self.set_motor_enabled(False)
-
-        self.tmc_logger.log("---")
-        self.tmc_logger.log(f"Pin DIR: \t{'OK' if pin_dir_ok else 'not OK'}")
-        self.tmc_logger.log(f"Pin STEP: \t{'OK' if pin_step_ok else 'not OK'}")
-        self.tmc_logger.log(f"Pin EN: \t{'OK' if pin_en_ok else 'not OK'}")
-        self.tmc_logger.log("---")
-
-    def test_com(self):
-        """test method"""
-        if self.tmc_com is None:
-            raise TmcDriverException("tmc_com is None; cannot test communication")
-
-        self.tmc_logger.log("---")
-        self.tmc_logger.log("TEST COM")
-
-        return self.tmc_com.test_com()

@@ -11,6 +11,14 @@ from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
+class IoinStub(TmcReg):
+    """IOIN Register Stub"""
+
+    # pylint: disable=too-few-public-methods
+
+    version: int
+
+
 class TmcComSpiBase(TmcCom):
     """TmcComSpiBase
 
@@ -19,13 +27,9 @@ class TmcComSpiBase(TmcCom):
     Subclasses must implement the actual SPI transfer methods.
     """
 
-    def __init__(self, driver_address: int = 0):
-        """constructor
-
-        Args:
-            driver_address (int, optional): driver address. Defaults to 0.
-        """
-        super().__init__(driver_address)
+    def __init__(self):
+        """constructor"""
+        super().__init__()
 
         self.spi = None  # To be set by subclass
 
@@ -138,7 +142,7 @@ class TmcComSpiBase(TmcCom):
         self.write_reg(addr, val)
         return True
 
-    def flush_serial_buffer(self):
+    def flush_com_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
 
     def test_com(self):
@@ -150,7 +154,7 @@ class TmcComSpiBase(TmcCom):
         Raises:
             TmcComException: if TMC register IOIN not available
         """
-        ioin = self.get_register("ioin")
+        ioin: IoinStub = self.get_register("ioin")  # type: ignore
         if ioin is None:
             raise TmcComException("TMC register IOIN not available")
         data, flags = ioin.read()

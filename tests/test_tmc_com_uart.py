@@ -26,7 +26,7 @@ class TestTmcComUart(unittest.TestCase):
 
     def setUp(self):
         """setUp"""
-        self.tmc_uart = TmcComUart(None, 115200, 0)
+        self.tmc_uart = TmcComUart(None, 115200)
 
     def test_read_int(self):
         """test_read_int"""

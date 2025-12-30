@@ -1,66 +1,55 @@
+# pylint: disable=too-many-instance-attributes
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=too-many-instance-attributes
 """
 Register module
 """
 
+from ._tmc_reg import TmcReg
 from ._tmc220x_reg import *
 
 
 class TCoolThrs(TmcReg):
     """TCOOLTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
-        """constructor"""
+    ADDR = 0x14
 
-        self.tcoolthrs: int
-
-        reg_map = [["tcoolthrs", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x14, "TCOOLTHRS", tmc_com, reg_map)
+    tcoolthrs: int
+    _REG_MAP = (TmcRegField("tcoolthrs", 0, 0xFFFFF, int, None, ""),)
 
 
 class SGThrs(TmcReg):
     """SGTHRS register class"""
 
-    def __init__(self, tmc_com: TmcCom):
-        """constructor"""
+    ADDR = 0x40
 
-        self.sgthrs: int
-
-        reg_map = [["sgthrs", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x40, "SGTHRS", tmc_com, reg_map)
+    sgthrs: int
+    _REG_MAP = (TmcRegField("sgthrs", 0, 0xFFFFF, int, None, ""),)
 
 
 class SGResult(TmcReg):
     """SGRESULT register class"""
 
-    def __init__(self, tmc_com: TmcCom):
-        """constructor"""
+    ADDR = 0x41
 
-        self.sgresult: int
-
-        reg_map = [["sgresult", 0, 0xFFFFF, int, None, ""]]
-        super().__init__(0x41, "SGRESULT", tmc_com, reg_map)
+    sgresult: int
+    _REG_MAP = (TmcRegField("sgresult", 0, 0xFFFFF, int, None, ""),)
 
 
 class CoolConf(TmcReg):
     """COOLCONF register class"""
 
-    def __init__(self, tmc_com: TmcCom):
-        """constructor"""
+    ADDR = 0x42
 
-        self.seemin: bool
-        self.sedn: int
-        self.semax: int
-        self.seup: int
-        self.semin: int
-
-        reg_map = [
-            ["seemin", 15, 0x1, bool, None, ""],
-            ["sedn", 13, 0x3, int, None, ""],
-            ["semax", 8, 0xF, int, None, ""],
-            ["seup", 5, 0x3, int, None, ""],
-            ["semin", 0, 0xF, int, None, ""],
-        ]
-        super().__init__(0x42, "COOLCONF", tmc_com, reg_map)
+    seimin: bool
+    sedn: int
+    semax: int
+    seup: int
+    semin: int
+    _REG_MAP = (
+        TmcRegField("seimin", 15, 0x1, bool, None, ""),
+        TmcRegField("sedn", 13, 0x3, int, None, ""),
+        TmcRegField("semax", 8, 0xF, int, None, ""),
+        TmcRegField("seup", 5, 0x3, int, None, ""),
+        TmcRegField("semin", 0, 0xF, int, None, ""),
+    )

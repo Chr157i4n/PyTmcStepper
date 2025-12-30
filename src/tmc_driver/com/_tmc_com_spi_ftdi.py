@@ -17,14 +17,13 @@ class TmcComSpiFtdi(TmcComSpiBase):
     like the current or the microsteppingmode
     """
 
-    def __init__(self, spi_port: SpiPort, driver_address: int = 0):
+    def __init__(self, spi_port: SpiPort):
         """constructor
 
         Args:
             spi_port (SpiPort): pyftdi SpiPort object
-            driver_address (int, optional): driver address. Defaults to 0.
         """
-        super().__init__(driver_address)
+        super().__init__()
 
         self.spi = spi_port
 

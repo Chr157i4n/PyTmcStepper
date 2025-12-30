@@ -87,6 +87,9 @@ class BaseRPiGPIOWrapper(BaseGPIOWrapper):
 
     def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin"""
+        if self._gpios_pwm[pin] is not None:
+            self._gpios_pwm[pin].stop()
+            self._gpios_pwm[pin] = None
         self.GPIO.cleanup(pin)
 
     def gpio_input(self, pin: int) -> int:
