@@ -14,7 +14,7 @@ this module has two different functions:
 
 import threading
 import time
-from .tmc_xxxx import *
+from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_uart_base import TmcComUartBase
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg

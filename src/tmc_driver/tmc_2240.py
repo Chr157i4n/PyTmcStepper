@@ -14,7 +14,7 @@ this module has two different functions:
 
 import time
 import types
-from .tmc_xxxx import *
+from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
