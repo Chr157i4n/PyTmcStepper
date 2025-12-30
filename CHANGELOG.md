@@ -1,5 +1,21 @@
 # Changelog
 
+## version 0.10.0
+
+- added unittests for submodule combinations
+- renamed drv_enn to enn in reg def for consistency
+- added class TmcXXXX for code shared between all TMC drivers
+- changed reg definitions (Tuple of TmcRegFields instead of Array of Arrays)
+- changed do_homing()
+  - moved to _tmc_stallguard.py
+  - added args cb_success and cb_failure
+  - uses tmc_mc now instead of static internal motion controller
+- removed do_homing2()
+- removed driver_address from constructor of COM submodules
+- removed _deinit_finished
+- fixed pwm cleanup
+- fixed reg definition (seimin in Coolconf of TMC2209)
+
 ## version 0.9.3
 
 - fixed reg access in submodules (with callback)
