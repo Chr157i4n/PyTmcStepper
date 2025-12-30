@@ -189,10 +189,28 @@ class TStep(TmcReg):
     _REG_MAP = (TmcRegField("tstep", 0, 0xFFFFF, int, None, ""),)
 
 
+class TPwmThrs(TmcReg):
+    """TCOOLTHRS register class"""
+
+    ADDR = 0x13
+
+    tpwmthrs: int
+    _REG_MAP = (TmcRegField("tpwmthrs", 0, 0xFFFFF, int, None, ""),)
+
+
+class TCoolThrs(TmcReg):
+    """TCOOLTHRS register class"""
+
+    ADDR = 0x14
+
+    tcoolthrs: int
+    _REG_MAP = (TmcRegField("tcoolthrs", 0, 0xFFFFF, int, None, ""),)
+
+
 class THigh(TmcReg):
     """THIGH register class"""
 
-    ADDR = 0x13
+    ADDR = 0x15
 
     thigh: int
     _REG_MAP = (TmcRegField("thigh", 0, 0xFFFFF, int, None, ""),)
@@ -353,15 +371,6 @@ class DrvStatus(TmcReg):
         TmcRegField("s2vsa", 12, 0x1, bool, None, ""),
         TmcRegField("sgresult", 0, 0x3FF, int, None, ""),
     )
-
-
-class TCoolThrs(TmcReg):
-    """TCOOLTHRS register class"""
-
-    ADDR = 0x14
-
-    tcoolthrs: int
-    _REG_MAP = (TmcRegField("tcoolthrs", 0, 0xFFFFF, int, None, ""),)
 
 
 class SgThrs(TmcReg):
