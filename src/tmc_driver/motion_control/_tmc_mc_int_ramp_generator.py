@@ -137,4 +137,3 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         xtarget = self.get_register("xtarget")
         xtarget.xtarget = self._target_pos
         xtarget.write()
-        pass
