@@ -29,7 +29,11 @@ class TmcXXXX(TmcStepperDriver):
 
     gstat: tmc_shared_regs.GStat
     ioin: tmc_shared_regs.Ioin
+    gconf: tmc_shared_regs.GConf
+    chopconf: tmc_shared_regs.ChopConf
 
+    # Constructor/Destructor
+    # ----------------------------
     def __init__(
         self,
         tmc_ec: TmcEnableControl,
@@ -109,6 +113,18 @@ class TmcXXXX(TmcStepperDriver):
             self.tmc_com.deinit()
             self.tmc_com = None
 
+    # Register Access
+    # ----------------------------
+    def read_steps_per_rev(self) -> int:
+        """returns how many steps are needed for one revolution.
+        this reads the value from the tmc driver.
+
+        Returns:
+            int: Steps per revolution
+        """
+        self.read_microstepping_resolution()
+        return self.tmc_mc.steps_per_rev
+
     def _get_register(self, name: str) -> TmcReg | None:
         """Get register by name - callback for submodules
 
@@ -147,20 +163,109 @@ class TmcXXXX(TmcStepperDriver):
 
         """
 
-    @abstractmethod
     def get_direction_reg(self) -> bool:
         """returns the motor shaft direction: False = CCW; True = CW
 
         Returns:
             bool: motor shaft direction: False = CCW; True = CW
         """
+        self.gconf.read()
+        return self.gconf.shaft
 
-    @abstractmethod
     def set_direction_reg(self, direction: bool):
         """sets the motor shaft direction to the given value: False = CCW; True = CW
 
         Args:
             direction (bool): direction of the motor False = CCW; True = CW
+        """
+        self.gconf.modify("shaft", direction)
+
+    def get_interpolation(self) -> bool:
+        """return whether the tmc inbuilt interpolation is active
+
+        Returns:
+            en (bool): true if internal µstep interpolation is enabled
+        """
+        self.chopconf.read()
+        return self.chopconf.intpol
+
+    def set_interpolation(self, en: bool):
+        """enables the tmc inbuilt interpolation of the steps to 256 µsteps
+
+        Args:
+            en (bool): true to enable internal µstep interpolation
+        """
+        self.chopconf.modify("intpol", en)
+
+    def get_toff(self) -> int:
+        """returns the TOFF register value
+
+        Returns:
+            int: TOFF register value
+        """
+        self.chopconf.read()
+        return self.chopconf.toff
+
+    def set_toff(self, toff: int):
+        """Sets TOFF register to value
+
+        Args:
+            toff (uint8_t): value of toff (must be a four-bit value)
+        """
+        self.chopconf.modify("toff", toff)
+
+    def read_microstepping_resolution(self) -> int:
+        """returns the current native microstep resolution (1-256)
+        this reads the value from the driver register
+
+        Returns:
+            int: µstep resolution
+        """
+        self.chopconf.read()
+
+        mres = self.chopconf.mres_ms
+        if self.tmc_mc is not None:
+            self.tmc_mc.mres = mres
+
+        return mres
+
+    def get_microstepping_resolution(self) -> int:
+        """returns the current native microstep resolution (1-256)
+        this returns the cached value from the tmc_mc module
+
+        Returns:
+            int: µstep resolution
+        """
+        if self.tmc_mc is None:
+            raise TmcDriverException(
+                "tmc_mc is None; cannot get microstepping resolution"
+            )
+        return self.tmc_mc.mres
+
+    @abstractmethod
+    def set_microstepping_resolution(self, mres: int):
+        """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
+
+        Args:
+            mres (int): µstep resolution; has to be a power of 2 or 1 for fullstep
+        """
+
+    @abstractmethod
+    def set_current(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+    ):
+        """sets the Peak current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+
+        Returns:
+            int: theoretical final current in mA
         """
 
     def read_register(self, name: str, log: bool = True) -> tuple[TmcReg, int, dict]:
@@ -178,6 +283,8 @@ class TmcXXXX(TmcStepperDriver):
 
         return reg, data, flags
 
+    # Test Methods
+    # ----------------------------
     def test_pin(self, pin, ioin_reg_field_name: str) -> bool:
         """tests one pin
 

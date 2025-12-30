@@ -115,35 +115,8 @@ class Tmc220x(TmcXXXX):
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
 
-    # Tmc220x methods
+    # Register Access
     # ----------------------------
-    def read_steps_per_rev(self) -> int:
-        """returns how many steps are needed for one revolution.
-        this reads the value from the tmc driver.
-
-        Returns:
-            int: Steps per revolution
-        """
-        self.read_microstepping_resolution()
-        return self.tmc_mc.steps_per_rev
-
-    def get_direction_reg(self) -> bool:
-        """returns the motor shaft direction: False = CCW; True = CW
-
-        Returns:
-            bool: motor shaft direction: False = CCW; True = CW
-        """
-        self.gconf.read()
-        return self.gconf.shaft
-
-    def set_direction_reg(self, direction: bool):
-        """sets the motor shaft direction to the given value: False = CCW; True = CW
-
-        Args:
-            direction (bool): direction of the motor False = CCW; True = CW
-        """
-        self.gconf.modify("shaft", direction)
-
     def get_iscale_analog(self) -> bool:
         """return whether Vref (True) or 5V (False) is used for current scale
 
@@ -328,64 +301,6 @@ class Tmc220x(TmcXXXX):
 
         """
         self.gconf.modify("en_spreadcycle", en)
-
-    def get_interpolation(self) -> bool:
-        """return whether the tmc inbuilt interpolation is active
-
-        Returns:
-            en (bool): true if internal µstep interpolation is enabled
-        """
-        self.chopconf.read()
-        return self.chopconf.intpol
-
-    def set_interpolation(self, en: bool):
-        """enables the tmc inbuilt interpolation of the steps to 256 µsteps
-
-        Args:
-            en (bool): true to enable internal µstep interpolation
-        """
-        self.chopconf.modify("intpol", en)
-
-    def get_toff(self) -> int:
-        """returns the TOFF register value
-
-        Returns:
-            int: TOFF register value
-        """
-        self.chopconf.read()
-        return self.chopconf.toff
-
-    def set_toff(self, toff: int):
-        """Sets TOFF register to value
-
-        Args:
-            toff (uint8_t): value of toff (must be a four-bit value)
-        """
-        self.chopconf.modify("toff", toff)
-
-    def read_microstepping_resolution(self) -> int:
-        """returns the current native microstep resolution (1-256)
-        this reads the value from the driver register
-
-        Returns:
-            int: µstep resolution
-        """
-        self.chopconf.read()
-
-        mres = self.chopconf.mres_ms
-        if self.tmc_mc is not None:
-            self.tmc_mc.mres = mres
-
-        return mres
-
-    def get_microstepping_resolution(self) -> int:
-        """returns the current native microstep resolution (1-256)
-        this returns the cached value from this module
-
-        Returns:
-            int: µstep resolution
-        """
-        return self.tmc_mc.mres
 
     def set_microstepping_resolution(self, mres: int):
         """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
