@@ -120,7 +120,7 @@ class TmcReg:
                 log_string += f"{getattr(self, reg.conv_func, '')} {reg.unit}"
             logger.log(log_string, Loglevel.INFO)
 
-    def read(self):
+    def read(self) -> tuple[int, dict]:
         """read this register"""
         data, flags = self._tmc_com.read_int(self.ADDR)
 

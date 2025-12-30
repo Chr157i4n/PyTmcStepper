@@ -90,7 +90,7 @@ tmc2.movement_abs_rel = MovementAbsRel.ABSOLUTE
 print("---")
 print("IOIN tmc1")
 print("---")
-tmc1.read_ioin()
+tmc1.read_register("ioin")
 
 print("---\n---")
 
@@ -98,7 +98,7 @@ print("---\n---")
 print("---")
 print("IOIN tmc2")
 print("---")
-tmc2.read_ioin()
+tmc2.read_register("ioin")
 
 print("---\n---")
 

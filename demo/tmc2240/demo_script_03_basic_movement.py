@@ -66,10 +66,10 @@ print("---\n---")
 # -----------------------------------------------------------------------
 # these functions read and print the current settings in the TMC register
 # -----------------------------------------------------------------------
-tmc.read_ioin()
-tmc.read_chopconf()
-tmc.read_drv_status()
-tmc.read_gconf()
+tmc.read_register("ioin")
+tmc.read_register("chopconf")
+tmc.read_register("drvstatus")
+tmc.read_register("gconf")
 
 print("---\n---")
 

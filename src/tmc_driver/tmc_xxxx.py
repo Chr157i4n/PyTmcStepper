@@ -16,7 +16,7 @@ from .com._tmc_com import TmcCom
 from .reg._tmc_reg import TmcReg
 from .reg import _tmc220x_reg as tmc_shared_regs
 from ._tmc_validation import validate_submodule
-from ._tmc_exceptions import TmcDriverException
+from ._tmc_exceptions import TmcDriverException, TmcComException
 
 
 class TmcXXXX(TmcStepperDriver):
@@ -118,6 +118,7 @@ class TmcXXXX(TmcStepperDriver):
         Returns:
             Register object or None if not found
         """
+        name = name.lower()
         return getattr(self, name, None)
 
     def clear_gstat(self):
@@ -145,6 +146,37 @@ class TmcXXXX(TmcStepperDriver):
         en (bool): true to enable spreadcycle; false to enable stealthchop
 
         """
+
+    @abstractmethod
+    def get_direction_reg(self) -> bool:
+        """returns the motor shaft direction: False = CCW; True = CW
+
+        Returns:
+            bool: motor shaft direction: False = CCW; True = CW
+        """
+
+    @abstractmethod
+    def set_direction_reg(self, direction: bool):
+        """sets the motor shaft direction to the given value: False = CCW; True = CW
+
+        Args:
+            direction (bool): direction of the motor False = CCW; True = CW
+        """
+
+    def read_register(self, name: str, log: bool = True) -> tuple[TmcReg, int, dict]:
+        """reads all relevant registers of the driver"""
+        if self.tmc_com is None:
+            raise TmcComException("tmc_com is None; cannot read registers")
+
+        reg = self._get_register(name)
+        if reg is None:
+            raise TmcDriverException(f"Register {name} not found in driver")
+        data, flags = reg.read()
+
+        if log:
+            reg.log(self.tmc_logger)
+
+        return reg, data, flags
 
     def test_pin(self, pin, ioin_reg_field_name: str) -> bool:
         """tests one pin

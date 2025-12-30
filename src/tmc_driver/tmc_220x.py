@@ -127,56 +127,6 @@ class Tmc220x(TmcXXXX):
         self.read_microstepping_resolution()
         return self.tmc_mc.steps_per_rev
 
-    def read_drv_status(self) -> DrvStatus:
-        """read the register Adress "DRV_STATUS" and logs the reg valuess
-
-        Returns:
-            DRV_STATUS Register instance
-        """
-        self.drvstatus.read()
-        self.drvstatus.log(self.tmc_logger)
-        return self.drvstatus
-
-    def read_gconf(self) -> GConf:
-        """read the register Adress "GCONF" and logs the reg values
-
-        Returns:
-            GCONF Register instance
-        """
-        self.gconf.read()
-        self.gconf.log(self.tmc_logger)
-        return self.gconf
-
-    def read_gstat(self) -> GStat:
-        """read the register Adress "GSTAT" and logs the reg values
-
-        Returns:
-            GSTAT Register instance
-        """
-        self.gstat.read()
-        self.gstat.log(self.tmc_logger)
-        return self.gstat
-
-    def read_ioin(self) -> Ioin:
-        """read the register Adress "IOIN" and logs the reg values
-
-        Returns:
-            IOIN Register instance
-        """
-        self.ioin.read()
-        self.ioin.log(self.tmc_logger)
-        return self.ioin
-
-    def read_chopconf(self) -> ChopConf:
-        """read the register Adress "CHOPCONF" and logs the reg values
-
-        Returns:
-            CHOPCONF Register instance
-        """
-        self.chopconf.read()
-        self.chopconf.log(self.tmc_logger)
-        return self.chopconf
-
     def get_direction_reg(self) -> bool:
         """returns the motor shaft direction: False = CCW; True = CW
 
