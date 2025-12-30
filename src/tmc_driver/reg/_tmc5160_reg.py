@@ -92,7 +92,7 @@ class Ioin(TmcReg):
 
     version: int
     sw_comp_in: bool
-    sw_mode: bool
+    sd_mode: bool
     encn: bool
     enn: bool
     enca: bool
@@ -102,7 +102,7 @@ class Ioin(TmcReg):
     _REG_MAP = (
         TmcRegField("version", 24, 0xFF, int, None, ""),
         TmcRegField("sw_comp_in", 7, 0x1, bool, None, ""),
-        TmcRegField("sw_mode", 6, 0x1, bool, None, ""),
+        TmcRegField("sd_mode", 6, 0x1, bool, None, ""),
         TmcRegField("encn", 5, 0x1, bool, None, ""),
         TmcRegField("enn", 4, 0x1, bool, None, ""),
         TmcRegField("enca", 3, 0x1, bool, None, ""),
@@ -198,6 +198,201 @@ class THigh(TmcReg):
 
     thigh: int
     _REG_MAP = (TmcRegField("thigh", 0, 0xFFFFF, int, None, ""),)
+
+
+class VDcMin(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x33
+
+    vdcmin: int
+    _REG_MAP = (TmcRegField("vdcmin", 0, 0xFFFFF, int, None, ""),)
+
+
+class RampMode(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x20
+
+    rampmode: int
+    _REG_MAP = (TmcRegField("rampmode", 0, 0xFFFFF, int, None, ""),)
+
+
+class XActual(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x21
+
+    xactual: int
+    _REG_MAP = (TmcRegField("xactual", 0, 0xFFFFF, int, None, ""),)
+
+
+class VActual(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x22
+
+    vactual: int
+    _REG_MAP = (TmcRegField("vactual", 0, 0xFFFFF, int, None, ""),)
+
+
+class VStart(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x23
+
+    vstart: int
+    _REG_MAP = (TmcRegField("vstart", 0, 0xFFFFF, int, None, ""),)
+
+
+class A1(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x24
+
+    a1: int
+    _REG_MAP = (TmcRegField("a1", 0, 0xFFFFF, int, None, ""),)
+
+
+class V1(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x25
+
+    v1: int
+    _REG_MAP = (TmcRegField("v1", 0, 0xFFFFF, int, None, ""),)
+
+
+class AMax(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x26
+
+    amax: int
+    _REG_MAP = (TmcRegField("amax", 0, 0xFFFFF, int, None, ""),)
+
+
+class VMax(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x27
+
+    vmax: int
+    _REG_MAP = (TmcRegField("vmax", 0, 0xFFFFF, int, None, ""),)
+
+
+class DMax(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x28
+
+    dmax: int
+    _REG_MAP = (TmcRegField("dmax", 0, 0xFFFFF, int, None, ""),)
+
+
+class D1(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x2A
+
+    d1: int
+    _REG_MAP = (TmcRegField("d1", 0, 0xFFFFF, int, None, ""),)
+
+
+class VStop(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x2B
+
+    vstop: int
+    _REG_MAP = (TmcRegField("vstop", 0, 0xFFFFF, int, None, ""),)
+
+
+class TZeroWait(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x2C
+
+    tzerowait: int
+    _REG_MAP = (TmcRegField("tzerowait", 0, 0xFFFFF, int, None, ""),)
+
+
+class XTarget(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x2D
+
+    xtarget: int
+    _REG_MAP = (TmcRegField("xtarget", 0, 0xFFFFF, int, None, ""),)
+
+
+class SWMode(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x34
+
+    en_softstop: bool
+    sg_stop: bool
+    en_latch_encoder: bool
+    latch_r_inactive: bool
+    latch_r_active: bool
+    latch_l_inactive: bool
+    latch_l_active: bool
+    swap_lr: bool
+    pol_stop_r: bool
+    pol_stop_l: bool
+    stop_r_enable: bool
+    stop_l_enable: bool
+    _REG_MAP = (
+        TmcRegField("en_softstop", 11, 0x1, bool, None, ""),
+        TmcRegField("sg_stop", 10, 0x1, bool, None, ""),
+        TmcRegField("en_latch_encoder", 9, 0x1, bool, None, ""),
+        TmcRegField("latch_r_inactive", 8, 0x1, bool, None, ""),
+        TmcRegField("latch_r_active", 7, 0x1, bool, None, ""),
+        TmcRegField("latch_l_inactive", 6, 0x1, bool, None, ""),
+        TmcRegField("latch_l_active", 5, 0x1, bool, None, ""),
+        TmcRegField("swap_lr", 4, 0x1, bool, None, ""),
+        TmcRegField("pol_stop_r", 3, 0x1, bool, None, ""),
+        TmcRegField("pol_stop_l", 2, 0x1, bool, None, ""),
+        TmcRegField("stop_r_enable", 1, 0x1, bool, None, ""),
+        TmcRegField("stop_l_enable", 0, 0x1, bool, None, ""),
+    )
+
+
+class RampStat(TmcReg):
+    """THIGH register class"""
+
+    ADDR = 0x35
+
+    status_sg: bool
+    second_move: bool
+    t_zerowait_active: bool
+    vzero: bool
+    position_reached: bool
+    velocity_reached: bool
+    event_stop_sg: bool
+    event_stop_r: bool
+    event_stop_l: bool
+    status_latch_r: bool
+    status_latch_l: bool
+    status_stop_r: bool
+    status_stop_l: bool
+    _REG_MAP = (
+        TmcRegField("status_sg", 13, 0x1, bool, None, ""),
+        TmcRegField("second_move", 12, 0x1, bool, None, "", 1),
+        TmcRegField("t_zerowait_active", 11, 0x1, bool, None, ""),
+        TmcRegField("vzero", 10, 0x1, bool, None, ""),
+        TmcRegField("position_reached", 9, 0x1, bool, None, ""),
+        TmcRegField("velocity_reached", 8, 0x1, bool, None, ""),
+        TmcRegField("event_pos_reached", 7, 0x1, bool, None, "", 1),
+        TmcRegField("event_stop_sg", 6, 0x1, bool, None, "", 1),
+        TmcRegField("event_stop_r", 5, 0x1, bool, None, ""),
+        TmcRegField("event_stop_l", 4, 0x1, bool, None, ""),
+        TmcRegField("status_latch_r", 3, 0x1, bool, None, "", 1),
+        TmcRegField("status_latch_l", 2, 0x1, bool, None, "", 1),
+        TmcRegField("status_stop_r", 1, 0x1, bool, None, ""),
+        TmcRegField("status_stop_l", 0, 0x1, bool, None, ""),
+    )
 
 
 class MsCnt(TmcReg):
