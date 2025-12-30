@@ -150,3 +150,15 @@ class TmcReg:
         self.read()
         setattr(self, name, value)
         self.write_check()
+
+    def get(self, name: str):
+        """get a register value
+
+        Args:
+            name (str): register name
+
+        Returns:
+            value: register value
+        """
+        self.read()
+        return getattr(self, name)

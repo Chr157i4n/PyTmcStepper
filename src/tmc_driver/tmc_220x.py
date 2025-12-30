@@ -529,33 +529,3 @@ class Tmc220x(TmcXXXX):
         step = (4 * self.tmc_mc.mres) - step - 1
         step = round(step)
         return step + offset
-
-    # Test methods
-    # ----------------------------
-    def test_dir_step_en(self):
-        """tests the EN, DIR and STEP pin
-
-        this sets the EN, DIR and STEP pin to HIGH, LOW and HIGH
-        and checks the IOIN Register of the TMC meanwhile
-        """
-        if self.tmc_mc is None or self.tmc_ec is None:
-            raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
-        if not isinstance(self.tmc_mc, TmcMotionControlStepDir) or not isinstance(
-            self.tmc_ec, TmcEnableControlPin
-        ):
-            raise TmcDriverException(
-                "tmc_mc or tmc_ec is not of correct type; cannot test pins"
-            )
-
-        # test each pin on their own
-        pin_dir_ok = self.test_pin(self.tmc_mc.pin_dir, 9)
-        pin_step_ok = self.test_pin(self.tmc_mc.pin_step, 7)
-        pin_en_ok = self.test_pin(self.tmc_ec.pin_en, 0)
-
-        self.set_motor_enabled(False)
-
-        self.tmc_logger.log("---")
-        self.tmc_logger.log(f"Pin DIR: \t{'OK' if pin_dir_ok else 'not OK'}")
-        self.tmc_logger.log(f"Pin STEP: \t{'OK' if pin_step_ok else 'not OK'}")
-        self.tmc_logger.log(f"Pin EN: \t{'OK' if pin_en_ok else 'not OK'}")
-        self.tmc_logger.log("---")

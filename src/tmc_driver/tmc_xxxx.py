@@ -146,11 +146,19 @@ class TmcXXXX(TmcStepperDriver):
 
         """
 
-    def test_pin(self, pin, ioin_reg_bp):
+    def test_pin(self, pin, ioin_reg_field_name: str) -> bool:
         """tests one pin
 
         this function checks the connection to a pin
         by toggling it and reading the IOIN register
+
+        Args:
+            pin: pin to be tested
+            ioin_reg_field_name (str): name of the IOIN register field
+                that corresponds to the pin
+
+        Returns:
+            bool: True = pin OK; False = pin not OK
         """
         if self.tmc_mc is None or self.tmc_ec is None:
             raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
@@ -169,8 +177,7 @@ class TmcXXXX(TmcStepperDriver):
         tmc_gpio.tmc_gpio.gpio_output(self.tmc_ec.pin_en, Gpio.HIGH)
 
         # check that the selected pin is on
-        self.ioin.read()
-        if not self.ioin.data_int >> ioin_reg_bp & 0x1:
+        if not self.ioin.get(ioin_reg_field_name):
             pin_ok = False
 
         # turn off only the selected pin
@@ -178,11 +185,39 @@ class TmcXXXX(TmcStepperDriver):
         time.sleep(0.1)
 
         # check that the selected pin is off
-        self.ioin.read()
-        if self.ioin.data_int >> ioin_reg_bp & 0x1:
+        if self.ioin.get(ioin_reg_field_name):
+            pin_ok = False
             pin_ok = False
 
         return pin_ok
+
+    def test_dir_step_en(self):
+        """tests the EN, DIR and STEP pin
+
+        this sets the EN, DIR and STEP pin to HIGH, LOW and HIGH
+        and checks the IOIN Register of the TMC meanwhile
+        """
+        if self.tmc_mc is None or self.tmc_ec is None:
+            raise TmcDriverException("tmc_mc or tmc_ec is None; cannot test pins")
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir) or not isinstance(
+            self.tmc_ec, TmcEnableControlPin
+        ):
+            raise TmcDriverException(
+                "tmc_mc or tmc_ec is not of correct type; cannot test pins"
+            )
+
+        # test each pin on their own
+        pin_dir_ok = self.test_pin(self.tmc_mc.pin_dir, "dir")
+        pin_step_ok = self.test_pin(self.tmc_mc.pin_step, "step")
+        pin_en_ok = self.test_pin(self.tmc_ec.pin_en, "enn")
+
+        self.set_motor_enabled(False)
+
+        self.tmc_logger.log("---")
+        self.tmc_logger.log(f"Pin DIR: \t{'OK' if pin_dir_ok else 'not OK'}")
+        self.tmc_logger.log(f"Pin STEP: \t{'OK' if pin_step_ok else 'not OK'}")
+        self.tmc_logger.log(f"Pin EN: \t{'OK' if pin_en_ok else 'not OK'}")
+        self.tmc_logger.log("---")
 
     def test_com(self):
         """test method"""
