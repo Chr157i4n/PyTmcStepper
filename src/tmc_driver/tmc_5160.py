@@ -173,12 +173,12 @@ class Tmc5160(TmcXXXX, StallGuard):
         self.global_scaler.global_scaler = scaler
         self.global_scaler.write_check()
 
-    def set_current(
+    def set_current_peak(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
-    ):
+    ) -> int:
         """sets the Peak current for the motor.
 
         Args:
@@ -191,7 +191,7 @@ class Tmc5160(TmcXXXX, StallGuard):
         Returns:
             int: theoretical final current in mA
         """
-        self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"Desired peak current: {run_current} mA", Loglevel.DEBUG)
 
         rsense = 0.075  # ohm
         vfs = 0.325  # V
@@ -213,7 +213,7 @@ class Tmc5160(TmcXXXX, StallGuard):
 
         ct_current_ma = round(current_fs * global_scaler / 256)
         self.tmc_logger.log(
-            f"Calculated theoretical current after gscaler: {ct_current_ma} mA",
+            f"Calculated theoretical peak current after gscaler: {ct_current_ma} mA",
             Loglevel.DEBUG,
         )
 
@@ -239,6 +239,29 @@ class Tmc5160(TmcXXXX, StallGuard):
             f"Calculated theoretical final current: {ct_current_ma} mA", Loglevel.INFO
         )
         return ct_current_ma
+
+    def set_current_rms(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+    ) -> int:
+        """sets the RMS current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+
+        Returns:
+            int: theoretical final current in mA
+        """
+        peak_current = self.set_current_peak(
+            round(run_current * 1.41421),
+            hold_current_multiplier,
+            hold_current_delay,
+        )
+        return round(peak_current / 1.41421)
 
     def get_spreadcycle(self) -> bool:
         """reads spreadcycle

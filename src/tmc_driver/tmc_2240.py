@@ -174,14 +174,14 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.drv_conf.current_range = current_range
         self.drv_conf.modify("current_range", current_range)
 
-    def set_current(
+    def set_current_peak(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
         run_current_delay: int = 0,
         rref: int = 12,
-    ):
+    ) -> int:
         """sets the Peak current for the motor.
 
         Args:
@@ -194,7 +194,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         Returns:
             int: theoretical final current in mA
         """
-        self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"Desired peak current: {run_current} mA", Loglevel.DEBUG)
 
         K_IFS_TABLE = [11.75, 24, 36, 36]  # A*kOhm
         current_fs_table = [k_ifs / rref * 1000 for k_ifs in K_IFS_TABLE]
@@ -223,7 +223,7 @@ class Tmc2240(TmcXXXX, StallGuard):
 
         ct_current_ma = round(current_fs * global_scaler / 256)
         self.tmc_logger.log(
-            f"Calculated theoretical current after gscaler: {ct_current_ma} mA",
+            f"Calculated theoretical peak current after gscaler: {ct_current_ma} mA",
             Loglevel.DEBUG,
         )
 
@@ -251,6 +251,35 @@ class Tmc2240(TmcXXXX, StallGuard):
             f"Calculated theoretical final current: {ct_current_ma} mA", Loglevel.INFO
         )
         return ct_current_ma
+
+    def set_current_rms(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+        run_current_delay: int = 0,
+        rref: int = 12,
+    ) -> int:
+        """sets the RMS current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+            run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
+            rref (int): reference resistor in kOhm (Default value = 12)
+
+        Returns:
+            int: theoretical final current in mA
+        """
+        peak_current = self.set_current_peak(
+            round(run_current * 1.41421),
+            hold_current_multiplier,
+            hold_current_delay,
+            run_current_delay,
+            rref,
+        )
+        return round(peak_current / 1.41421)
 
     def get_spreadcycle(self) -> bool:
         """reads spreadcycle

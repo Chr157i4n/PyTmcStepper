@@ -255,12 +255,49 @@ class TmcXXXX(TmcStepperDriver):
         """
 
     @abstractmethod
+    def set_current_peak(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+    ) -> int:
+        """sets the Peak current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+        Returns:
+            int: theoretical final current in mA
+        """
+
+    def set_current_rms(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+    ) -> int:
+        """sets the RMS current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+
+        Returns:
+            int: theoretical final current in mA
+        """
+        peak_current = self.set_current_peak(
+            round(run_current * 1.41421), hold_current_multiplier, hold_current_delay
+        )
+        return round(peak_current / 1.41421)
+
     def set_current(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
-    ):
+    ) -> int:
         """sets the Peak current for the motor.
 
         Args:
@@ -271,6 +308,9 @@ class TmcXXXX(TmcStepperDriver):
         Returns:
             int: theoretical final current in mA
         """
+        return self.set_current_rms(
+            run_current, hold_current_multiplier, hold_current_delay
+        )
 
     def get_microstep_counter(self) -> int:
         """returns the current Microstep counter.

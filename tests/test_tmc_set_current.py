@@ -76,8 +76,6 @@ class TestTMCCurrent(unittest.TestCase):
             1800: (False, False, 31),  # max current
         }
 
-        result = tmc.set_current(400)
-
         for desired_current, (i_scale_analog, vsense, irun) in TEST_CASES.items():
             with self.subTest(desired_current=desired_current):
                 result = tmc.set_current(desired_current)
@@ -90,6 +88,40 @@ class TestTMCCurrent(unittest.TestCase):
                 self.assertEqual(tmc.ihold_irun.irun, irun)
 
     def test_tmc2240_set_current(self):
+        """test_tmc2240_set_current"""
+        tmc_com_test = TestTmcCom()
+
+        tmc = Tmc2240(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), None)
+        tmc.drv_conf = tmc224x_reg.DrvConf(tmc_com_test)
+        tmc.global_scaler = tmc224x_reg.GlobalScaler(tmc_com_test)
+        tmc.ihold_irun = tmc224x_reg.IHoldIRun(tmc_com_test)
+
+        # (desired_current, rref): (current_range, global_scaler, irun)
+        TEST_CASES = {
+            (300, 12): (0, 78, 31),
+            (400, 12): (0, 26, 31),
+            (400, 12): (0, 105, 31),
+            (300, 27): (0, 176, 31),
+            (400, 27): (0, 235, 31),
+            (500, 27): (1, 144, 31),
+        }
+
+        for (desired_current, rref), (
+            current_range,
+            global_scaler,
+            irun,
+        ) in TEST_CASES.items():
+            with self.subTest(desired_current=desired_current, rref=rref):
+                result = tmc.set_current_peak(desired_current, rref=rref)
+
+                self.assertAlmostEqual(
+                    result, desired_current, delta=desired_current * 0.05
+                )
+                self.assertEqual(tmc.drv_conf.current_range, current_range)
+                self.assertEqual(tmc.global_scaler.global_scaler, global_scaler)
+                self.assertEqual(tmc.ihold_irun.irun, irun)
+
+    def test_tmc2240_set_current_peak(self):
         """test_tmc2240_set_current"""
         tmc_com_test = TestTmcCom()
 
@@ -126,7 +158,7 @@ class TestTMCCurrent(unittest.TestCase):
             irun,
         ) in TEST_CASES.items():
             with self.subTest(desired_current=desired_current, rref=rref):
-                result = tmc.set_current(desired_current, rref=rref)
+                result = tmc.set_current_peak(desired_current, rref=rref)
 
                 self.assertAlmostEqual(
                     result, desired_current, delta=desired_current * 0.05

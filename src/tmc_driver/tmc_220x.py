@@ -221,38 +221,46 @@ class Tmc220x(TmcXXXX):
         """
         self.gconf.modify("pdn_disable", pdn_disable)
 
-    def set_current(
+    def set_current_peak(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
         pdn_disable: bool = True,
-    ):
-        """sets the current flow for the motor.
+    ) -> int:
+        """sets the Peak current for the motor.
 
         Args:
             run_current (int): current during movement in mA
             hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
-            pdn_disable (bool): should be disabled if UART is used (Default value = True)
-
+            pdn_disable (bool): disables PDN on the UART pin (Default value = True)
         Returns:
             int: theoretical final current in mA
         """
+        self.tmc_logger.log(f"Desired peak current: {run_current} mA", Loglevel.DEBUG)
+
         cs_irun = 0
         rsense = 0.11
-        vfs = 0
+        vfs = 0.325
 
         self.set_iscale_analog(False)
 
-        vfs = 0.325
-        cs_irun = 32.0 * 1.41421 * run_current / 1000.0 * (rsense + 0.02) / vfs - 1
+        def calc_cs_irun(run_current: int, rsense: float, vfs: float) -> float:
+            """calculates the current scale value for a given current"""
+            return 32.0 * run_current / 1000.0 * (rsense + 0.02) / vfs - 1
+
+        def calc_run_current(cs_irun: float, rsense: float, vfs: float) -> float:
+            """calculates the current for a given current scale value"""
+            return (cs_irun + 1) / 32.0 * vfs / (rsense + 0.02) * 1000
+
+        cs_irun = calc_cs_irun(run_current, rsense, vfs)
 
         # If Current Scale is too low, turn on high sensitivity VSsense and calculate again
         if cs_irun < 16:
             self.tmc_logger.log("CS too low; switching to VSense True", Loglevel.INFO)
             vfs = 0.180
-            cs_irun = 32.0 * 1.41421 * run_current / 1000.0 * (rsense + 0.02) / vfs - 1
+            cs_irun = calc_cs_irun(run_current, rsense, vfs)
             self.set_vsense(True)
         else:  # If CS >= 16, turn off high_senser
             self.tmc_logger.log("CS in range; using VSense False", Loglevel.INFO)
@@ -272,11 +280,10 @@ class Tmc220x(TmcXXXX):
         self.tmc_logger.log(f"Delay: {hold_current_delay}", Loglevel.INFO)
 
         # return (float)(CS+1)/32.0 * (vsense() ? 0.180 : 0.325)/(rsense+0.02) / 1.41421 * 1000;
-        run_current_actual = (
-            (cs_irun + 1) / 32.0 * (vfs) / (rsense + 0.02) / 1.41421 * 1000
-        )
+        run_current_actual = calc_run_current(cs_irun, rsense, vfs)
         self.tmc_logger.log(
-            f"actual current: {round(run_current_actual)} mA", Loglevel.INFO
+            f"Calculated theoretical peak current after gscaler: {run_current_actual} mA",
+            Loglevel.DEBUG,
         )
 
         self._set_irun_ihold(cs_ihold, cs_irun, hold_current_delay)
@@ -284,6 +291,32 @@ class Tmc220x(TmcXXXX):
         self._set_pdn_disable(pdn_disable)
 
         return round(run_current_actual)
+
+    def set_current_rms(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+        pdn_disable: bool = True,
+    ) -> int:
+        """sets the RMS current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+            pdn_disable (bool): disables PDN on the UART pin (Default value = True)
+
+        Returns:
+            int: theoretical final current in mA
+        """
+        peak_current = self.set_current_peak(
+            round(run_current * 1.41421),
+            hold_current_multiplier,
+            hold_current_delay,
+            pdn_disable,
+        )
+        return round(peak_current / 1.41421)
 
     def get_spreadcycle(self) -> bool:
         """reads spreadcycle
