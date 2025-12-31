@@ -126,10 +126,10 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
 
     def wait_until_stop(self):
         """blocks the code until the movement is finished or stopped from a different thread!"""
-        ramp_stat: tmc5160_reg.RampStat = self.get_register("ramp_stat")
+        rampstat: tmc5160_reg.RampStat = self.get_register("rampstat")
         while True:
-            ramp_stat.read()
-            if ramp_stat.position_reached:
+            rampstat.read()
+            if rampstat.position_reached:
                 self._tmc_logger.log("position reached", Loglevel.MOVEMENT)
                 return
             time.sleep(0.01)  # sleep 10ms to reduce CPU load
@@ -172,5 +172,12 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         xtarget.write()
 
         self.wait_until_stop()
+
+        loststeps: tmc5160_reg.LostSteps = self.get_register("loststeps")
+        loststeps.read()
+        if loststeps.lost_steps != 0:
+            self._tmc_logger.log(
+                f"Lost steps detected: {loststeps.lost_steps}", Loglevel.MOVEMENT
+            )
 
         return self._stop

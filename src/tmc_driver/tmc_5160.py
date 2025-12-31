@@ -125,14 +125,14 @@ class Tmc5160(TmcXXXX, StallGuard):
             self.tzerowait = TZeroWait(self.tmc_com)
             self.xtarget = XTarget(self.tmc_com)
             self.vdcmin = VDcMin(self.tmc_com)
-            self.sw_mode = SWMode(self.tmc_com)
-            self.ramp_stat = RampStat(self.tmc_com)
+            self.swmode = SWMode(self.tmc_com)
+            self.rampstat = RampStat(self.tmc_com)
             self.mscnt = MsCnt(self.tmc_com)
             self.chopconf = ChopConf(self.tmc_com)
             self.coolconf = CoolConf(self.tmc_com)
             self.drvstatus = DrvStatus(self.tmc_com)
             self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.lost_steps = LostSteps(self.tmc_com)
+            self.loststeps = LostSteps(self.tmc_com)
 
             self.gstat.clear()
             if self.tmc_mc is not None:
