@@ -7,12 +7,11 @@
 TMC internal Ramp Generator Motion Control module
 """
 
-import sys
 import time
+from enum import IntEnum
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
-from .._tmc_logger import TmcLogger, Loglevel
-from enum import IntEnum
+from .._tmc_logger import Loglevel
 
 # from .. import _tmc_math as tmc_math
 
@@ -97,20 +96,13 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             stop_mode (enum): whether the movement should be stopped immediately or softly
                 (Default value = StopMode.HARDSTOP)
         """
-        if stop_mode == StopMode.SOFTSTOP:
-            self.set_ramp_mode(RampMode.VELOCITY_MODE_POS)
+        self.set_ramp_mode(RampMode.VELOCITY_MODE_POS)
 
-            vmax = self.get_register("vmax")
-            vmax.vmax = 0
-            vmax.write()
+        vmax = self.get_register("vmax")
+        vmax.vmax = 0
+        vmax.write()
 
         if stop_mode == StopMode.HARDSTOP:
-            self.set_ramp_mode(RampMode.VELOCITY_MODE_POS)
-
-            vmax = self.get_register("vmax")
-            vmax.vmax = 0
-            vmax.write()
-
             amax = self.get_register("amax")
             amax.amax = 65535  # max deceleration (amax is used in velocity mode for deceleration)
             amax.write()
