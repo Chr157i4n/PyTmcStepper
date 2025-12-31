@@ -151,7 +151,7 @@ class TmcMotionControlVActual(TmcMotionControl):
             self.set_vactual(int(round(vactual)))
 
         if duration == 0:
-            raise ValueError("Duration must be greater than 0")
+            return self._stop
         duration_ms = duration * 1000
 
         self._starttime = _get_time_ms()
