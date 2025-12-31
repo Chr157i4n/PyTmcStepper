@@ -85,9 +85,20 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         vstop.vstop = 10  # Motor stop velocity (unsigned)
         vstop.write()
 
+        # Datasheet says:
+        # 0: Disables A1 and D1 phase, use AMAX, DMAX only
+        # but that did not work in my tests, so we set them to the same as VMAX/AMAX/DMAX
         v1: tmc5160_reg.V1 = self.get_register("v1")
-        v1.v1 = 0  # disables A1/D1 phase
+        v1.v1 = max_speed
         v1.write()
+
+        a1: tmc5160_reg.A1 = self.get_register("a1")
+        a1.a1 = acceleration
+        a1.write()
+
+        d1: tmc5160_reg.D1 = self.get_register("d1")
+        d1.d1 = deceleration
+        d1.write()
 
         vmax: tmc5160_reg.VMax = self.get_register("vmax")
         vmax.vmax = max_speed
