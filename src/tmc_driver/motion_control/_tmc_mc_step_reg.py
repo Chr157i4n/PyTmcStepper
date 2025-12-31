@@ -7,6 +7,7 @@ from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
 from .. import tmc_gpio
+from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
@@ -42,6 +43,6 @@ class TmcMotionControlStepReg(TmcMotionControlStepDir):
         self._direction = direction
         self._tmc_logger.log(f"New Direction is: {direction}", Loglevel.MOVEMENT)
 
-        gconf = self.get_register("gconf")
+        gconf: tmc_shared_reg.GConf = self.get_register("gconf")
 
         gconf.modify("shaft", bool(int(direction)))

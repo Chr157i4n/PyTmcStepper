@@ -78,7 +78,7 @@ class TmcCom:
         """
         self._get_register_callback = callback
 
-    def get_register(self, name: str) -> TmcReg:
+    def get_register(self, name: str):
         """Get register by name from parent TMC class
 
         Args:

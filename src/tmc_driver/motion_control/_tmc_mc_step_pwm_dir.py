@@ -10,6 +10,7 @@ from ._tmc_mc import MovementAbsRel, Direction, StopMode
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from .._tmc_logger import TmcLogger, Loglevel
 from .. import tmc_gpio
+from .._tmc_exceptions import TmcMotionControlException
 
 
 class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
@@ -60,10 +61,15 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
 
         return super().run_to_position_steps(steps, movement_abs_rel)
 
-    def run_speed_pwm(self, speed: int = None):
+    def run_speed_pwm(self, speed: int | None = None):
         """runs the motor
         does not block the code
         """
+        if self._pin_step is None:
+            raise TmcMotionControlException(
+                "Step pin not set for STEP_PWM/DIR motion control"
+            )
+
         if speed is None:
             speed = self.max_speed
 
@@ -84,7 +90,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
             self.speed = speed
             tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 50)
 
-    def run_speed_pwm_fullstep(self, speed: int = None):
+    def run_speed_pwm_fullstep(self, speed: int | None = None):
         """runs the motor
         does not block the code
         """

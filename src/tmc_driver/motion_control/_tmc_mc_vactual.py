@@ -13,6 +13,7 @@ from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
 from .. import _tmc_math as tmc_math
+from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 # MicroPython compatibility for time functions
@@ -89,7 +90,7 @@ class TmcMotionControlVActual(TmcMotionControl):
             steps = steps - self.current_pos
 
         rps = tmc_math.steps_to_rps(self.max_speed_fullstep, self.steps_per_rev)
-        self.set_vactual_rps(rps, revolutions=steps / self.steps_per_rev)
+        self.set_vactual_rps(rps, revolutions=round(steps / self.steps_per_rev))
 
         self.current_pos += steps
         return self._stop
@@ -103,7 +104,7 @@ class TmcMotionControlVActual(TmcMotionControl):
         Args:
             vactual (int): value for VACTUAL
         """
-        vactual_reg = self.get_register("vactual")
+        vactual_reg: tmc_shared_reg.VActual = self.get_register("vactual")
         vactual_reg.modify("vactual", vactual)
 
     def set_vactual_dur(
@@ -150,7 +151,7 @@ class TmcMotionControlVActual(TmcMotionControl):
             self.set_vactual(int(round(vactual)))
 
         if duration == 0:
-            return -1
+            raise ValueError("Duration must be greater than 0")
         duration_ms = duration * 1000
 
         self._starttime = _get_time_ms()
@@ -232,7 +233,7 @@ class TmcMotionControlVActual(TmcMotionControl):
         Args:
             speed (int): speed in µsteps per second
         """
-        self.set_vactual(speed / 0.715)
+        self.set_vactual(round(speed / 0.715))
 
     def run_speed_fullstep(self, speed: int):
         """runs the motor

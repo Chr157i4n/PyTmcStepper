@@ -12,6 +12,7 @@ from enum import IntEnum
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from .._tmc_logger import Loglevel
+from ..reg import _tmc5160_reg as tmc5160_reg
 
 # from .. import _tmc_math as tmc_math
 
@@ -38,6 +39,21 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         """set the tmc_logger"""
         self._tmc_com = tmc_com
 
+    @property
+    def current_pos(self):
+        """_current_pos property"""
+        xactual: tmc5160_reg.XActual = self.get_register("xactual")
+        self._current_pos = xactual.xactual
+        return self._current_pos
+
+    @current_pos.setter
+    def current_pos(self, current_pos: int):
+        """_current_pos setter"""
+        super().current_pos = current_pos
+        xactual: tmc5160_reg.XActual = self.get_register("xactual")
+        xactual.xactual = current_pos
+        xactual.write()
+
     def __init__(self):
         """constructor"""
         super().__init__()
@@ -50,7 +66,7 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         Args:
             ramp_mode (enum): the ramp mode to set
         """
-        rampmode = self.get_register("rampmode")
+        rampmode: tmc5160_reg.RampMode = self.get_register("rampmode")
         rampmode.rampmode = int(ramp_mode)
         rampmode.write()
 
@@ -61,27 +77,27 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             acceleration (int): acceleration in µsteps/s²
             deceleration (int): deceleration in µsteps/s²
         """
-        vstart = self.get_register("vstart")
+        vstart: tmc5160_reg.VStart = self.get_register("vstart")
         vstart.vstart = 5  # Motor start velocity (unsigned)
         vstart.write()
 
-        vstop = self.get_register("vstop")
+        vstop: tmc5160_reg.VStop = self.get_register("vstop")
         vstop.vstop = 10  # Motor stop velocity (unsigned)
         vstop.write()
 
-        v1 = self.get_register("v1")
+        v1: tmc5160_reg.V1 = self.get_register("v1")
         v1.v1 = 0  # disables A1/D1 phase
         v1.write()
 
-        vmax = self.get_register("vmax")
+        vmax: tmc5160_reg.VMax = self.get_register("vmax")
         vmax.vmax = max_speed
         vmax.write()
 
-        amax = self.get_register("amax")
+        amax: tmc5160_reg.AMax = self.get_register("amax")
         amax.amax = acceleration
         amax.write()
 
-        dmax = self.get_register("dmax")
+        dmax: tmc5160_reg.DMax = self.get_register("dmax")
         dmax.dmax = deceleration
         dmax.write()
 
@@ -96,20 +112,21 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             stop_mode (enum): whether the movement should be stopped immediately or softly
                 (Default value = StopMode.HARDSTOP)
         """
+        super().stop(stop_mode)
         self.set_ramp_mode(RampMode.VELOCITY_MODE_POS)
 
-        vmax = self.get_register("vmax")
+        vmax: tmc5160_reg.VMax = self.get_register("vmax")
         vmax.vmax = 0
         vmax.write()
 
         if stop_mode == StopMode.HARDSTOP:
-            amax = self.get_register("amax")
+            amax: tmc5160_reg.AMax = self.get_register("amax")
             amax.amax = 65535  # max deceleration (amax is used in velocity mode for deceleration)
             amax.write()
 
     def wait_until_stop(self):
         """blocks the code until the movement is finished or stopped from a different thread!"""
-        ramp_stat = self.get_register("ramp_stat")
+        ramp_stat: tmc5160_reg.RampStat = self.get_register("ramp_stat")
         while True:
             ramp_stat.read()
             if ramp_stat.position_reached:
@@ -150,8 +167,10 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             f"cur: {self._current_pos} | tar: {self._target_pos}", Loglevel.MOVEMENT
         )
 
-        xtarget = self.get_register("xtarget")
+        xtarget: tmc5160_reg.XTarget = self.get_register("xtarget")
         xtarget.xtarget = self._target_pos
         xtarget.write()
 
         self.wait_until_stop()
+
+        return self._stop
