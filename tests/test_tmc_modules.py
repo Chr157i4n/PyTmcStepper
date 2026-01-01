@@ -11,7 +11,6 @@ from src.tmc_driver.tmc_2209 import *
 from src.tmc_driver.tmc_2240 import *
 from src.tmc_driver.tmc_5160 import *
 
-# from src.tmc_driver.com._tmc_com_spi import *
 from src.tmc_driver.com._tmc_com_uart import *
 from src.tmc_driver.com._tmc_com_uart_base import compute_crc8_atm
 

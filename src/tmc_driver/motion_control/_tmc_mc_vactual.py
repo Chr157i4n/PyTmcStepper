@@ -7,24 +7,13 @@
 VActual Motion Control module
 """
 
-import sys
 import time
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
 from ..tmc_logger import Loglevel
 from .. import _tmc_math as tmc_math
 from ..reg import _tmc_shared_regs as tmc_shared_reg
-
-
-# MicroPython compatibility for time functions
-MICROPYTHON = sys.implementation.name == "micropython"
-
-
-def _get_time_ms():
-    """Get current time in milliseconds, compatible with both CPython and MicroPython"""
-    if MICROPYTHON:
-        return time.ticks_ms()  # pylint: disable=no-member
-    return time.time_ns() // 1_000_000
+from ..platform_utils import get_time_us
 
 
 class TmcMotionControlVActual(TmcMotionControl):
@@ -154,8 +143,8 @@ class TmcMotionControlVActual(TmcMotionControl):
             return self._stop
         duration_ms = duration * 1000
 
-        self._starttime = _get_time_ms()
-        current_time = _get_time_ms()
+        self._starttime = get_time_us()
+        current_time = get_time_us()
         while current_time < self._starttime + duration_ms:
             if self._stop == StopMode.HARDSTOP:
                 break
@@ -181,7 +170,7 @@ class TmcMotionControlVActual(TmcMotionControl):
                 # self._tmc_logger.log(f"TStep result: {self.get_tstep()}",
                 #                     Loglevel.INFO)
                 time.sleep(0.1)
-            current_time = _get_time_ms()
+            current_time = get_time_us()
         self.set_vactual(0)
         return self._stop
 

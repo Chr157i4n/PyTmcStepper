@@ -17,11 +17,9 @@ class TestTmcCom(TmcCom):
 
     def init(self):
         """init communication"""
-        pass
 
     def deinit(self):
         """deinit communication"""
-        pass
 
     def read_int(self, addr: int, tries: int = 3):
         """reads the registry on the TMC with a given address.
