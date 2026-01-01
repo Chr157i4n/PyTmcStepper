@@ -13,13 +13,10 @@ this module has two different functions:
 3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
 """
 
-import time
-import types
 from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
-from .tmc_gpio import GpioPUD
 from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
@@ -30,7 +27,6 @@ from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from ._tmc_logger import *
 from .reg._tmc5160_reg import *
-from . import _tmc_math as tmc_math
 from ._tmc_exceptions import (
     TmcException,
     TmcComException,
@@ -38,7 +34,6 @@ from ._tmc_exceptions import (
     TmcEnableControlException,
     TmcDriverException,
 )
-from ._tmc_validation import validate_submodule
 
 
 class Tmc5160(TmcXXXX, StallGuard):
@@ -100,39 +95,39 @@ class Tmc5160(TmcXXXX, StallGuard):
 
         if self.tmc_com is not None:
 
-            self.gconf = GConf(self.tmc_com)
-            self.gstat = GStat(self.tmc_com)
-            self.ifcnt = IfCnt(self.tmc_com)
-            self.ioin = Ioin(self.tmc_com)
-            self.drv_conf = DrvConf(self.tmc_com)
-            self.global_scaler = GlobalScaler(self.tmc_com)
-            self.ihold_irun = IHoldIRun(self.tmc_com)
-            self.tpowerdown = TPowerDown(self.tmc_com)
-            self.tstep = TStep(self.tmc_com)
-            self.tpwmthrs = TPwmThrs(self.tmc_com)
-            self.thigh = THigh(self.tmc_com)
-            self.rampmode = RampMode(self.tmc_com)
-            self.xactual = XActual(self.tmc_com)
-            self.vactual = VActual(self.tmc_com)
-            self.vstart = VStart(self.tmc_com)
-            self.a1 = A1(self.tmc_com)
-            self.v1 = V1(self.tmc_com)
-            self.amax = AMax(self.tmc_com)
-            self.vmax = VMax(self.tmc_com)
-            self.dmax = DMax(self.tmc_com)
-            self.d1 = D1(self.tmc_com)
-            self.vstop = VStop(self.tmc_com)
-            self.tzerowait = TZeroWait(self.tmc_com)
-            self.xtarget = XTarget(self.tmc_com)
-            self.vdcmin = VDcMin(self.tmc_com)
-            self.swmode = SWMode(self.tmc_com)
-            self.rampstat = RampStat(self.tmc_com)
-            self.mscnt = MsCnt(self.tmc_com)
-            self.chopconf = ChopConf(self.tmc_com)
-            self.coolconf = CoolConf(self.tmc_com)
-            self.drvstatus = DrvStatus(self.tmc_com)
-            self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.loststeps = LostSteps(self.tmc_com)
+            self.gconf: GConf = GConf(self.tmc_com)
+            self.gstat: GStat = GStat(self.tmc_com)
+            self.ifcnt: IfCnt = IfCnt(self.tmc_com)
+            self.ioin: Ioin = Ioin(self.tmc_com)
+            self.drv_conf: DrvConf = DrvConf(self.tmc_com)
+            self.global_scaler: GlobalScaler = GlobalScaler(self.tmc_com)
+            self.ihold_irun: IHoldIRun = IHoldIRun(self.tmc_com)
+            self.tpowerdown: TPowerDown = TPowerDown(self.tmc_com)
+            self.tstep: TStep = TStep(self.tmc_com)
+            self.tpwmthrs: TPwmThrs = TPwmThrs(self.tmc_com)
+            self.thigh: THigh = THigh(self.tmc_com)
+            self.rampmode: RampMode = RampMode(self.tmc_com)
+            self.xactual: XActual = XActual(self.tmc_com)
+            self.vactual: VActual = VActual(self.tmc_com)
+            self.vstart: VStart = VStart(self.tmc_com)
+            self.a1: A1 = A1(self.tmc_com)
+            self.v1: V1 = V1(self.tmc_com)
+            self.amax: AMax = AMax(self.tmc_com)
+            self.vmax: VMax = VMax(self.tmc_com)
+            self.dmax: DMax = DMax(self.tmc_com)
+            self.d1: D1 = D1(self.tmc_com)
+            self.vstop: VStop = VStop(self.tmc_com)
+            self.tzerowait: TZeroWait = TZeroWait(self.tmc_com)
+            self.xtarget: XTarget = XTarget(self.tmc_com)
+            self.vdcmin: VDcMin = VDcMin(self.tmc_com)
+            self.swmode: SWMode = SWMode(self.tmc_com)
+            self.rampstat: RampStat = RampStat(self.tmc_com)
+            self.mscnt: MsCnt = MsCnt(self.tmc_com)
+            self.chopconf: ChopConf = ChopConf(self.tmc_com)
+            self.coolconf: CoolConf = CoolConf(self.tmc_com)
+            self.drvstatus: DrvStatus = DrvStatus(self.tmc_com)
+            self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
+            self.loststeps: LostSteps = LostSteps(self.tmc_com)
 
             self.gstat.clear()
             if self.tmc_mc is not None:

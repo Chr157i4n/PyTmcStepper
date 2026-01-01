@@ -5,11 +5,11 @@
 Register module
 """
 
-from ._tmc_reg import TmcReg
 from ._tmc220x_reg import *
+from . import _tmc_shared_regs as shared
 
 
-class TCoolThrs(TmcReg):
+class TCoolThrs(shared.TCoolThrs):
     """TCOOLTHRS register class"""
 
     ADDR = 0x14
@@ -18,7 +18,7 @@ class TCoolThrs(TmcReg):
     _REG_MAP = (TmcRegField("tcoolthrs", 0, 0xFFFFF, int, None, ""),)
 
 
-class SGThrs(TmcReg):
+class SgThrs(shared.SgThrs):
     """SGTHRS register class"""
 
     ADDR = 0x40
@@ -27,7 +27,7 @@ class SGThrs(TmcReg):
     _REG_MAP = (TmcRegField("sgthrs", 0, 0xFFFFF, int, None, ""),)
 
 
-class SGResult(TmcReg):
+class SgResult(shared.SgResult):
     """SGRESULT register class"""
 
     ADDR = 0x41
@@ -36,7 +36,7 @@ class SGResult(TmcReg):
     _REG_MAP = (TmcRegField("sgresult", 0, 0xFFFFF, int, None, ""),)
 
 
-class CoolConf(TmcReg):
+class CoolConf(shared.CoolConf):
     """COOLCONF register class"""
 
     ADDR = 0x42

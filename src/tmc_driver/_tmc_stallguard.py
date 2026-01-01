@@ -39,9 +39,10 @@ class StallGuard:
     tmc_mc: TmcMotionControl
 
     coolconf: tmc_shared_regs.CoolConf
-    sgthrs: tmc_shared_regs.SGThrs
-    sgresult: tmc_shared_regs.SGResult
+    sgthrs: tmc_shared_regs.SgThrs
+    sgresult: tmc_shared_regs.SgResult
     tcoolthrs: tmc_shared_regs.TCoolThrs
+    drvstatus: tmc_shared_regs.DrvStatus
 
     @property
     def sg_callback(self):

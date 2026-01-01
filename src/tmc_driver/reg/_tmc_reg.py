@@ -6,22 +6,7 @@ Register module
 """
 
 from .._tmc_logger import TmcLogger, Loglevel
-
-
-class TmcComStub:
-    """Stub for type hints"""
-
-    def read_int(self, address: int):
-        """Stub for type hints"""
-        raise NotImplementedError
-
-    def write_reg(self, address: int, data: int):
-        """Stub for type hints"""
-        raise NotImplementedError
-
-    def write_reg_check(self, address: int, data: int):
-        """Stub for type hints"""
-        raise NotImplementedError
+from ..com._tmc_com import TmcCom
 
 
 class TmcRegField:
@@ -57,7 +42,7 @@ class TmcReg:
     ADDR: int
     _REG_MAP: tuple[TmcRegField, ...] = ()
     _data_int: int
-    _flags: dict
+    _flags: dict | None
 
     @property
     def reg_map(self) -> tuple[TmcRegField, ...]:
@@ -70,14 +55,12 @@ class TmcReg:
         return self._data_int
 
     @property
-    def flags(self) -> dict:
+    def flags(self) -> dict | None:
         """returns the flags from the last read operation"""
         return self._flags
 
-    def __init__(self, tmc_com: TmcComStub):
+    def __init__(self, tmc_com: TmcCom):
         """Constructor"""
-        self._data_int: int
-        self._flags: dict
 
         self._tmc_com = tmc_com
 
@@ -124,7 +107,7 @@ class TmcReg:
             return
         logger.log(str(self), Loglevel.INFO)
 
-    def read(self) -> tuple[int, dict]:
+    def read(self) -> tuple[int, dict | None]:
         """read this register"""
         data, flags = self._tmc_com.read_int(self.ADDR)
 

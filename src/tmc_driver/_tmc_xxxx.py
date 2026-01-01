@@ -19,7 +19,7 @@ from .enable_control._tmc_ec import TmcEnableControl
 from .motion_control._tmc_mc import TmcMotionControl
 from .com._tmc_com import TmcCom
 from .reg._tmc_reg import TmcReg
-from .reg import _tmc220x_reg as tmc_shared_regs
+from .reg import _tmc_shared_regs as tmc_shared_regs
 from ._tmc_validation import validate_submodule
 from ._tmc_exceptions import TmcDriverException, TmcComException
 
@@ -341,7 +341,9 @@ class TmcXXXX(TmcStepperDriver):
         step = round(step)
         return step + offset
 
-    def read_register(self, name: str, log: bool = True) -> tuple[TmcReg, int, dict]:
+    def read_register(
+        self, name: str, log: bool = True
+    ) -> tuple[TmcReg, int, dict | None]:
         """reads all relevant registers of the driver"""
         if self.tmc_com is None:
             raise TmcComException("tmc_com is None; cannot read registers")

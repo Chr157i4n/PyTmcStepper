@@ -64,10 +64,10 @@ class Tmc2209(Tmc220x, StallGuard):
         )
         StallGuard.__init__(self)
 
-        if tmc_com is not None:
-            self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.sgthrs = SGThrs(self.tmc_com)
-            self.sgresult = SGResult(self.tmc_com)
+        if self.tmc_com is not None:
+            self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
+            self.sgthrs: SgThrs = SgThrs(self.tmc_com)
+            self.sgresult: SgResult = SgResult(self.tmc_com)
 
     def deinit(self):
         """destructor"""

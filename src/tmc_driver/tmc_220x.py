@@ -13,8 +13,6 @@ this module has two different functions:
 3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
 """
 
-import threading
-import time
 from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_uart_base import TmcComUartBase
@@ -25,7 +23,6 @@ from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_logger import *
 from .reg._tmc220x_reg import *
-from . import _tmc_math as tmc_math
 from ._tmc_exceptions import (
     TmcException,
     TmcComException,
@@ -33,7 +30,6 @@ from ._tmc_exceptions import (
     TmcEnableControlException,
     TmcDriverException,
 )
-from ._tmc_validation import validate_submodule
 
 
 class Tmc220x(TmcXXXX):
@@ -96,20 +92,19 @@ class Tmc220x(TmcXXXX):
         )
 
         if self.tmc_com is not None:
-
-            self.gconf = GConf(self.tmc_com)
-            self.gstat = GStat(self.tmc_com)
-            self.ifcnt = IfCnt(self.tmc_com)
-            self.ioin = Ioin(self.tmc_com)
-            self.ihold_irun = IHoldIRun(self.tmc_com)
-            self.tpowerdown = TPowerDown(self.tmc_com)
-            self.tstep = TStep(self.tmc_com)
-            self.tpwmthrs = TPwmThrs(self.tmc_com)
-            self.vactual = VActual(self.tmc_com)
-            self.mscnt = MsCnt(self.tmc_com)
-            self.chopconf = ChopConf(self.tmc_com)
-            self.pwmconf = PwmConf(self.tmc_com)
-            self.drvstatus = DrvStatus(self.tmc_com)
+            self.gconf: GConf = GConf(self.tmc_com)
+            self.gstat: GStat = GStat(self.tmc_com)
+            self.ifcnt: IfCnt = IfCnt(self.tmc_com)
+            self.ioin: Ioin = Ioin(self.tmc_com)
+            self.ihold_irun: IHoldIRun = IHoldIRun(self.tmc_com)
+            self.tpowerdown: TPowerDown = TPowerDown(self.tmc_com)
+            self.tstep: TStep = TStep(self.tmc_com)
+            self.tpwmthrs: TPwmThrs = TPwmThrs(self.tmc_com)
+            self.vactual: VActual = VActual(self.tmc_com)
+            self.mscnt: MsCnt = MsCnt(self.tmc_com)
+            self.chopconf: ChopConf = ChopConf(self.tmc_com)
+            self.pwmconf: PwmConf = PwmConf(self.tmc_com)
+            self.drvstatus: DrvStatus = DrvStatus(self.tmc_com)
 
             self.gstat.clear()
             if self.tmc_mc is not None:

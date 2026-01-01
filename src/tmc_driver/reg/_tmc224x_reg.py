@@ -4,11 +4,12 @@ Register module
 """
 
 import math
-from ._tmc_reg import TmcReg, TmcRegField
+from ._tmc_reg import TmcRegField
+from . import _tmc_shared_regs as shared
 from .._tmc_exceptions import TmcDriverException
 
 
-class GConf(TmcReg):
+class GConf(shared.GConf):
     """GCONF register class"""
 
     ADDR = 0x0
@@ -47,7 +48,7 @@ class GConf(TmcReg):
     )
 
 
-class GStat(TmcReg):
+class GStat(shared.GStat):
     """GSTAT register class"""
 
     ADDR = 0x1
@@ -80,7 +81,7 @@ class GStat(TmcReg):
             raise TmcDriverException("TMC224X: reset detected")
 
 
-class IfCnt(TmcReg):
+class IfCnt(shared.IfCnt):
     """IFCNT register class"""
 
     ADDR = 0x2
@@ -89,7 +90,7 @@ class IfCnt(TmcReg):
     _REG_MAP = (TmcRegField("ifcnt", 0, 0xFF, int, None, ""),)
 
 
-class Ioin(TmcReg):
+class Ioin(shared.Ioin):
     """IOIN register class"""
 
     ADDR = 0x4
@@ -132,7 +133,7 @@ class Ioin(TmcReg):
     )
 
 
-class DrvConf(TmcReg):
+class DrvConf(shared.DrvConf):
     """DRV_CONF register class"""
 
     ADDR = 0x6
@@ -145,7 +146,7 @@ class DrvConf(TmcReg):
     )
 
 
-class GlobalScaler(TmcReg):
+class GlobalScaler(shared.GlobalScaler):
     """GLOBAL_SCALER register class"""
 
     ADDR = 0xB
@@ -154,7 +155,7 @@ class GlobalScaler(TmcReg):
     _REG_MAP = (TmcRegField("global_scaler", 0, 0xFF, int, None, ""),)
 
 
-class IHoldIRun(TmcReg):
+class IHoldIRun(shared.IHoldIRun):
     """IHOLD_IRUN register class"""
 
     ADDR = 0x10
@@ -171,7 +172,7 @@ class IHoldIRun(TmcReg):
     )
 
 
-class TPowerDown(TmcReg):
+class TPowerDown(shared.TPowerDown):
     """TPOWERDOWN register class"""
 
     ADDR = 0x11
@@ -180,7 +181,7 @@ class TPowerDown(TmcReg):
     _REG_MAP = (TmcRegField("tpowerdown", 0, 0xFF, int, None, ""),)
 
 
-class TStep(TmcReg):
+class TStep(shared.TStep):
     """TSTEP register class"""
 
     ADDR = 0x12
@@ -189,7 +190,7 @@ class TStep(TmcReg):
     _REG_MAP = (TmcRegField("tstep", 0, 0xFFFFF, int, None, ""),)
 
 
-class TPwmThrs(TmcReg):
+class TPwmThrs(shared.TPwmThrs):
     """TCOOLTHRS register class"""
 
     ADDR = 0x13
@@ -198,7 +199,7 @@ class TPwmThrs(TmcReg):
     _REG_MAP = (TmcRegField("tpwmthrs", 0, 0xFFFFF, int, None, ""),)
 
 
-class TCoolThrs(TmcReg):
+class TCoolThrs(shared.TCoolThrs):
     """TCOOLTHRS register class"""
 
     ADDR = 0x14
@@ -207,7 +208,7 @@ class TCoolThrs(TmcReg):
     _REG_MAP = (TmcRegField("tcoolthrs", 0, 0xFFFFF, int, None, ""),)
 
 
-class THigh(TmcReg):
+class THigh(shared.THigh):
     """THIGH register class"""
 
     ADDR = 0x15
@@ -216,7 +217,7 @@ class THigh(TmcReg):
     _REG_MAP = (TmcRegField("thigh", 0, 0xFFFFF, int, None, ""),)
 
 
-class ADCVSupplyAIN(TmcReg):
+class ADCVSupplyAIN(shared.ADCVSupplyAIN):
     """ADCV_SUPPLY_AIN register class"""
 
     ADDR = 0x50
@@ -239,7 +240,7 @@ class ADCVSupplyAIN(TmcReg):
         return round(self.adc_ain * 305.2 / 1000 / 1000, 2)
 
 
-class ADCTemp(TmcReg):
+class ADCTemp(shared.ADCTemp):
     """ADC_TEMP register class"""
 
     ADDR = 0x51
@@ -253,7 +254,7 @@ class ADCTemp(TmcReg):
         return round((self.adc_temp - 2038) / 7.7, 1)
 
 
-class MsCnt(TmcReg):
+class MsCnt(shared.MsCnt):
     """MSCNT register class"""
 
     ADDR = 0x6A
@@ -262,7 +263,7 @@ class MsCnt(TmcReg):
     _REG_MAP = (TmcRegField("mscnt", 0, 0xFF, int, None, ""),)
 
 
-class ChopConf(TmcReg):
+class ChopConf(shared.ChopConf):
     """CHOPCONF register class"""
 
     ADDR = 0x6C
@@ -279,8 +280,8 @@ class ChopConf(TmcReg):
     chm: int
     disfdcc: bool
     fd3: bool
-    hend_offset: int
-    hstrt_tfd210: int
+    hend: int
+    hstrt: int
     toff: int
     _REG_MAP = (
         TmcRegField("diss2vs", 31, 0x1, bool, None, ""),
@@ -295,8 +296,8 @@ class ChopConf(TmcReg):
         TmcRegField("chm", 14, 0x3, int, None, ""),
         TmcRegField("disfdcc", 12, 0x1, bool, None, ""),
         TmcRegField("fd3", 11, 0x1, bool, None, ""),
-        TmcRegField("hend_offset", 7, 0xF, int, None, ""),
-        TmcRegField("hstrt_tfd210", 4, 0x7, int, None, ""),
+        TmcRegField("hend", 7, 0xF, int, None, ""),
+        TmcRegField("hstrt", 4, 0x7, int, None, ""),
         TmcRegField("toff", 0, 0xF, int, None, ""),
     )
 
@@ -313,7 +314,7 @@ class ChopConf(TmcReg):
         self.mres = mres_bit
 
 
-class CoolConf(TmcReg):
+class CoolConf(shared.CoolConf):
     """COOLCONF register class"""
 
     ADDR = 0x6D
@@ -336,7 +337,7 @@ class CoolConf(TmcReg):
     )
 
 
-class DrvStatus(TmcReg):
+class DrvStatus(shared.DrvStatus):
     """DRVSTATUS register class"""
 
     ADDR = 0x6F
@@ -373,7 +374,7 @@ class DrvStatus(TmcReg):
     )
 
 
-class SgThrs(TmcReg):
+class SgThrs(shared.SgThrs):
     """SGTHRS register class"""
 
     ADDR = 0x74
@@ -388,7 +389,7 @@ class SgThrs(TmcReg):
     )
 
 
-class SgResult(TmcReg):
+class SgResult(shared.SgResult):
     """SGRESULT register class"""
 
     ADDR = 0x75
@@ -397,7 +398,7 @@ class SgResult(TmcReg):
     _REG_MAP = (TmcRegField("sgresult", 0, 0xFFFFF, int, None, ""),)
 
 
-class SgInd(TmcReg):
+class SgInd(shared.SgInd):
     """SGIND register class"""
 
     ADDR = 0x76

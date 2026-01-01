@@ -8,7 +8,6 @@ import struct
 from abc import abstractmethod
 from .._tmc_logger import TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException
-from ..reg._tmc_reg import TmcReg
 
 
 def compute_crc8_atm(datagram, initial_value=0):

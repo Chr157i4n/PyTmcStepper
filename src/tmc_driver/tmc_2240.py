@@ -13,13 +13,10 @@ this module has two different functions:
 3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
 """
 
-import time
-import types
 from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
-from .tmc_gpio import GpioPUD
 from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
@@ -29,7 +26,6 @@ from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from ._tmc_logger import *
 from .reg._tmc224x_reg import *
-from . import _tmc_math as tmc_math
 from ._tmc_exceptions import (
     TmcException,
     TmcComException,
@@ -37,7 +33,6 @@ from ._tmc_exceptions import (
     TmcEnableControlException,
     TmcDriverException,
 )
-from ._tmc_validation import validate_submodule
 
 
 class Tmc2240(TmcXXXX, StallGuard):
@@ -98,27 +93,27 @@ class Tmc2240(TmcXXXX, StallGuard):
 
         if self.tmc_com is not None:
 
-            self.gconf = GConf(self.tmc_com)
-            self.gstat = GStat(self.tmc_com)
-            self.ifcnt = IfCnt(self.tmc_com)
-            self.ioin = Ioin(self.tmc_com)
-            self.drv_conf = DrvConf(self.tmc_com)
-            self.global_scaler = GlobalScaler(self.tmc_com)
-            self.ihold_irun = IHoldIRun(self.tmc_com)
-            self.tpowerdown = TPowerDown(self.tmc_com)
-            self.tstep = TStep(self.tmc_com)
-            self.tpwmthrs = TPwmThrs(self.tmc_com)
-            self.thigh = THigh(self.tmc_com)
-            self.adcv_supply_ain = ADCVSupplyAIN(self.tmc_com)
-            self.adc_temp = ADCTemp(self.tmc_com)
-            self.mscnt = MsCnt(self.tmc_com)
-            self.chopconf = ChopConf(self.tmc_com)
-            self.coolconf = CoolConf(self.tmc_com)
-            self.drvstatus = DrvStatus(self.tmc_com)
-            self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.sgthrs = SgThrs(self.tmc_com)
-            self.sgresult = SgResult(self.tmc_com)
-            self.sgind = SgInd(self.tmc_com)
+            self.gconf: GConf = GConf(self.tmc_com)
+            self.gstat: GStat = GStat(self.tmc_com)
+            self.ifcnt: IfCnt = IfCnt(self.tmc_com)
+            self.ioin: Ioin = Ioin(self.tmc_com)
+            self.drv_conf: DrvConf = DrvConf(self.tmc_com)
+            self.global_scaler: GlobalScaler = GlobalScaler(self.tmc_com)
+            self.ihold_irun: IHoldIRun = IHoldIRun(self.tmc_com)
+            self.tpowerdown: TPowerDown = TPowerDown(self.tmc_com)
+            self.tstep: TStep = TStep(self.tmc_com)
+            self.tpwmthrs: TPwmThrs = TPwmThrs(self.tmc_com)
+            self.thigh: THigh = THigh(self.tmc_com)
+            self.adcv_supply_ain: ADCVSupplyAIN = ADCVSupplyAIN(self.tmc_com)
+            self.adc_temp: ADCTemp = ADCTemp(self.tmc_com)
+            self.mscnt: MsCnt = MsCnt(self.tmc_com)
+            self.chopconf: ChopConf = ChopConf(self.tmc_com)
+            self.coolconf: CoolConf = CoolConf(self.tmc_com)
+            self.drvstatus: DrvStatus = DrvStatus(self.tmc_com)
+            self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
+            self.sgthrs: SgThrs = SgThrs(self.tmc_com)
+            self.sgresult: SgResult = SgResult(self.tmc_com)
+            self.sgind: SgInd = SgInd(self.tmc_com)
 
             self.gstat.clear()
             if self.tmc_mc is not None:
