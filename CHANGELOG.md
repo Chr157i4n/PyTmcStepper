@@ -1,5 +1,19 @@
 # Changelog
 
+## version 0.11.0
+
+- added support for TMC5160
+- changed set_current to set_current_rms and set_current_peak
+- added typehints
+- refactor logger (split micropython and cpython implementation into their own files)
+- added clear function for regs
+- added str function for regs
+- added demo script for homing
+- replaced individual register read function with unified read_register method
+- TMC2240: fixed THigh reg addr
+- TMC5160: added reg defs
+- TMC5160: added MotionControl for internal Ramp Generator
+
 ## version 0.10.0
 
 - added unittests for submodule combinations
