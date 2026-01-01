@@ -6,9 +6,8 @@ TmcCom stepper driver communication module
 import time
 import struct
 from abc import abstractmethod
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException
-from ..reg._tmc_reg import TmcReg
 
 
 def compute_crc8_atm(datagram, initial_value=0):
@@ -78,7 +77,7 @@ class TmcCom:
         """
         self._get_register_callback = callback
 
-    def get_register(self, name: str) -> TmcReg | None:
+    def get_register(self, name: str):
         """Get register by name from parent TMC class
 
         Args:
@@ -87,9 +86,9 @@ class TmcCom:
         Returns:
             Register object or None if callback not set
         """
-        if self._get_register_callback is not None:
-            return self._get_register_callback(name)
-        return None
+        if self._get_register_callback is None:
+            raise TmcComException("Get register callback not set in communication")
+        return self._get_register_callback(name)
 
     @abstractmethod
     def read_reg(self, addr: int) -> tuple[int, dict | None]:

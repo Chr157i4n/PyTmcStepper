@@ -9,13 +9,10 @@ Uses the machine.UART interface for single-wire UART communication.
 """
 
 # Detect if we're running on MicroPython
-import sys
 import time
 from machine import UART, Pin  # pylint: disable=import-error
 from ._tmc_com_uart_base import TmcComUartBase
 from .._tmc_exceptions import TmcComException
-
-MICROPYTHON = sys.implementation.name == "micropython"
 
 
 class TmcComUartMicroPython(TmcComUartBase):

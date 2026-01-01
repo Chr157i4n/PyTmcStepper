@@ -19,6 +19,7 @@ class GConf(shared.GConf):
     small_hysteresis: bool
     diag1_pushpull: bool
     diag0_pushpull: bool
+    diag1_steps_skipped: bool
     diag1_onstate: bool
     diag1_index: bool
     diag1_stall: bool
@@ -29,12 +30,14 @@ class GConf(shared.GConf):
     multistep_filt: bool
     en_pwm_mode: bool
     fast_standstill: bool
+    recalibrate: bool
     _REG_MAP = (
         TmcRegField("direct_mode", 16, 0x1, bool, None, ""),
         TmcRegField("stop_enable", 15, 0x1, bool, None, ""),
         TmcRegField("small_hysteresis", 14, 0x1, bool, None, ""),
         TmcRegField("diag1_pushpull", 13, 0x1, bool, None, ""),
         TmcRegField("diag0_pushpull", 12, 0x1, bool, None, ""),
+        TmcRegField("diag1_steps_skipped", 11, 0x1, bool, None, ""),
         TmcRegField("diag1_onstate", 10, 0x1, bool, None, ""),
         TmcRegField("diag1_index", 9, 0x1, bool, None, ""),
         TmcRegField("diag1_stall", 8, 0x1, bool, None, ""),
@@ -45,6 +48,7 @@ class GConf(shared.GConf):
         TmcRegField("multistep_filt", 3, 0x1, bool, None, ""),
         TmcRegField("en_pwm_mode", 2, 0x1, bool, None, ""),
         TmcRegField("fast_standstill", 1, 0x1, bool, None, ""),
+        TmcRegField("recalibrate", 0, 0x1, bool, None, ""),
     )
 
 
@@ -53,14 +57,10 @@ class GStat(shared.GStat):
 
     ADDR = 0x1
 
-    vm_uvlo: bool
-    register_reset: bool
     uv_cp: bool
     drv_err: bool
     reset: bool
     _REG_MAP = (
-        TmcRegField("vm_uvlo", 4, 0x1, bool, None, "", 1),
-        TmcRegField("register_reset", 3, 0x1, bool, None, "", 1),
         TmcRegField("uv_cp", 2, 0x1, bool, None, "", 1),
         TmcRegField("drv_err", 1, 0x1, bool, None, "", 1),
         TmcRegField("reset", 0, 0x1, bool, None, "", 1),
@@ -69,10 +69,6 @@ class GStat(shared.GStat):
     def check(self):
         """check if the driver is ok"""
         self.read()
-        if self.vm_uvlo:
-            raise TmcDriverException("TMC224X: Vmotor undervoltage detected")
-        if self.register_reset:
-            raise TmcDriverException("TMC224X: register reset detected")
         if self.uv_cp:
             raise TmcDriverException("TMC224X: Charge Pump undervoltage detected")
         if self.drv_err:
@@ -96,16 +92,8 @@ class Ioin(shared.Ioin):
     ADDR = 0x4
 
     version: int
-    silicon_rv: int
-    adc_err: bool
-    ext_clk: bool
-    ext_res_det: bool
-    output: bool
-    comp_b1_b2: bool
-    comp_a1_a2: bool
-    comp_b: bool
-    comp_a: bool
-    uart_en: bool
+    sw_comp_in: bool
+    sd_mode: bool
     encn: bool
     enn: bool
     enca: bool
@@ -114,16 +102,8 @@ class Ioin(shared.Ioin):
     step: bool
     _REG_MAP = (
         TmcRegField("version", 24, 0xFF, int, None, ""),
-        TmcRegField("silicon_rv", 24, 0xFF, int, None, ""),
-        TmcRegField("adc_err", 15, 0x1, bool, None, ""),
-        TmcRegField("ext_clk", 14, 0x1, bool, None, ""),
-        TmcRegField("ext_res_det", 13, 0x1, bool, None, ""),
-        TmcRegField("output", 12, 0x1, bool, None, ""),
-        TmcRegField("comp_b1_b2", 11, 0x1, bool, None, ""),
-        TmcRegField("comp_a1_a2", 10, 0x1, bool, None, ""),
-        TmcRegField("comp_b", 9, 0x1, bool, None, ""),
-        TmcRegField("comp_a", 8, 0x1, bool, None, ""),
-        TmcRegField("uart_en", 6, 0x1, bool, None, ""),
+        TmcRegField("sw_comp_in", 7, 0x1, bool, None, ""),
+        TmcRegField("sd_mode", 6, 0x1, bool, None, ""),
         TmcRegField("encn", 5, 0x1, bool, None, ""),
         TmcRegField("enn", 4, 0x1, bool, None, ""),
         TmcRegField("enca", 3, 0x1, bool, None, ""),
@@ -136,13 +116,19 @@ class Ioin(shared.Ioin):
 class DrvConf(shared.DrvConf):
     """DRV_CONF register class"""
 
-    ADDR = 0x6
+    ADDR = 0xA
 
-    slope_control: int
-    current_range: int
+    filt_isense: int
+    drvstrength: int
+    otselect: int
+    bbmclks: int
+    bbmtime: int
     _REG_MAP = (
-        TmcRegField("slope_control", 4, 0x3, int, None, ""),
-        TmcRegField("current_range", 0, 0x3, int, None, ""),
+        TmcRegField("filt_isense", 20, 0x3, int, None, ""),
+        TmcRegField("drvstrength", 18, 0x3, int, None, ""),
+        TmcRegField("otselect", 16, 0x3, int, None, ""),
+        TmcRegField("bbmclks", 8, 0xF, int, None, ""),
+        TmcRegField("bbmtime", 0, 0x1F, int, None, ""),
     )
 
 
@@ -160,12 +146,10 @@ class IHoldIRun(shared.IHoldIRun):
 
     ADDR = 0x10
 
-    irundelay: int
     iholddelay: int
     irun: int
     ihold: int
     _REG_MAP = (
-        TmcRegField("irundelay", 24, 0xF, int, None, ""),
         TmcRegField("iholddelay", 16, 0xF, int, None, ""),
         TmcRegField("irun", 8, 0x1F, int, None, ""),
         TmcRegField("ihold", 0, 0x1F, int, None, ""),
@@ -217,41 +201,199 @@ class THigh(shared.THigh):
     _REG_MAP = (TmcRegField("thigh", 0, 0xFFFFF, int, None, ""),)
 
 
-class ADCVSupplyAIN(shared.ADCVSupplyAIN):
-    """ADCV_SUPPLY_AIN register class"""
+class VDcMin(shared.VDcMin):
+    """THIGH register class"""
 
-    ADDR = 0x50
+    ADDR = 0x33
 
-    adc_ain: int
-    adc_vsupply: int
+    vdcmin: int
+    _REG_MAP = (TmcRegField("vdcmin", 0, 0xFFFFF, int, None, ""),)
+
+
+class RampMode(shared.RampMode):
+    """THIGH register class"""
+
+    ADDR = 0x20
+
+    rampmode: int
+    _REG_MAP = (TmcRegField("rampmode", 0, 0xFFFFF, int, None, ""),)
+
+
+class XActual(shared.XActual):
+    """THIGH register class"""
+
+    ADDR = 0x21
+
+    xactual: int
+    _REG_MAP = (TmcRegField("xactual", 0, 0xFFFFF, int, None, ""),)
+
+
+class VActual(shared.VActual):
+    """THIGH register class"""
+
+    ADDR = 0x22
+
+    vactual: int
+    _REG_MAP = (TmcRegField("vactual", 0, 0xFFFFF, int, None, ""),)
+
+
+class VStart(shared.VStart):
+    """THIGH register class"""
+
+    ADDR = 0x23
+
+    vstart: int
+    _REG_MAP = (TmcRegField("vstart", 0, 0xFFFFF, int, None, ""),)
+
+
+class A1(shared.A1):
+    """THIGH register class"""
+
+    ADDR = 0x24
+
+    a1: int
+    _REG_MAP = (TmcRegField("a1", 0, 0xFFFFF, int, None, ""),)
+
+
+class V1(shared.V1):
+    """THIGH register class"""
+
+    ADDR = 0x25
+
+    v1: int
+    _REG_MAP = (TmcRegField("v1", 0, 0xFFFFF, int, None, ""),)
+
+
+class AMax(shared.AMax):
+    """THIGH register class"""
+
+    ADDR = 0x26
+
+    amax: int
+    _REG_MAP = (TmcRegField("amax", 0, 0xFFFFF, int, None, ""),)
+
+
+class VMax(shared.VMax):
+    """THIGH register class"""
+
+    ADDR = 0x27
+
+    vmax: int
+    _REG_MAP = (TmcRegField("vmax", 0, 0xFFFFF, int, None, ""),)
+
+
+class DMax(shared.DMax):
+    """THIGH register class"""
+
+    ADDR = 0x28
+
+    dmax: int
+    _REG_MAP = (TmcRegField("dmax", 0, 0xFFFFF, int, None, ""),)
+
+
+class D1(shared.D1):
+    """THIGH register class"""
+
+    ADDR = 0x2A
+
+    d1: int
+    _REG_MAP = (TmcRegField("d1", 0, 0xFFFFF, int, None, ""),)
+
+
+class VStop(shared.VStop):
+    """THIGH register class"""
+
+    ADDR = 0x2B
+
+    vstop: int
+    _REG_MAP = (TmcRegField("vstop", 0, 0xFFFFF, int, None, ""),)
+
+
+class TZeroWait(shared.TZeroWait):
+    """THIGH register class"""
+
+    ADDR = 0x2C
+
+    tzerowait: int
+    _REG_MAP = (TmcRegField("tzerowait", 0, 0xFFFFF, int, None, ""),)
+
+
+class XTarget(shared.XTarget):
+    """THIGH register class"""
+
+    ADDR = 0x2D
+
+    xtarget: int
+    _REG_MAP = (TmcRegField("xtarget", 0, 0xFFFFF, int, None, ""),)
+
+
+class SWMode(shared.SWMode):
+    """THIGH register class"""
+
+    ADDR = 0x34
+
+    en_softstop: bool
+    sg_stop: bool
+    en_latch_encoder: bool
+    latch_r_inactive: bool
+    latch_r_active: bool
+    latch_l_inactive: bool
+    latch_l_active: bool
+    swap_lr: bool
+    pol_stop_r: bool
+    pol_stop_l: bool
+    stop_r_enable: bool
+    stop_l_enable: bool
     _REG_MAP = (
-        TmcRegField("adc_ain", 16, 0xFFFF, int, "adc_ain_v", "V"),
-        TmcRegField("adc_vsupply", 0, 0xFFFF, int, "adc_vsupply_v", "V"),
+        TmcRegField("en_softstop", 11, 0x1, bool, None, ""),
+        TmcRegField("sg_stop", 10, 0x1, bool, None, ""),
+        TmcRegField("en_latch_encoder", 9, 0x1, bool, None, ""),
+        TmcRegField("latch_r_inactive", 8, 0x1, bool, None, ""),
+        TmcRegField("latch_r_active", 7, 0x1, bool, None, ""),
+        TmcRegField("latch_l_inactive", 6, 0x1, bool, None, ""),
+        TmcRegField("latch_l_active", 5, 0x1, bool, None, ""),
+        TmcRegField("swap_lr", 4, 0x1, bool, None, ""),
+        TmcRegField("pol_stop_r", 3, 0x1, bool, None, ""),
+        TmcRegField("pol_stop_l", 2, 0x1, bool, None, ""),
+        TmcRegField("stop_r_enable", 1, 0x1, bool, None, ""),
+        TmcRegField("stop_l_enable", 0, 0x1, bool, None, ""),
     )
 
-    @property
-    def adc_vsupply_v(self) -> float:
-        """return Supplyvoltage in V"""
-        return round(self.adc_vsupply * 9.732 / 1000, 2)
 
-    @property
-    def adc_ain_v(self) -> float:
-        """return voltage on AIN in V"""
-        return round(self.adc_ain * 305.2 / 1000 / 1000, 2)
+class RampStat(shared.RampStat):
+    """THIGH register class"""
 
+    ADDR = 0x35
 
-class ADCTemp(shared.ADCTemp):
-    """ADC_TEMP register class"""
-
-    ADDR = 0x51
-
-    adc_temp: int
-    _REG_MAP = (TmcRegField("adc_temp", 0, 0xFFFF, int, "adc_temp_c", "°C"),)
-
-    @property
-    def adc_temp_c(self) -> float:
-        """return temperature in °C"""
-        return round((self.adc_temp - 2038) / 7.7, 1)
+    status_sg: bool
+    second_move: bool
+    t_zerowait_active: bool
+    vzero: bool
+    position_reached: bool
+    velocity_reached: bool
+    event_stop_sg: bool
+    event_stop_r: bool
+    event_stop_l: bool
+    status_latch_r: bool
+    status_latch_l: bool
+    status_stop_r: bool
+    status_stop_l: bool
+    _REG_MAP = (
+        TmcRegField("status_sg", 13, 0x1, bool, None, ""),
+        TmcRegField("second_move", 12, 0x1, bool, None, "", 1),
+        TmcRegField("t_zerowait_active", 11, 0x1, bool, None, ""),
+        TmcRegField("vzero", 10, 0x1, bool, None, ""),
+        TmcRegField("position_reached", 9, 0x1, bool, None, ""),
+        TmcRegField("velocity_reached", 8, 0x1, bool, None, ""),
+        TmcRegField("event_pos_reached", 7, 0x1, bool, None, "", 1),
+        TmcRegField("event_stop_sg", 6, 0x1, bool, None, "", 1),
+        TmcRegField("event_stop_r", 5, 0x1, bool, None, ""),
+        TmcRegField("event_stop_l", 4, 0x1, bool, None, ""),
+        TmcRegField("status_latch_r", 3, 0x1, bool, None, "", 1),
+        TmcRegField("status_latch_l", 2, 0x1, bool, None, "", 1),
+        TmcRegField("status_stop_r", 1, 0x1, bool, None, ""),
+        TmcRegField("status_stop_l", 0, 0x1, bool, None, ""),
+    )
 
 
 class MsCnt(shared.MsCnt):
@@ -280,8 +422,8 @@ class ChopConf(shared.ChopConf):
     chm: int
     disfdcc: bool
     fd3: bool
-    hend: int
-    hstrt: int
+    hend_offset: int
+    hstrt_tfd210: int
     toff: int
     _REG_MAP = (
         TmcRegField("diss2vs", 31, 0x1, bool, None, ""),
@@ -296,8 +438,8 @@ class ChopConf(shared.ChopConf):
         TmcRegField("chm", 14, 0x3, int, None, ""),
         TmcRegField("disfdcc", 12, 0x1, bool, None, ""),
         TmcRegField("fd3", 11, 0x1, bool, None, ""),
-        TmcRegField("hend", 7, 0xF, int, None, ""),
-        TmcRegField("hstrt", 4, 0x7, int, None, ""),
+        TmcRegField("hend_offset", 7, 0xF, int, None, ""),
+        TmcRegField("hstrt_tfd210", 4, 0x7, int, None, ""),
         TmcRegField("toff", 0, 0xF, int, None, ""),
     )
 
@@ -374,40 +516,10 @@ class DrvStatus(shared.DrvStatus):
     )
 
 
-class SgThrs(shared.SgThrs):
-    """SGTHRS register class"""
+class LostSteps(shared.LostSteps):
+    """LOST_STEPS register class"""
 
-    ADDR = 0x74
+    ADDR = 0x73
 
-    sg_angle_offset: bool
-    sg4_filt_en: bool
-    sgthrs: int
-    _REG_MAP = (
-        TmcRegField("sg_angle_offset", 9, 0x1, bool, None, ""),
-        TmcRegField("sg4_filt_en", 8, 0x1, bool, None, ""),
-        TmcRegField("sgthrs", 0, 0xFFF, int, None, ""),
-    )
-
-
-class SgResult(shared.SgResult):
-    """SGRESULT register class"""
-
-    ADDR = 0x75
-
-    sgresult: int
-    _REG_MAP = (TmcRegField("sgresult", 0, 0xFFFFF, int, None, ""),)
-
-
-class SgInd(shared.SgInd):
-    """SGIND register class"""
-
-    ADDR = 0x76
-
-    sg_ind_2: int
-    sg_ind_1: int
-    sg_ind_0: int
-    _REG_MAP = (
-        TmcRegField("sg_ind_2", 16, 0xFF, int, None, ""),
-        TmcRegField("sg_ind_1", 8, 0xFF, int, None, ""),
-        TmcRegField("sg_ind_0", 0, 0xFF, int, None, ""),
-    )
+    lost_steps: int
+    _REG_MAP = (TmcRegField("lost_steps", 0, 0xFFFFF, int, None, ""),)

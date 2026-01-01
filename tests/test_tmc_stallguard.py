@@ -6,6 +6,8 @@ import time
 import unittest
 from threading import Thread
 from src.tmc_driver.tmc_2209 import *
+from src.tmc_driver.tmc_2240 import *
+from src.tmc_driver.tmc_5160 import *
 from src.tmc_driver.com._tmc_com_uart import *
 from src.tmc_driver.com._tmc_com_uart_base import compute_crc8_atm
 
@@ -63,6 +65,8 @@ def do_homing_with_result_as_global(
 class TestTMCStallGuard(unittest.TestCase):
     """TestTMCMove"""
 
+    DRIVER: list[TmcXXXX] = [Tmc2209, Tmc2240, Tmc5160]
+
     def setUp(self):
         """setUp"""
         tmc_com = TmcComUart("/dev/serial0", 115200)
@@ -106,6 +110,28 @@ class TestTMCStallGuard(unittest.TestCase):
         self.tmc.tmc_mc.stop()
         homing_thread.join()
         self.assertTrue(homing_result, "Homing failed")
+
+    def test_test_stallguard_threshold(self):
+        """test_test_stallguard_threshold"""
+
+        for driver in self.DRIVER:
+            tmc_com = TmcComUart("/dev/serial0", 115200)
+            tmc_com.ser = _FakeSerial()
+
+            with self.subTest(
+                driver=driver.__name__,
+            ):
+                instance = driver(
+                    TmcEnableControlPin(3),
+                    TmcMotionControlStepDir(1, 2),
+                    tmc_com,
+                )
+                self.assertIsInstance(instance, driver)
+                self.assertIsInstance(instance.tmc_ec, TmcEnableControlPin)
+                self.assertIsInstance(instance.tmc_mc, TmcMotionControlStepDir)
+                self.assertIsInstance(instance.tmc_com, TmcComUart)
+
+                instance.test_stallguard_threshold(100)
 
 
 if __name__ == "__main__":

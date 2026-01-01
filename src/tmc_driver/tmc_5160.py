@@ -5,7 +5,7 @@
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
-"""Tmc220X stepper driver module
+"""Tmc5160 stepper driver module
 
 this module has two different functions:
 1. access register via tmc_com (UART, SPI)
@@ -15,14 +15,18 @@ this module has two different functions:
 
 from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
+from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
+from . import tmc_gpio
+from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
-from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
+from .motion_control._tmc_mc_int_ramp_generator import TmcMotionControlIntRampGenerator
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
-from .tmc_logger import Loglevel, TmcLogger
-from .reg._tmc220x_reg import *
+from ._tmc_stallguard import StallGuard
+from .tmc_logger import *
+from .reg._tmc5160_reg import *
 from ._tmc_exceptions import (
     TmcException,
     TmcComException,
@@ -32,18 +36,18 @@ from ._tmc_exceptions import (
 )
 
 
-class Tmc220x(TmcXXXX):
-    """Tmc220X"""
+class Tmc5160(TmcXXXX, StallGuard):
+    """Tmc5160"""
 
-    SUPPORTED_COM_TYPES = (TmcComUartBase,)
+    SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
     SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
     SUPPORTED_MC_TYPES = (
         TmcMotionControlStepDir,
         TmcMotionControlStepReg,
         TmcMotionControlStepPwmDir,
-        TmcMotionControlVActual,
+        TmcMotionControlIntRampGenerator,
     )
-    DRIVER_FAMILY = "TMC220X"
+    DRIVER_FAMILY = "TMC5160"
 
     # Constructor/Destructor
     # ----------------------------
@@ -76,9 +80,6 @@ class Tmc220x(TmcXXXX):
                 Defaults to None (messages are logged in the format
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s').
         """
-        if logprefix is None:
-            logprefix = f"{self.DRIVER_FAMILY} {driver_address}"
-
         super().__init__(
             tmc_ec,
             tmc_mc,
@@ -90,103 +91,56 @@ class Tmc220x(TmcXXXX):
             log_handlers,
             log_formatter,
         )
+        StallGuard.__init__(self)
 
         if self.tmc_com is not None:
+
             self.gconf: GConf = GConf(self.tmc_com)
             self.gstat: GStat = GStat(self.tmc_com)
             self.ifcnt: IfCnt = IfCnt(self.tmc_com)
             self.ioin: Ioin = Ioin(self.tmc_com)
+            self.drv_conf: DrvConf = DrvConf(self.tmc_com)
+            self.global_scaler: GlobalScaler = GlobalScaler(self.tmc_com)
             self.ihold_irun: IHoldIRun = IHoldIRun(self.tmc_com)
             self.tpowerdown: TPowerDown = TPowerDown(self.tmc_com)
             self.tstep: TStep = TStep(self.tmc_com)
             self.tpwmthrs: TPwmThrs = TPwmThrs(self.tmc_com)
+            self.thigh: THigh = THigh(self.tmc_com)
+            self.rampmode: RampMode = RampMode(self.tmc_com)
+            self.xactual: XActual = XActual(self.tmc_com)
             self.vactual: VActual = VActual(self.tmc_com)
+            self.vstart: VStart = VStart(self.tmc_com)
+            self.a1: A1 = A1(self.tmc_com)
+            self.v1: V1 = V1(self.tmc_com)
+            self.amax: AMax = AMax(self.tmc_com)
+            self.vmax: VMax = VMax(self.tmc_com)
+            self.dmax: DMax = DMax(self.tmc_com)
+            self.d1: D1 = D1(self.tmc_com)
+            self.vstop: VStop = VStop(self.tmc_com)
+            self.tzerowait: TZeroWait = TZeroWait(self.tmc_com)
+            self.xtarget: XTarget = XTarget(self.tmc_com)
+            self.vdcmin: VDcMin = VDcMin(self.tmc_com)
+            self.swmode: SWMode = SWMode(self.tmc_com)
+            self.rampstat: RampStat = RampStat(self.tmc_com)
             self.mscnt: MsCnt = MsCnt(self.tmc_com)
             self.chopconf: ChopConf = ChopConf(self.tmc_com)
-            self.pwmconf: PwmConf = PwmConf(self.tmc_com)
+            self.coolconf: CoolConf = CoolConf(self.tmc_com)
             self.drvstatus: DrvStatus = DrvStatus(self.tmc_com)
+            self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
+            self.loststeps: LostSteps = LostSteps(self.tmc_com)
 
             self.gstat.clear()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
 
+    def deinit(self):
+        """destructor"""
+        super().deinit()
+        StallGuard.deinit(self)
+
     # Register Access
     # ----------------------------
-    def get_iscale_analog(self) -> bool:
-        """return whether Vref (True) or 5V (False) is used for current scale
-
-        Returns:
-            en (bool): whether Vref (True) or 5V (False) is used for current scale
-        """
-        self.gconf.read()
-        return self.gconf.i_scale_analog
-
-    def set_iscale_analog(self, en: bool):
-        """sets Vref (True) or 5V (False) for current scale
-
-        Args:
-            en (bool): True=Vref, False=5V
-        """
-        self.gconf.modify("i_scale_analog", en)
-
-    def get_vsense(self) -> bool:
-        """returns which sense resistor voltage is used for current scaling
-        False: Low sensitivity, high sense resistor voltage
-        True: High sensitivity, low sense resistor voltage
-
-        Returns:
-            bool: whether high sensitivity should is used
-        """
-        self.chopconf.read()
-        return self.chopconf.vsense
-
-    def set_vsense(self, en: bool):
-        """sets which sense resistor voltage is used for current scaling
-        False: Low sensitivity, high sense resistor voltage
-        True: High sensitivity, low sense resistor voltage
-
-        Args:
-            en (bool):
-        """
-        self.chopconf.modify("vsense", en)
-
-    def get_internal_rsense(self) -> bool:
-        """returns which sense resistor voltage is used for current scaling
-        False: Operation with external sense resistors
-        True Internal sense resistors. Use current supplied into
-        VREF as reference for internal sense resistor. VREF
-        pin internally is driven to GND in this mode.
-
-        Returns:
-            bool: which sense resistor voltage is used
-        """
-        self.gconf.read()
-        return self.gconf.internal_rsense
-
-    def set_internal_rsense(self, en: bool):
-        """sets which sense resistor voltage is used for current scaling
-        False: Operation with external sense resistors
-        True: Internal sense resistors. Use current supplied into
-        VREF as reference for internal sense resistor. VREF
-        pin internally is driven to GND in this mode.
-
-        Args:
-        en (bool): which sense resistor voltage is used; true will propably destroy your tmc
-
-        """
-        if en:
-            self.tmc_logger.log("activated internal sense resistors.", Loglevel.INFO)
-            self.tmc_logger.log(
-                "VREF pin internally is driven to GND in this mode.", Loglevel.INFO
-            )
-            self.tmc_logger.log(
-                "This will most likely destroy your driver!!!", Loglevel.INFO
-            )
-            raise SystemExit
-
-        self.gconf.modify("internal_rsense", en)
-
     def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int):
         """sets the current scale (CS) for Running and Holding
         and the delay, when to be switched to Holding current
@@ -205,23 +159,20 @@ class Tmc220x(TmcXXXX):
 
         self.ihold_irun.write_check()
 
-    def _set_pdn_disable(self, pdn_disable: bool):
-        """disables PDN on the UART pin
-        False: PDN_UART controls standstill current reduction
-        True: PDN_UART input function disabled. Set this bit,
-        when using the UART interface!
+    def _set_global_scaler(self, scaler: int):
+        """sets the global scaler
 
         Args:
-            pdn_disable (bool): whether PDN should be disabled
+            scaler (int): global scaler value
         """
-        self.gconf.modify("pdn_disable", pdn_disable)
+        self.global_scaler.global_scaler = scaler
+        self.global_scaler.write_check()
 
     def set_current_peak(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
-        pdn_disable: bool = True,
     ) -> int:
         """sets the Peak current for the motor.
 
@@ -229,37 +180,39 @@ class Tmc220x(TmcXXXX):
             run_current (int): current during movement in mA
             hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
-            pdn_disable (bool): disables PDN on the UART pin (Default value = True)
+            run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
+            rref (int): reference resistor in kOhm (Default value = 12)
+
         Returns:
             int: theoretical final current in mA
         """
         self.tmc_logger.log(f"Desired peak current: {run_current} mA", Loglevel.DEBUG)
 
-        cs_irun = 0
-        rsense = 0.11
-        vfs = 0.325
+        rsense = 0.075  # ohm
+        vfs = 0.325  # V
 
-        self.set_iscale_analog(False)
+        current_fs = vfs / (rsense) * 1000  # in mA
 
-        def calc_cs_irun(run_current: int, rsense: float, vfs: float) -> float:
-            """calculates the current scale value for a given current"""
-            return 32.0 * run_current / 1000.0 * (rsense + 0.02) / vfs - 1
+        self.tmc_logger.log(
+            f"current_fs: {current_fs:.0f} mA | {current_fs/1000:.1f} A", Loglevel.DEBUG
+        )
 
-        def calc_run_current(cs_irun: float, rsense: float, vfs: float) -> float:
-            """calculates the current for a given current scale value"""
-            return (cs_irun + 1) / 32.0 * vfs / (rsense + 0.02) * 1000
+        # 256 == 0  -> max current
+        global_scaler = round(run_current / current_fs * 256)
 
-        cs_irun = calc_cs_irun(run_current, rsense, vfs)
+        global_scaler = min(global_scaler, 256)
+        global_scaler = max(global_scaler, 0)
 
-        # If Current Scale is too low, turn on high sensitivity VSsense and calculate again
-        if cs_irun < 16:
-            self.tmc_logger.log("CS too low; switching to VSense True", Loglevel.INFO)
-            vfs = 0.180
-            cs_irun = calc_cs_irun(run_current, rsense, vfs)
-            self.set_vsense(True)
-        else:  # If CS >= 16, turn off high_senser
-            self.tmc_logger.log("CS in range; using VSense False", Loglevel.INFO)
-            self.set_vsense(False)
+        self.tmc_logger.log(f"global_scaler: {global_scaler}", Loglevel.DEBUG)
+        self._set_global_scaler(global_scaler)
+
+        ct_current_ma = round(current_fs * global_scaler / 256)
+        self.tmc_logger.log(
+            f"Calculated theoretical peak current after gscaler: {ct_current_ma} mA",
+            Loglevel.DEBUG,
+        )
+
+        cs_irun = round(run_current / ct_current_ma * 31)
 
         cs_irun = min(cs_irun, 31)
         cs_irun = max(cs_irun, 0)
@@ -270,29 +223,23 @@ class Tmc220x(TmcXXXX):
         cs_ihold = round(cs_ihold)
         hold_current_delay = round(hold_current_delay)
 
-        self.tmc_logger.log(f"cs_irun: {cs_irun}", Loglevel.INFO)
-        self.tmc_logger.log(f"CS_IHold: {cs_ihold}", Loglevel.INFO)
-        self.tmc_logger.log(f"Delay: {hold_current_delay}", Loglevel.INFO)
-
-        # return (float)(CS+1)/32.0 * (vsense() ? 0.180 : 0.325)/(rsense+0.02) / 1.41421 * 1000;
-        run_current_actual = calc_run_current(cs_irun, rsense, vfs)
-        self.tmc_logger.log(
-            f"Calculated theoretical peak current after gscaler: {run_current_actual} mA",
-            Loglevel.DEBUG,
-        )
+        self.tmc_logger.log(f"CS_IRun: {cs_irun}", Loglevel.DEBUG)
+        self.tmc_logger.log(f"CS_IHold: {cs_ihold}", Loglevel.DEBUG)
+        self.tmc_logger.log(f"IHold_Delay: {hold_current_delay}", Loglevel.DEBUG)
 
         self._set_irun_ihold(cs_ihold, cs_irun, hold_current_delay)
 
-        self._set_pdn_disable(pdn_disable)
-
-        return round(run_current_actual)
+        ct_current_ma = round(ct_current_ma * cs_irun / 31)
+        self.tmc_logger.log(
+            f"Calculated theoretical final current: {ct_current_ma} mA", Loglevel.INFO
+        )
+        return ct_current_ma
 
     def set_current_rms(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
-        pdn_disable: bool = True,
     ) -> int:
         """sets the RMS current for the motor.
 
@@ -300,7 +247,6 @@ class Tmc220x(TmcXXXX):
             run_current (int): current during movement in mA
             hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
-            pdn_disable (bool): disables PDN on the UART pin (Default value = True)
 
         Returns:
             int: theoretical final current in mA
@@ -309,7 +255,6 @@ class Tmc220x(TmcXXXX):
             round(run_current * 1.41421),
             hold_current_multiplier,
             hold_current_delay,
-            pdn_disable,
         )
         return round(peak_current / 1.41421)
 
@@ -320,7 +265,7 @@ class Tmc220x(TmcXXXX):
             bool: True = spreadcycle; False = stealthchop
         """
         self.gconf.read()
-        return self.gconf.en_spreadcycle
+        return not self.gconf.en_pwm_mode
 
     def set_spreadcycle(self, en: bool):
         """enables spreadcycle (1) or stealthchop (0)
@@ -329,7 +274,7 @@ class Tmc220x(TmcXXXX):
         en (bool): true to enable spreadcycle; false to enable stealthchop
 
         """
-        self.gconf.modify("en_spreadcycle", en)
+        self.gconf.modify("en_pwm_mode", not en)
 
     def set_microstepping_resolution(self, mres: int):
         """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
@@ -343,18 +288,6 @@ class Tmc220x(TmcXXXX):
         self.chopconf.read()
         self.chopconf.mres_ms = mres
         self.chopconf.write_check()
-
-        self.set_mstep_resolution_reg_select(True)
-
-    def set_mstep_resolution_reg_select(self, en: bool):
-        """sets the register bit "mstep_reg_select" to 1 or 0 depending to the given value.
-        this is needed to set the microstep resolution via UART
-        this method is called by "set_microstepping_resolution"
-
-        Args:
-            en (bool): true to set µstep resolution via UART
-        """
-        self.gconf.modify("mstep_reg_select", en)
 
     def get_interface_transmission_counter(self) -> int:
         """reads the interface transmission counter from the tmc register
@@ -378,23 +311,21 @@ class Tmc220x(TmcXXXX):
         self.tstep.read()
         return self.tstep.tstep
 
-    def set_tpwmthrs(self, tpwmthrs: int):
-        """sets the current tpwmthrs
+    # TMC5160 methods
+    # ----------------------------
+    def set_stallguard_callback(
+        self, pin_stallguard, threshold, callback, min_speed=100
+    ):
+        """set a function to call back, when the driver detects a stall
+        via stallguard
+        high value on the diag pin can also mean a driver error
 
         Args:
-            tpwmthrs (int): value for tpwmthrs
+            pin_stallguard (int): pin needs to be connected to DIAG
+            threshold (int): value for SGTHRS
+            callback (func): will be called on StallGuard trigger
+            min_speed (int): min speed [steps/s] for StallGuard (Default value = 100)
         """
-        self.tpwmthrs.tpwmthrs = tpwmthrs
-        self.tpwmthrs.write_check()
-
-    def set_vactual(self, vactual: int):
-        """sets the register bit "VACTUAL" to to a given value
-        VACTUAL allows moving the motor by UART control.
-        It gives the motor velocity in +-(2^23)-1 [μsteps / t]
-        0: Normal operation. Driver reacts to STEP input
-
-        Args:
-            vactual (int): value for VACTUAL
-        """
-        self.vactual.vactual = vactual
-        self.vactual.write_check()
+        super().set_stallguard_callback(pin_stallguard, threshold, callback, min_speed)
+        self.gconf.modify("diag0_stall", 1)
+        self.gconf.modify("diag0_pushpull", 1)

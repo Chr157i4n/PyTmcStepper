@@ -6,8 +6,9 @@ Motion Control base module
 
 from enum import IntEnum
 from abc import abstractmethod
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from ..reg._tmc_reg import TmcReg
+from .._tmc_exceptions import TmcMotionControlException
 
 
 class Direction(IntEnum):
@@ -207,7 +208,7 @@ class TmcMotionControl:
         """
         self._get_register_callback = callback
 
-    def get_register(self, name: str) -> TmcReg | None:
+    def get_register(self, name: str):
         """Get register by name from parent TMC class
 
         Args:
@@ -216,9 +217,11 @@ class TmcMotionControl:
         Returns:
             Register object or None if callback not set
         """
-        if self._get_register_callback is not None:
-            return self._get_register_callback(name)
-        return None
+        if self._get_register_callback is None:
+            raise TmcMotionControlException(
+                "Get register callback not set in motion control"
+            )
+        return self._get_register_callback(name)
 
     @abstractmethod
     def make_a_step(self):

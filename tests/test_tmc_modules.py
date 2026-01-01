@@ -9,8 +9,8 @@ from unittest import mock
 from src.tmc_driver.tmc_2208 import *
 from src.tmc_driver.tmc_2209 import *
 from src.tmc_driver.tmc_2240 import *
+from src.tmc_driver.tmc_5160 import *
 
-# from src.tmc_driver.com._tmc_com_spi import *
 from src.tmc_driver.com._tmc_com_uart import *
 from src.tmc_driver.com._tmc_com_uart_base import compute_crc8_atm
 
@@ -63,6 +63,7 @@ class _FakeSerial:
     def reset_input_buffer(self):
         """Reset input buffer"""
 
+
 class _FakeSpi:
     """Fake SPI object for compatibility with base class"""
 
@@ -87,10 +88,11 @@ class _FakeSpi:
         rtn = [0] * len(data)
         return rtn
 
+
 class TestTMCModules(unittest.TestCase):
     """TestTMCMove"""
 
-    DRIVER: list[TmcXXXX] = [Tmc2208, Tmc2209, Tmc2240]
+    DRIVER: list[TmcXXXX] = [Tmc2208, Tmc2209, Tmc2240, Tmc5160]
     EC: list[TmcEnableControl] = [TmcEnableControlPin(3), TmcEnableControlToff()]
     MC: list[TmcMotionControl] = [
         TmcMotionControlStepDir(1, 2),
@@ -169,6 +171,50 @@ class TestTMCModules(unittest.TestCase):
                                 instance.run_to_position_steps(10)
 
                                 instance.deinit()
+
+        for driver in self.DRIVER:
+            with self.subTest(
+                driver=driver.__name__,
+                ec=TmcEnableControlPin.__name__,
+                mc=TmcMotionControlStepDir.__name__,
+                com=None,
+            ):
+                instance = driver(
+                    TmcEnableControlPin(3),
+                    TmcMotionControlStepDir(1, 2),
+                    None,
+                )
+                self.assertIsInstance(instance, driver)
+                self.assertIsInstance(instance.tmc_ec, TmcEnableControlPin)
+                self.assertIsInstance(instance.tmc_mc, TmcMotionControlStepDir)
+                self.assertEqual(instance.tmc_com, None)
+
+                instance.set_motor_enabled(True)
+                instance.set_motor_enabled(False)
+
+                instance.run_to_position_steps(10)
+
+                instance.deinit()
+
+            with self.subTest(
+                driver=TmcStepperDriver.__name__,
+                ec=TmcEnableControlPin.__name__,
+                mc=TmcMotionControlStepDir.__name__,
+            ):
+                instance = TmcStepperDriver(
+                    TmcEnableControlPin(3),
+                    TmcMotionControlStepDir(1, 2),
+                )
+                self.assertIsInstance(instance, TmcStepperDriver)
+                self.assertIsInstance(instance.tmc_ec, TmcEnableControlPin)
+                self.assertIsInstance(instance.tmc_mc, TmcMotionControlStepDir)
+
+                instance.set_motor_enabled(True)
+                instance.set_motor_enabled(False)
+
+                instance.run_to_position_steps(10)
+
+                instance.deinit()
 
 
 if __name__ == "__main__":

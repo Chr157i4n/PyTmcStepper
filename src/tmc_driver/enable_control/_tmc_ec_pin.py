@@ -5,7 +5,7 @@ Enable Control base module
 from ._tmc_ec import TmcEnableControl
 from ..tmc_gpio import Gpio, GpioMode
 from .. import tmc_gpio
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 
 
 class TmcEnableControlPin(TmcEnableControl):

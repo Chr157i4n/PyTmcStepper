@@ -4,8 +4,7 @@ test for _tmc_com_spi.py
 
 import unittest
 from unittest import mock
-from src.tmc_driver._tmc_logger import *
-from src.tmc_driver.com._tmc_com_spi import *
+from src.tmc_driver.com._tmc_com_spi import TmcComSpi
 
 
 class TestTmcComSpi(unittest.TestCase):

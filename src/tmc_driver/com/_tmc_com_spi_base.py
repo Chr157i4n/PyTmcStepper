@@ -9,14 +9,7 @@ This class contains no hardware-specific imports (no spidev, no pyftdi)
 from abc import abstractmethod
 from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
-
-
-class IoinStub(TmcReg):
-    """IOIN Register Stub"""
-
-    # pylint: disable=too-few-public-methods
-
-    version: int
+from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 class TmcComSpiBase(TmcCom):
@@ -154,9 +147,7 @@ class TmcComSpiBase(TmcCom):
         Raises:
             TmcComException: if TMC register IOIN not available
         """
-        ioin: IoinStub = self.get_register("ioin")  # type: ignore
-        if ioin is None:
-            raise TmcComException("TMC register IOIN not available")
+        ioin: tmc_shared_reg.Ioin = self.get_register("ioin")  # type: ignore
         data, flags = ioin.read()
         del flags  # unused
 

@@ -5,23 +5,8 @@
 Register module
 """
 
-from .._tmc_logger import TmcLogger, Loglevel
-
-
-class TmcComStub:
-    """Stub for type hints"""
-
-    def read_int(self, address: int):
-        """Stub for type hints"""
-        raise NotImplementedError
-
-    def write_reg(self, address: int, data: int):
-        """Stub for type hints"""
-        raise NotImplementedError
-
-    def write_reg_check(self, address: int, data: int):
-        """Stub for type hints"""
-        raise NotImplementedError
+from ..tmc_logger import TmcLogger, Loglevel
+from ..com._tmc_com import TmcCom
 
 
 class TmcRegField:
@@ -39,6 +24,7 @@ class TmcRegField:
         reg_class: type,
         conv_func,
         unit: str,
+        clear_value: int | None = None,
     ):
         """Constructor"""
         self.name = name
@@ -47,6 +33,7 @@ class TmcRegField:
         self.reg_class = reg_class
         self.conv_func = conv_func
         self.unit = unit
+        self.clear_value = clear_value
 
 
 class TmcReg:
@@ -55,7 +42,7 @@ class TmcReg:
     ADDR: int
     _REG_MAP: tuple[TmcRegField, ...] = ()
     _data_int: int
-    _flags: dict
+    _flags: dict | None
 
     @property
     def reg_map(self) -> tuple[TmcRegField, ...]:
@@ -68,14 +55,12 @@ class TmcReg:
         return self._data_int
 
     @property
-    def flags(self) -> dict:
+    def flags(self) -> dict | None:
         """returns the flags from the last read operation"""
         return self._flags
 
-    def __init__(self, tmc_com: TmcComStub):
+    def __init__(self, tmc_com: TmcCom):
         """Constructor"""
-        self._data_int: int
-        self._flags: dict
 
         self._tmc_com = tmc_com
 
@@ -105,22 +90,24 @@ class TmcReg:
 
         return data
 
+    def __str__(self) -> str:
+        """string representation of this register"""
+        out_string = f"{self.__class__.__name__.upper()} | {hex(self.ADDR)} | {bin(self._data_int)}\n"
+        for reg in self._REG_MAP:
+            value = getattr(self, reg.name)
+            out_string += f"  {reg.name:<20}{value:<10}"
+            if reg.conv_func is not None:
+                out_string += f"{getattr(self, reg.conv_func, '')} {reg.unit}"
+            out_string += "\n"
+        return out_string
+
     def log(self, logger: TmcLogger | None):
         """log this register"""
         if logger is None:
             return
-        logger.log(
-            f"{self.__class__.__name__.upper()} | {hex(self.ADDR)} | {bin(self._data_int)}"
-        )
+        logger.log(str(self), Loglevel.INFO)
 
-        for reg in self._REG_MAP:
-            value = getattr(self, reg.name)
-            log_string = f"  {reg.name:<20}{value:<10}"
-            if reg.conv_func is not None:
-                log_string += f"{getattr(self, reg.conv_func, '')} {reg.unit}"
-            logger.log(log_string, Loglevel.INFO)
-
-    def read(self):
+    def read(self) -> tuple[int, dict | None]:
         """read this register"""
         data, flags = self._tmc_com.read_int(self.ADDR)
 
@@ -162,3 +149,11 @@ class TmcReg:
         """
         self.read()
         return getattr(self, name)
+
+    def clear(self):
+        """clear this register (set to 0)"""
+        self._data_int = 0
+        for reg in self._REG_MAP:
+            if reg.clear_value is not None:
+                setattr(self, reg.name, reg.reg_class(reg.clear_value))
+        self.write_check()

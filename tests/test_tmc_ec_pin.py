@@ -3,9 +3,8 @@ test for _tmc_ec_pin.py
 """
 
 import unittest
-from unittest import mock
-from src.tmc_driver._tmc_logger import *
-from src.tmc_driver.enable_control._tmc_ec_pin import *
+from src.tmc_driver.tmc_logger import TmcLogger
+from src.tmc_driver.enable_control._tmc_ec_pin import TmcEnableControlPin
 
 
 class TestTmcEnableControlPin(unittest.TestCase):

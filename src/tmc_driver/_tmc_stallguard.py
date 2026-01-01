@@ -15,7 +15,7 @@ from ._tmc_stepperdriver import *
 from .com._tmc_com import TmcCom
 from .tmc_gpio import GpioPUD, GpioMode
 from . import tmc_gpio
-from ._tmc_logger import Loglevel
+from .tmc_logger import Loglevel
 from .reg import _tmc_shared_regs as tmc_shared_regs
 from . import _tmc_math as tmc_math
 from ._tmc_exceptions import (
@@ -39,9 +39,10 @@ class StallGuard:
     tmc_mc: TmcMotionControl
 
     coolconf: tmc_shared_regs.CoolConf
-    sgthrs: tmc_shared_regs.SGThrs
-    sgresult: tmc_shared_regs.SGResult
+    sgthrs: tmc_shared_regs.SgThrs
+    sgresult: tmc_shared_regs.SgResult
     tcoolthrs: tmc_shared_regs.TCoolThrs
+    drvstatus: tmc_shared_regs.DrvStatus
 
     @property
     def sg_callback(self):
@@ -246,3 +247,74 @@ class StallGuard:
                 cb_failure()
 
         return homing_succeeded
+
+    def test_stallguard_threshold(self, steps):
+        """test method for tuning stallguard threshold
+
+        run this function with your motor settings and your motor load
+        the function will determine the minimum stallguard results for each movement phase
+
+        Args:
+            steps (int):
+        """
+        if not isinstance(self.tmc_mc, TmcMotionControlStepDir):
+            raise TmcMotionControlException(
+                "tmc_mc is not of type TmcMotionControlStepDir; cannot test stallguard threshold"
+            )
+
+        self.tmc_logger.log("---", Loglevel.INFO)
+        self.tmc_logger.log("test_stallguard_threshold", Loglevel.INFO)
+
+        self.set_spreadcycle(False)
+
+        min_stallguard_result_accel = 512
+        min_stallguard_result_maxspeed = 512
+        min_stallguard_result_decel = 512
+
+        self.tmc_mc.run_to_position_steps_threaded(steps, MovementAbsRel.RELATIVE)
+
+        while self.tmc_mc.movement_phase != MovementPhase.STANDSTILL:
+            self.drvstatus.read()
+            stallguard_result = getattr(self.drvstatus, "sgresult", None)
+            if stallguard_result is None:
+                stallguard_result = self.get_stallguard_result()
+            stallguard_triggered = getattr(self.drvstatus, "stallguard", None)
+            cs_actual = getattr(self.drvstatus, "cs_actual", None)
+
+            self.tmc_logger.log(
+                f"{self.tmc_mc.movement_phase} | {stallguard_result} | {stallguard_triggered} | {cs_actual}",
+                Loglevel.INFO,
+            )
+
+            if (
+                self.tmc_mc.movement_phase == MovementPhase.ACCELERATING
+                and stallguard_result < min_stallguard_result_accel
+            ):
+                min_stallguard_result_accel = stallguard_result
+            if (
+                self.tmc_mc.movement_phase == MovementPhase.MAXSPEED
+                and stallguard_result < min_stallguard_result_maxspeed
+            ):
+                min_stallguard_result_maxspeed = stallguard_result
+            if (
+                self.tmc_mc.movement_phase == MovementPhase.DECELERATING
+                and stallguard_result < min_stallguard_result_decel
+            ):
+                min_stallguard_result_decel = stallguard_result
+
+        self.tmc_mc.wait_for_movement_finished_threaded()
+
+        self.tmc_logger.log("---", Loglevel.INFO)
+        self.tmc_logger.log(
+            f"min StallGuard result during accel: {min_stallguard_result_accel}",
+            Loglevel.INFO,
+        )
+        self.tmc_logger.log(
+            f"min StallGuard result during maxspeed: {min_stallguard_result_maxspeed}",
+            Loglevel.INFO,
+        )
+        self.tmc_logger.log(
+            f"min StallGuard result during decel: {min_stallguard_result_decel}",
+            Loglevel.INFO,
+        )
+        self.tmc_logger.log("---", Loglevel.INFO)

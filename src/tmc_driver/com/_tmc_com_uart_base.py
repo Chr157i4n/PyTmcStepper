@@ -9,22 +9,7 @@ This class contains no hardware-specific imports (no serial/pyserial)
 from abc import abstractmethod
 from ._tmc_com import *
 from .._tmc_exceptions import TmcComException, TmcDriverException
-
-
-class IfcntStub(TmcReg):
-    """IFCNT Register Stub"""
-
-    # pylint: disable=too-few-public-methods
-
-    ifcnt: int
-
-
-class IoinStub(TmcReg):
-    """IOIN Register Stub"""
-
-    # pylint: disable=too-few-public-methods
-
-    version: int
+from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 class TmcComUartBase(TmcCom):
@@ -224,9 +209,7 @@ class TmcComUartBase(TmcCom):
         Raises:
             TmcComException: if IFCNT register is not set or write fails after retries
         """
-        ifcnt: IfcntStub = self.get_register("ifcnt")  # type: ignore
-        if ifcnt is None:
-            raise TmcComException("TMC register IFCNT not available")
+        ifcnt: tmc_shared_reg.IfCnt = self.get_register("ifcnt")  # type: ignore
 
         ifcnt.read()
         ifcnt1 = ifcnt.ifcnt
@@ -268,9 +251,7 @@ class TmcComUartBase(TmcCom):
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
-        ioin: IoinStub = self.get_register("ioin")  # type: ignore
-        if ioin is None:
-            raise TmcComException("TMC register IOIN not available")
+        ioin: tmc_shared_reg.Ioin = self.get_register("ioin")  # type: ignore
 
         self.r_frame[1] = self.driver_address
         self.r_frame[2] = ioin.ADDR

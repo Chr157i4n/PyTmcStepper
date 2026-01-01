@@ -8,17 +8,15 @@
 """Tmc220X stepper driver module
 
 this module has two different functions:
-1. change setting in the TMC-driver via UART
-2. move the motor via STEP/DIR pins
+1. access register via tmc_com (UART, SPI)
+2. Enable motor control via tmc_ec (TOFF, PIN)
+3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
 """
 
-import time
-import types
-from .tmc_xxxx import *
+from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
-from .tmc_gpio import GpioPUD
 from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
@@ -26,9 +24,8 @@ from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
-from ._tmc_logger import *
+from .tmc_logger import *
 from .reg._tmc224x_reg import *
-from . import _tmc_math as tmc_math
 from ._tmc_exceptions import (
     TmcException,
     TmcComException,
@@ -36,7 +33,6 @@ from ._tmc_exceptions import (
     TmcEnableControlException,
     TmcDriverException,
 )
-from ._tmc_validation import validate_submodule
 
 
 class Tmc2240(TmcXXXX, StallGuard):
@@ -97,28 +93,29 @@ class Tmc2240(TmcXXXX, StallGuard):
 
         if self.tmc_com is not None:
 
-            self.gconf = GConf(self.tmc_com)
-            self.gstat = GStat(self.tmc_com)
-            self.ifcnt = IfCnt(self.tmc_com)
-            self.ioin = Ioin(self.tmc_com)
-            self.drv_conf = DrvConf(self.tmc_com)
-            self.global_scaler = GlobalScaler(self.tmc_com)
-            self.ihold_irun = IHoldIRun(self.tmc_com)
-            self.tpowerdown = TPowerDown(self.tmc_com)
-            self.tstep = TStep(self.tmc_com)
-            self.thigh = THigh(self.tmc_com)
-            self.adcv_supply_ain = ADCVSupplyAIN(self.tmc_com)
-            self.adc_temp = ADCTemp(self.tmc_com)
-            self.mscnt = MsCnt(self.tmc_com)
-            self.chopconf = ChopConf(self.tmc_com)
-            self.coolconf = CoolConf(self.tmc_com)
-            self.drvstatus = DrvStatus(self.tmc_com)
-            self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.sgthrs = SgThrs(self.tmc_com)
-            self.sgresult = SgResult(self.tmc_com)
-            self.sgind = SgInd(self.tmc_com)
+            self.gconf: GConf = GConf(self.tmc_com)
+            self.gstat: GStat = GStat(self.tmc_com)
+            self.ifcnt: IfCnt = IfCnt(self.tmc_com)
+            self.ioin: Ioin = Ioin(self.tmc_com)
+            self.drv_conf: DrvConf = DrvConf(self.tmc_com)
+            self.global_scaler: GlobalScaler = GlobalScaler(self.tmc_com)
+            self.ihold_irun: IHoldIRun = IHoldIRun(self.tmc_com)
+            self.tpowerdown: TPowerDown = TPowerDown(self.tmc_com)
+            self.tstep: TStep = TStep(self.tmc_com)
+            self.tpwmthrs: TPwmThrs = TPwmThrs(self.tmc_com)
+            self.thigh: THigh = THigh(self.tmc_com)
+            self.adcv_supply_ain: ADCVSupplyAIN = ADCVSupplyAIN(self.tmc_com)
+            self.adc_temp: ADCTemp = ADCTemp(self.tmc_com)
+            self.mscnt: MsCnt = MsCnt(self.tmc_com)
+            self.chopconf: ChopConf = ChopConf(self.tmc_com)
+            self.coolconf: CoolConf = CoolConf(self.tmc_com)
+            self.drvstatus: DrvStatus = DrvStatus(self.tmc_com)
+            self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
+            self.sgthrs: SgThrs = SgThrs(self.tmc_com)
+            self.sgresult: SgResult = SgResult(self.tmc_com)
+            self.sgind: SgInd = SgInd(self.tmc_com)
 
-            self.clear_gstat()
+            self.gstat.clear()
             if self.tmc_mc is not None:
                 self.read_steps_per_rev()
             self.tmc_com.flush_com_buffer()
@@ -128,85 +125,8 @@ class Tmc2240(TmcXXXX, StallGuard):
         super().deinit()
         StallGuard.deinit(self)
 
-    # Tmc224x methods
+    # Register Access
     # ----------------------------
-    def read_steps_per_rev(self) -> int:
-        """returns how many steps are needed for one revolution.
-        this reads the value from the tmc driver.
-
-        Returns:
-            int: Steps per revolution
-        """
-        self.read_microstepping_resolution()
-        return self.tmc_mc.steps_per_rev
-
-    def read_drv_status(self) -> DrvStatus:
-        """read the register Adress "DRV_STATUS" and logs the reg valuess
-
-        Returns:
-            DRV_STATUS Register instance
-        """
-        self.drvstatus.read()
-        self.drvstatus.log(self.tmc_logger)
-        return self.drvstatus
-
-    def read_gconf(self) -> GConf:
-        """read the register Adress "GCONF" and logs the reg values
-
-        Returns:
-            GCONF Register instance
-        """
-        self.gconf.read()
-        self.gconf.log(self.tmc_logger)
-        return self.gconf
-
-    def read_gstat(self) -> GStat:
-        """read the register Adress "GSTAT" and logs the reg values
-
-        Returns:
-            GSTAT Register instance
-        """
-        self.gstat.read()
-        self.gstat.log(self.tmc_logger)
-        return self.gstat
-
-    def read_ioin(self) -> Ioin:
-        """read the register Adress "IOIN" and logs the reg values
-
-        Returns:
-            IOIN Register instance
-        """
-        self.ioin.read()
-        self.ioin.log(self.tmc_logger)
-        return self.ioin
-
-    def read_chopconf(self) -> ChopConf:
-        """read the register Adress "CHOPCONF" and logs the reg values
-
-        Returns:
-            CHOPCONF Register instance
-        """
-        self.chopconf.read()
-        self.chopconf.log(self.tmc_logger)
-        return self.chopconf
-
-    def get_direction_reg(self) -> bool:
-        """returns the motor shaft direction: False = CCW; True = CW
-
-        Returns:
-            bool: motor shaft direction: False = CCW; True = CW
-        """
-        self.gconf.read()
-        return self.gconf.shaft
-
-    def set_direction_reg(self, direction: bool):
-        """sets the motor shaft direction to the given value: False = CCW; True = CW
-
-        Args:
-            direction (bool): direction of the motor False = CCW; True = CW
-        """
-        self.gconf.modify("shaft", direction)
-
     def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int, irundelay: int):
         """sets the current scale (CS) for Running and Holding
         and the delay, when to be switched to Holding current
@@ -249,14 +169,14 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.drv_conf.current_range = current_range
         self.drv_conf.modify("current_range", current_range)
 
-    def set_current(
+    def set_current_peak(
         self,
         run_current: int,
         hold_current_multiplier: float = 0.5,
         hold_current_delay: int = 10,
         run_current_delay: int = 0,
         rref: int = 12,
-    ):
+    ) -> int:
         """sets the Peak current for the motor.
 
         Args:
@@ -269,7 +189,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         Returns:
             int: theoretical final current in mA
         """
-        self.tmc_logger.log(f"Desired current: {run_current} mA", Loglevel.DEBUG)
+        self.tmc_logger.log(f"Desired peak current: {run_current} mA", Loglevel.DEBUG)
 
         K_IFS_TABLE = [11.75, 24, 36, 36]  # A*kOhm
         current_fs_table = [k_ifs / rref * 1000 for k_ifs in K_IFS_TABLE]
@@ -298,7 +218,7 @@ class Tmc2240(TmcXXXX, StallGuard):
 
         ct_current_ma = round(current_fs * global_scaler / 256)
         self.tmc_logger.log(
-            f"Calculated theoretical current after gscaler: {ct_current_ma} mA",
+            f"Calculated theoretical peak current after gscaler: {ct_current_ma} mA",
             Loglevel.DEBUG,
         )
 
@@ -327,6 +247,35 @@ class Tmc2240(TmcXXXX, StallGuard):
         )
         return ct_current_ma
 
+    def set_current_rms(
+        self,
+        run_current: int,
+        hold_current_multiplier: float = 0.5,
+        hold_current_delay: int = 10,
+        run_current_delay: int = 0,
+        rref: int = 12,
+    ) -> int:
+        """sets the RMS current for the motor.
+
+        Args:
+            run_current (int): current during movement in mA
+            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
+            run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
+            rref (int): reference resistor in kOhm (Default value = 12)
+
+        Returns:
+            int: theoretical final current in mA
+        """
+        peak_current = self.set_current_peak(
+            round(run_current * 1.41421),
+            hold_current_multiplier,
+            hold_current_delay,
+            run_current_delay,
+            rref,
+        )
+        return round(peak_current / 1.41421)
+
     def get_spreadcycle(self) -> bool:
         """reads spreadcycle
 
@@ -344,64 +293,6 @@ class Tmc2240(TmcXXXX, StallGuard):
 
         """
         self.gconf.modify("en_pwm_mode", not en)
-
-    def get_interpolation(self) -> bool:
-        """return whether the tmc inbuilt interpolation is active
-
-        Returns:
-            en (bool): true if internal µstep interpolation is enabled
-        """
-        self.chopconf.read()
-        return self.chopconf.intpol
-
-    def set_interpolation(self, en: bool):
-        """enables the tmc inbuilt interpolation of the steps to 256 µsteps
-
-        Args:
-            en (bool): true to enable internal µstep interpolation
-        """
-        self.chopconf.modify("intpol", en)
-
-    def get_toff(self) -> int:
-        """returns the TOFF register value
-
-        Returns:
-            int: TOFF register value
-        """
-        self.chopconf.read()
-        return self.chopconf.toff
-
-    def set_toff(self, toff: int):
-        """Sets TOFF register to value
-
-        Args:
-            toff (uint8_t): value of toff (must be a four-bit value)
-        """
-        self.chopconf.modify("toff", toff)
-
-    def read_microstepping_resolution(self) -> int:
-        """returns the current native microstep resolution (1-256)
-        this reads the value from the driver register
-
-        Returns:
-            int: µstep resolution
-        """
-        self.chopconf.read()
-
-        mres = self.chopconf.mres_ms
-        if self.tmc_mc is not None:
-            self.tmc_mc.mres = mres
-
-        return mres
-
-    def get_microstepping_resolution(self) -> int:
-        """returns the current native microstep resolution (1-256)
-        this returns the cached value from this module
-
-        Returns:
-            int: µstep resolution
-        """
-        return self.tmc_mc.mres
 
     def set_microstepping_resolution(self, mres: int):
         """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
@@ -438,31 +329,6 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.tstep.read()
         return self.tstep.tstep
 
-    def get_microstep_counter(self) -> int:
-        """returns the current Microstep counter.
-        Indicates actual position in the microstep table for CUR_A
-
-        Returns:
-            int: current Microstep counter
-        """
-        self.mscnt.read()
-        return self.mscnt.mscnt
-
-    def get_microstep_counter_in_steps(self, offset: int = 0) -> int:
-        """returns the current Microstep counter.
-        Indicates actual position in the microstep table for CUR_A
-
-        Args:
-            offset (int): offset in steps (Default value = 0)
-
-        Returns:
-            step (int): current Microstep counter convertet to steps
-        """
-        step = (self.get_microstep_counter() - 64) * (self.tmc_mc.mres * 4) / 1024
-        step = (4 * self.tmc_mc.mres) - step - 1
-        step = round(step)
-        return step + offset
-
     def get_vsupply(self) -> float:
         """reads the ADC_VSUPPLY_AIN register
 
@@ -481,6 +347,8 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.adc_temp.read()
         return self.adc_temp.adc_temp_c
 
+    # TMC224x methods
+    # ----------------------------
     def set_stallguard_callback(
         self, pin_stallguard, threshold, callback, min_speed=100
     ):
@@ -497,74 +365,3 @@ class Tmc2240(TmcXXXX, StallGuard):
         super().set_stallguard_callback(pin_stallguard, threshold, callback, min_speed)
         self.gconf.modify("diag0_stall", 1)
         self.gconf.modify("diag0_pushpull", 1)
-
-    # Test methods
-    # ----------------------------
-    def test_stallguard_threshold(self, steps):
-        """test method for tuning stallguard threshold
-
-        run this function with your motor settings and your motor load
-        the function will determine the minimum stallguard results for each movement phase
-
-        Args:
-            steps (int):
-        """
-        if not isinstance(self.tmc_mc, TmcMotionControlStepDir):
-            raise TmcMotionControlException(
-                "tmc_mc is not of type TmcMotionControlStepDir; cannot test stallguard threshold"
-            )
-
-        self.tmc_logger.log("---", Loglevel.INFO)
-        self.tmc_logger.log("test_stallguard_threshold", Loglevel.INFO)
-
-        self.set_spreadcycle(False)
-
-        min_stallguard_result_accel = 512
-        min_stallguard_result_maxspeed = 512
-        min_stallguard_result_decel = 512
-
-        self.tmc_mc.run_to_position_steps_threaded(steps, MovementAbsRel.RELATIVE)
-
-        while self.tmc_mc.movement_phase != MovementPhase.STANDSTILL:
-            self.drvstatus.read()
-            stallguard_result = self.drvstatus.sgresult
-            stallguard_triggered = self.drvstatus.stallguard
-            cs_actual = self.drvstatus.cs_actual
-
-            self.tmc_logger.log(
-                f"{self.tmc_mc.movement_phase} | {stallguard_result} | {stallguard_triggered} | {cs_actual}",
-                Loglevel.INFO,
-            )
-
-            if (
-                self.tmc_mc.movement_phase == MovementPhase.ACCELERATING
-                and stallguard_result < min_stallguard_result_accel
-            ):
-                min_stallguard_result_accel = stallguard_result
-            if (
-                self.tmc_mc.movement_phase == MovementPhase.MAXSPEED
-                and stallguard_result < min_stallguard_result_maxspeed
-            ):
-                min_stallguard_result_maxspeed = stallguard_result
-            if (
-                self.tmc_mc.movement_phase == MovementPhase.DECELERATING
-                and stallguard_result < min_stallguard_result_decel
-            ):
-                min_stallguard_result_decel = stallguard_result
-
-        self.tmc_mc.wait_for_movement_finished_threaded()
-
-        self.tmc_logger.log("---", Loglevel.INFO)
-        self.tmc_logger.log(
-            f"min StallGuard result during accel: {min_stallguard_result_accel}",
-            Loglevel.INFO,
-        )
-        self.tmc_logger.log(
-            f"min StallGuard result during maxspeed: {min_stallguard_result_maxspeed}",
-            Loglevel.INFO,
-        )
-        self.tmc_logger.log(
-            f"min StallGuard result during decel: {min_stallguard_result_decel}",
-            Loglevel.INFO,
-        )
-        self.tmc_logger.log("---", Loglevel.INFO)

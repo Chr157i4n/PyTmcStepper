@@ -2,7 +2,13 @@
 # pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
-"""Tmc2209 stepper driver module"""
+"""Tmc2209 stepper driver module
+
+this module has two different functions:
+1. access register via tmc_com (UART, SPI)
+2. Enable motor control via tmc_ec (TOFF, PIN)
+3. move the motor via tmc_mc (STEP/DIR, STEP/REG, VACTUAL)
+"""
 
 from .tmc_220x import *
 from ._tmc_stallguard import StallGuard
@@ -58,82 +64,12 @@ class Tmc2209(Tmc220x, StallGuard):
         )
         StallGuard.__init__(self)
 
-        if tmc_com is not None:
-            self.tcoolthrs = TCoolThrs(self.tmc_com)
-            self.sgthrs = SGThrs(self.tmc_com)
-            self.sgresult = SGResult(self.tmc_com)
+        if self.tmc_com is not None:
+            self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
+            self.sgthrs: SgThrs = SgThrs(self.tmc_com)
+            self.sgresult: SgResult = SgResult(self.tmc_com)
 
     def deinit(self):
         """destructor"""
         super().deinit()
         StallGuard.deinit(self)
-
-    # Test methods
-    # ----------------------------
-    def test_stallguard_threshold(self, steps):
-        """test method for tuning stallguard threshold
-
-        run this function with your motor settings and your motor load
-        the function will determine the minimum stallguard results for each movement phase
-
-        Args:
-            steps (int):
-        """
-        if not isinstance(self.tmc_mc, TmcMotionControlStepDir):
-            raise TmcMotionControlException(
-                "tmc_mc is not of type TmcMotionControlStepDir; cannot test stallguard threshold"
-            )
-
-        self.tmc_logger.log("---", Loglevel.INFO)
-        self.tmc_logger.log("test_stallguard_threshold", Loglevel.INFO)
-
-        self.set_spreadcycle(False)
-
-        min_stallguard_result_accel = 512
-        min_stallguard_result_maxspeed = 512
-        min_stallguard_result_decel = 512
-
-        self.tmc_mc.run_to_position_steps_threaded(steps, MovementAbsRel.RELATIVE)
-
-        while self.tmc_mc.movement_phase != MovementPhase.STANDSTILL:
-            stallguard_result = self.get_stallguard_result()
-            self.drvstatus.read()
-            cs_actual = self.drvstatus.cs_actual
-
-            self.tmc_logger.log(
-                f"{self.tmc_mc.movement_phase} | {stallguard_result} | {cs_actual}",
-                Loglevel.INFO,
-            )
-
-            if (
-                self.tmc_mc.movement_phase == MovementPhase.ACCELERATING
-                and stallguard_result < min_stallguard_result_accel
-            ):
-                min_stallguard_result_accel = stallguard_result
-            if (
-                self.tmc_mc.movement_phase == MovementPhase.MAXSPEED
-                and stallguard_result < min_stallguard_result_maxspeed
-            ):
-                min_stallguard_result_maxspeed = stallguard_result
-            if (
-                self.tmc_mc.movement_phase == MovementPhase.DECELERATING
-                and stallguard_result < min_stallguard_result_decel
-            ):
-                min_stallguard_result_decel = stallguard_result
-
-        self.tmc_mc.wait_for_movement_finished_threaded()
-
-        self.tmc_logger.log("---", Loglevel.INFO)
-        self.tmc_logger.log(
-            f"min StallGuard result during accel: {min_stallguard_result_accel}",
-            Loglevel.INFO,
-        )
-        self.tmc_logger.log(
-            f"min StallGuard result during maxspeed: {min_stallguard_result_maxspeed}",
-            Loglevel.INFO,
-        )
-        self.tmc_logger.log(
-            f"min StallGuard result during decel: {min_stallguard_result_decel}",
-            Loglevel.INFO,
-        )
-        self.tmc_logger.log("---", Loglevel.INFO)
