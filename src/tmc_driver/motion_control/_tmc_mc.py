@@ -6,7 +6,7 @@ Motion Control base module
 
 from enum import IntEnum
 from abc import abstractmethod
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from ..reg._tmc_reg import TmcReg
 from .._tmc_exceptions import TmcMotionControlException
 

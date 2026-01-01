@@ -5,7 +5,7 @@
 Register module
 """
 
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from ..com._tmc_com import TmcCom
 
 

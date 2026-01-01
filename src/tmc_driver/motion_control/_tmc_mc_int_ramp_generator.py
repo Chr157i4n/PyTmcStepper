@@ -11,7 +11,7 @@ import time
 from enum import IntEnum
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
 from ..com._tmc_com import TmcCom
-from .._tmc_logger import Loglevel
+from ..tmc_logger import Loglevel
 from ..reg import _tmc5160_reg as tmc5160_reg
 
 # from .. import _tmc_math as tmc_math

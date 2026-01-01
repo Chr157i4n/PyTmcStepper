@@ -14,7 +14,7 @@ this module has two different functions:
 import time
 from abc import abstractmethod
 from ._tmc_stepperdriver import *
-from ._tmc_logger import Loglevel
+from .tmc_logger import Loglevel
 from .enable_control._tmc_ec import TmcEnableControl
 from .motion_control._tmc_mc import TmcMotionControl
 from .com._tmc_com import TmcCom

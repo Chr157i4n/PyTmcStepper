@@ -3,7 +3,7 @@ Enable Control base module
 """
 
 from abc import abstractmethod
-from .._tmc_logger import TmcLogger
+from ..tmc_logger import TmcLogger
 from .._tmc_exceptions import TmcEnableControlException
 
 

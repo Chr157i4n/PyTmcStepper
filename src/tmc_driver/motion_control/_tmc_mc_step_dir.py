@@ -17,7 +17,7 @@ from ._tmc_mc import (
     Direction,
     StopMode,
 )
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from ..tmc_gpio import Gpio, GpioMode
 from .. import tmc_gpio
 from .. import _tmc_math as tmc_math

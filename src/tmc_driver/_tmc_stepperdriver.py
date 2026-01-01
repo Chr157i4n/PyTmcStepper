@@ -25,7 +25,7 @@ from .enable_control._tmc_ec import TmcEnableControl
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from .motion_control._tmc_mc_step_dir import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
-from ._tmc_logger import *
+from .tmc_logger import *
 from . import _tmc_math as tmc_math
 
 
@@ -102,7 +102,7 @@ class TmcStepperDriver:
             and self.tmc_logger is not None
         ):
             self.tmc_logger.deinit()
-            self.tmc_logger = None
+            del self.tmc_logger
 
     # TmcEnableControl Wrapper
     # ----------------------------

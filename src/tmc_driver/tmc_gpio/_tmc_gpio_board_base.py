@@ -6,7 +6,7 @@ but require to import special GPIO module instead RPI.GPIO
 from enum import IntEnum
 from abc import abstractmethod
 import types
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 
 
 class Board(IntEnum):

@@ -21,7 +21,7 @@ from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
-from ._tmc_logger import *
+from .tmc_logger import Loglevel, TmcLogger
 from .reg._tmc220x_reg import *
 from ._tmc_exceptions import (
     TmcException,

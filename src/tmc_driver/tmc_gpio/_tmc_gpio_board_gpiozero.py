@@ -26,7 +26,7 @@ class GpiozeroWrapper(BaseGPIOWrapper):
     def __init__(self):
         """constructor, imports gpiozero"""
         self._gpios: list[GPIODevice | None] = [None] * 200
-        self._gpios_pwm: list[GPIODevice | None] = [None] * 200
+        self._gpios_pwm: list[PWMOutputDevice | None] = [None] * 200
         dependencies_logger.log("using gpiozero for GPIO control", Loglevel.INFO)
 
     def init(self, gpio_mode=None):
@@ -84,7 +84,8 @@ class GpiozeroWrapper(BaseGPIOWrapper):
 
     def gpio_pwm_set_frequency(self, pin: int, frequency: int):
         """set PWM frequency"""
-        self._gpios_pwm[pin].frequency = frequency
+        if self._gpios_pwm[pin] is not None:
+            self._gpios_pwm[pin].frequency = frequency
 
     def gpio_pwm_set_duty_cycle(self, pin: int, duty_cycle: int):
         """set PWM duty cycle

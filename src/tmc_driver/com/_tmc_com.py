@@ -6,7 +6,7 @@ TmcCom stepper driver communication module
 import time
 import struct
 from abc import abstractmethod
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from .._tmc_exceptions import TmcComException
 
 

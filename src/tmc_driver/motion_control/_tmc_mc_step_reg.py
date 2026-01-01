@@ -5,7 +5,7 @@ STEP/REG Motion Control module
 from ._tmc_mc import Direction
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..com._tmc_com import TmcCom
-from .._tmc_logger import Loglevel
+from ..tmc_logger import Loglevel
 from .. import tmc_gpio
 from ..reg import _tmc_shared_regs as tmc_shared_reg
 

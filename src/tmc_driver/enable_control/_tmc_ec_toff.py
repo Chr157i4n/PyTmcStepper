@@ -4,7 +4,7 @@ Enable Control base module
 
 from ._tmc_ec import TmcEnableControl
 from ..com._tmc_com import TmcCom
-from .._tmc_logger import Loglevel
+from ..tmc_logger import Loglevel
 from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 

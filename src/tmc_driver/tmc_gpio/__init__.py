@@ -7,7 +7,7 @@ Automatically detects the board type and imports the appropriate GPIO library.
 
 import sys
 from enum import Enum, IntEnum
-from .._tmc_logger import TmcLogger, Loglevel
+from ..tmc_logger import TmcLogger, Loglevel
 from ._tmc_gpio_board_base import *
 
 

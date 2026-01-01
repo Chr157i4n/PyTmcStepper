@@ -25,7 +25,7 @@ from .motion_control._tmc_mc_int_ramp_generator import TmcMotionControlIntRampGe
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
-from ._tmc_logger import *
+from .tmc_logger import *
 from .reg._tmc5160_reg import *
 from ._tmc_exceptions import (
     TmcException,
