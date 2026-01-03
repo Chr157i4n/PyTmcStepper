@@ -42,6 +42,13 @@ pip3 install PyTmcStepper
 
     ```shell
     git clone https://github.com/Chr157i4n/PyTmcStepper
+    cd PyTmcStepper
+    ```
+
+- (optional) install the lib to get proper syntax highlighting and start the demoscripts from every path
+
+    ```shell
+    pip3 install -e .
     ```
 
 - install the required modules
