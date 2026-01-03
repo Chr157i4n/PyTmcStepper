@@ -35,15 +35,6 @@ tmc = Tmc2209(
 
 
 # -----------------------------------------------------------------------
-# set the loglevel of the libary (currently only printed)
-# set whether the movement should be relative or absolute
-# both optional
-# -----------------------------------------------------------------------
-tmc.tmc_logger.loglevel = Loglevel.DEBUG
-tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
-
-
-# -----------------------------------------------------------------------
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
 tmc.set_direction_reg(False)

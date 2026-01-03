@@ -17,7 +17,7 @@ print("---")
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
-tmc = Tmc2209(None, None, None)
+tmc = Tmc2209(None, None, None, loglevel=Loglevel.DEBUG)
 
 
 UART_PORT = {
@@ -29,15 +29,6 @@ tmc.tmc_com = TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0"))
 
 tmc.tmc_com.tmc_logger = tmc.tmc_logger
 tmc.tmc_com.init()
-
-
-# -----------------------------------------------------------------------
-# set the loglevel of the libary (currently only printed)
-# set whether the movement should be relative or absolute
-# both optional
-# -----------------------------------------------------------------------
-tmc.tmc_logger.loglevel = Loglevel.DEBUG
-tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 
 
 # -----------------------------------------------------------------------

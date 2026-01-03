@@ -25,16 +25,6 @@ tmc_gpio.tmc_gpio = tmc_gpio.FtdiWrapper(gpio_port)
 
 tmc = Tmc2240(None, None, TmcComSpiFtdi(spi_port), loglevel=Loglevel.DEBUG)
 
-
-# -----------------------------------------------------------------------
-# set the loglevel of the libary (currently only printed)
-# set whether the movement should be relative or absolute
-# both optional
-# -----------------------------------------------------------------------
-tmc.tmc_logger.loglevel = Loglevel.DEBUG
-tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
-
-
 # -----------------------------------------------------------------------
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
