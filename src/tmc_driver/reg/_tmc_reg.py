@@ -157,3 +157,14 @@ class TmcReg:
             if reg.clear_value is not None:
                 setattr(self, reg.name, reg.reg_class(reg.clear_value))
         self.write_check()
+
+    def clear_verify(self) -> bool:
+        """clear this register and verify that it was cleared"""
+        self.clear()
+        self.read()
+        for reg in self._REG_MAP:
+            if reg.clear_value is not None:
+                value = getattr(self, reg.name)
+                if int(value) != reg.reg_class(0):
+                    return False
+        return True
