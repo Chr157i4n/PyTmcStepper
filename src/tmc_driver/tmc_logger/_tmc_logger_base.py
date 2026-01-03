@@ -56,8 +56,8 @@ class TmcLoggerBase:
             loglevel (enum): level for which to log
             logprefix (string): new logprefix (name of the logger) (default: "TMCXXXX")
         """
-        self._logprefix = logprefix
-        self._loglevel = loglevel
+        self.logprefix = logprefix
+        self.loglevel = loglevel
 
     def __del__(self):
         """destructor"""
