@@ -109,6 +109,14 @@ class TmcXXXX(TmcStepperDriver):
         self.max_speed_fullstep = 100
         self.acceleration_fullstep = 100
 
+    def _init(self):
+        """initialization after registers are created"""
+        if self.tmc_com is not None:
+            self.gstat.clear()
+            if self.tmc_mc is not None:
+                self.read_steps_per_rev()
+            self.tmc_com.flush_com_buffer()
+
     def __del__(self):
         self.deinit()
 
