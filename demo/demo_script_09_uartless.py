@@ -1,13 +1,10 @@
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 test file for testing basic movement
 """
 
-import time
-
-try:
-    from src.tmc_driver.tmc_2209 import *
-except ModuleNotFoundError:
-    from tmc_driver.tmc_2209 import *
+from tmc_driver.tmc_2209 import *
 
 
 print("---")
@@ -19,29 +16,11 @@ print("---")
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
-if tmc_gpio.BOARD == Board.RASPBERRY_PI:
-    tmc = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlStepDir(16, 20),
-        loglevel=Loglevel.DEBUG,
-    )
-elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
-    tmc = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlStepDir(16, 20),
-        loglevel=Loglevel.DEBUG,
-    )
-elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
-    tmc = Tmc2209(
-        TmcEnableControlPin(13), TmcMotionControlStepDir(6, 5), loglevel=Loglevel.DEBUG
-    )
-else:
-    # just in case
-    tmc = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlStepDir(16, 20),
-        loglevel=Loglevel.DEBUG,
-    )
+tmc = Tmc2209(
+    TmcEnableControlPin(21),
+    TmcMotionControlStepDir(16, 20),
+    loglevel=Loglevel.DEBUG,
+)
 
 
 # -----------------------------------------------------------------------

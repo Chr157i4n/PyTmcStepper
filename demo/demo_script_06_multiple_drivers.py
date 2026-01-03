@@ -1,20 +1,11 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=unused-import
-# pylint: disable=broad-exception-raised
-# pylint: disable=no-else-raise
 """
 test file for testing multiple drivers via one UART connection
 """
 
-import time
-
-try:
-    from src.tmc_driver.tmc_2209 import *
-    from src.tmc_driver.com._tmc_com_uart import *
-except ModuleNotFoundError:
-    from tmc_driver.tmc_2209 import *
-    from tmc_driver.com._tmc_com_uart import *
+from tmc_driver.tmc_2209 import *
+from tmc_driver.com._tmc_com_uart import *
 
 
 print("---")
@@ -26,49 +17,25 @@ print("---")
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
-# Multiple driver not tested
-if tmc_gpio.BOARD == Board.RASPBERRY_PI:
-    tmc1 = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlStepDir(16, 20),
-        TmcComUart("/dev/serial0"),
-        driver_address=0,
-    )
-    tmc2 = Tmc2209(
-        TmcEnableControlPin(26),
-        TmcMotionControlStepDir(13, 19),
-        TmcComUart("/dev/serial0"),
-        driver_address=1,
-    )
-elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
-    tmc1 = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlStepDir(16, 20),
-        TmcComUart("/dev/ttyAMA0"),
-        driver_address=0,
-    )
-    tmc2 = Tmc2209(
-        TmcEnableControlPin(26),
-        TmcMotionControlStepDir(13, 19),
-        TmcComUart("/dev/ttyAMA0"),
-        driver_address=1,
-    )
-elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
-    raise Exception("Not tested for Nvidia Jetson, use with caution")
-else:
-    # just in case
-    tmc1 = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlStepDir(16, 20),
-        TmcComUart("/dev/serial0"),
-        driver_address=0,
-    )
-    tmc2 = Tmc2209(
-        TmcEnableControlPin(26),
-        TmcMotionControlStepDir(13, 19),
-        TmcComUart("/dev/serial0"),
-        driver_address=1,
-    )
+
+UART_PORT = {
+    Board.RASPBERRY_PI: "/dev/serial0",
+    Board.RASPBERRY_PI5: "/dev/ttyAMA0",
+    Board.NVIDIA_JETSON: "/dev/ttyTHS1",
+}
+
+tmc1 = Tmc2209(
+    TmcEnableControlPin(21),
+    TmcMotionControlStepDir(16, 20),
+    TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0")),
+    loglevel=Loglevel.DEBUG,
+)
+tmc2 = Tmc2209(
+    TmcEnableControlPin(26),
+    TmcMotionControlStepDir(13, 19),
+    TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0")),
+    loglevel=Loglevel.DEBUG,
+)
 
 
 # -----------------------------------------------------------------------
