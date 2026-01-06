@@ -136,7 +136,7 @@ SPI over FT232H | [TmcComSpiFtdi](src/tmc_driver/com/_tmc_com_spi_ftdi.py)  | TM
 
 ## Wiring
 
-![wiring diagram](docs/images/wiring_diagram.png)
+![wiring diagram](docs/images/wiring_tmc2209_rpi4.png)
 
 Pin TMC | Color     | connect to                    | Function
 --      | --        | --                            | --

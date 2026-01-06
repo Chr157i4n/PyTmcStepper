@@ -17,8 +17,8 @@ print("---")
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
 tmc = Tmc2209(
-    TmcEnableControlPin(21),
-    TmcMotionControlStepDir(15, 20),
+    TmcEnableControlPin(18),
+    TmcMotionControlStepDir(17, 16),
     TmcComUartMicroPython(1, 4, 5),
     loglevel=Loglevel.DEBUG,
 )
@@ -78,7 +78,7 @@ tmc.set_motor_enabled(True)
 # -----------------------------------------------------------------------
 
 result = tmc.do_homing(
-    diag_pin=16,
+    diag_pin=22,
     revolutions=-1,
     threshold=50,
 )
@@ -88,7 +88,7 @@ if result:
     tmc.current_pos_fullstep = 0  # reset position to 0
 
     result = tmc.do_homing(
-        diag_pin=16,
+        diag_pin=22,
         revolutions=1,
         threshold=50,
         cb_success=None,

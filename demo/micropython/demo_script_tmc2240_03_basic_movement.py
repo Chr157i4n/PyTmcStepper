@@ -17,8 +17,8 @@ print("---")
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
 tmc = Tmc2240(
-    TmcEnableControlPin(21),
-    TmcMotionControlStepDir(15, 20),
+    TmcEnableControlPin(18),
+    TmcMotionControlStepDir(17, 16),
     TmcComSpiMicroPython(spi_id=0, cs_pin=17, sck_pin=18, mosi_pin=19, miso_pin=16),
     loglevel=Loglevel.DEBUG,
 )
