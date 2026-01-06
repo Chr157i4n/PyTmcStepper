@@ -7,9 +7,9 @@
 
 \
 \
-This is a Python libary to drive a stepper motor with a Trinamic stepper driver and a single board computer like a Raspberry Pi.
+This is a Python library to drive a stepper motor with a Trinamic stepper driver and a single board computer like a Raspberry Pi.
 
-This code is still experimental, so use it on your own risk.
+This code is still experimental, so use it at your own risk.
 
 This library is programmed in pure Python. The performance of Python is not good enough to drive the motor with high speed.
 So if you move the motor with high speed using this library the motor will lose steps.
@@ -17,13 +17,13 @@ So if you move the motor with high speed using this library the motor will lose 
 Tested on a [Bigtreetech TMC2209 V1.2](https://github.com/bigtreetech/BIGTREETECH-Stepper-Motor-Driver/tree/master/TMC2209/V1.2) and [Bigtreetech TMC2209 V1.3](https://github.com/bigtreetech/BIGTREETECH-Stepper-Motor-Driver/tree/master/TMC2209/V1.3).
 
 It has a rSense of 110 mOhm and it uses one Pin (PDN_UART) for UART RX and TX.
-So the PDN_UART-Pin needs to be connected to the Raspberrry Pis RX-Pin directly and to the TX-Pin with an 1kOhm resistor.
+So the PDN_UART-Pin needs to be connected to the Raspberry Pis RX-Pin directly and to the TX-Pin with an 1kOhm resistor.
 You can read more about this in the datasheet from Trinamic.
 
 Because the TMC2209 uses one shared pin for transmit and receive in the UART communication line, the Raspberry Pi also receives what it sends.
 Well, the Pi receives 4 bytes from itself and 8 bytes from the driver. So the Pi receives a total of 12 bytes and only the last 8 are the reply, of which only 4 are data bytes.
 
-The Documentation of the TMC2209 can be found here:
+The documentation of the TMC2209 can be found here:
 [TMC2209 - Datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/TMC2209_datasheet_rev1.09.pdf)
 
 The code is also available on [PyPI](https://pypi.org/project/PyTmcStepper).
@@ -45,7 +45,7 @@ pip3 install PyTmcStepper
     cd PyTmcStepper
     ```
 
-- (optional) install the lib to get proper syntax highlighting and start the demoscripts from every path
+- (optional) install the lib to get proper syntax highlighting and start the demo scripts from every path
 
     ```shell
     pip3 install -e .
@@ -65,20 +65,20 @@ pip3 install PyTmcStepper
 
 ### Board Support
 
-The following table shows the supported boards and which libraries for GPIO access is beeing used for that board.
+The following table shows the supported boards and which libraries for GPIO access is being used for that board.
 
 Library     | Installation Parameter    | Boards
 ----------- | ------------------------- | -----------
 RPi.GPIO    | RASPBERRY_PI              | Pi4, Pi3 etc.
 gpiozero    | RASPBERRY_PI5             | Pi5
 Jetson.GPIO | NVIDIA_JETSON             | Nvidia Jetson
-pheriphery  | LUCKFOX_PICO              | Luckfox Pico
+periphery   | LUCKFOX_PICO              | Luckfox Pico
 OPi.GPIO    | ORANGE_PI                 | Orange Pi
 pyftdi      | -                         | Windows/Linux
 machine     | -                         | Pico, Pico2, ESP32, etc.
 
 Those libraries are needed for this library to work. You can either install the correct library yourself.
-You can also install the needed GPIO library by specifing the Installation Parameter while installing this library:
+You can also install the needed GPIO library by specifying the Installation Parameter while installing this library:
 
 ```shell
 pip3 install PyTmcStepper[RASPBERRY_PI]
@@ -97,7 +97,7 @@ TMC5160 | SPI/UART
 
 ## Submodules
 
-with V0.7 the code for enabling the motor current output and the code for controling the motion of the drivers
+with V0.7 the code for enabling the motor current output and the code for controlling the motion of the drivers
 is split into their own classes to be able to support the diverse methods.
 
 ### EnableControl
