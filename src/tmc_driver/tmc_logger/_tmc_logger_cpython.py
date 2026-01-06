@@ -50,7 +50,6 @@ class TmcLogger(TmcLoggerBase):
             handlers (list): list of logging handlers, see logging.handlers (default: None)
             formatter (logging.Formatter): formatter for the log messages (default: None)
         """
-        super().__init__(loglevel, logprefix)
 
         # Add our custom log levels to the logger
         for level in [Loglevel.ALL, Loglevel.MOVEMENT, Loglevel.NONE]:
@@ -73,6 +72,8 @@ class TmcLogger(TmcLoggerBase):
             self.logger.addHandler(handler)
 
         self.logger.propagate = True
+
+        super().__init__(loglevel, logprefix)
 
     def __del__(self):
         """destructor"""

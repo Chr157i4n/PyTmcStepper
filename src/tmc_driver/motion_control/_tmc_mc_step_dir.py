@@ -20,6 +20,7 @@ from ..tmc_logger import TmcLogger, Loglevel
 from ..tmc_gpio import Gpio, GpioMode
 from .. import tmc_gpio
 from .. import _tmc_math as tmc_math
+from .._tmc_exceptions import TmcMotionControlException
 from ..platform_utils import get_time_us
 
 
@@ -38,13 +39,13 @@ class TmcMotionControlStepDir(TmcMotionControl):
         if self._max_speed != speed:
             self._max_speed = speed
             if speed == 0.0:
-                self._cmin = 0.0
+                self._cmin = 0
             else:
-                self._cmin = 1000000.0 / speed
+                self._cmin = round(1000000.0 / speed)
             # Recompute _n from current speed and adjust speed if accelerating or cruising
             if self._n > 0:
-                self._n = (self._speed * self._speed) / (
-                    2.0 * self._acceleration
+                self._n = round(
+                    (self._speed * self._speed) / (2.0 * self._acceleration)
                 )  # Equation 16
                 self.compute_new_speed()
 
@@ -61,9 +62,11 @@ class TmcMotionControlStepDir(TmcMotionControl):
             return
 
         # Recompute _n per Equation 17
-        self._n = self._n * (self._acceleration / acceleration)
+        self._n = round(self._n * (self._acceleration / acceleration))
         # New c0 per Equation 7, with correction per Equation 15
-        self._c0 = 0.676 * math.sqrt(2.0 / acceleration) * 1000000.0  # Equation 15
+        self._c0 = round(
+            0.676 * math.sqrt(2.0 / acceleration) * 1000000.0
+        )  # Equation 15
         self._acceleration = acceleration
         self.compute_new_speed()
 
@@ -81,13 +84,8 @@ class TmcMotionControlStepDir(TmcMotionControl):
         if speed == 0.0:
             self._step_interval = 0
         else:
-            self._step_interval = abs(1000000.0 / speed)
-            if speed > 0:
-                tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, Gpio.HIGH)
-                self._tmc_logger.log("going CW", Loglevel.MOVEMENT)
-            else:
-                tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, Gpio.LOW)
-                self._tmc_logger.log("going CCW", Loglevel.MOVEMENT)
+            self._step_interval = round(abs(1000000.0 / speed))
+            self.set_direction(Direction.CW if speed > 0 else Direction.CCW)
 
         self._speed = speed
 
@@ -142,12 +140,12 @@ class TmcMotionControlStepDir(TmcMotionControl):
 
     def deinit(self):
         """destructor"""
-        if self._pin_step is not None:
+        if getattr(self, "_pin_step", None) is not None:
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_step)
-            self._pin_step = None
-        if self._pin_dir is not None:
+            del self._pin_step
+        if getattr(self, "_pin_dir", None) is not None and self._pin_dir is not None:
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_dir)
-            self._pin_dir = None
+            del self._pin_dir
 
     def make_a_step(self):
         """method that makes on step
@@ -171,6 +169,8 @@ class TmcMotionControlStepDir(TmcMotionControl):
         Args:
             direction (bool): motor shaft direction: False = CCW; True = CW
         """
+        if self._pin_dir is None:
+            return
         super().set_direction(direction)
         tmc_gpio.tmc_gpio.gpio_output(self._pin_dir, int(direction))
 
@@ -284,6 +284,8 @@ class TmcMotionControlStepDir(TmcMotionControl):
         Returns:
             enum: how the movement was finished
         """
+        if self._movement_thread is None:
+            raise TmcMotionControlException("No movement thread running.")
         self._movement_thread.join()
         return self._stop
 
@@ -312,8 +314,8 @@ class TmcMotionControlStepDir(TmcMotionControl):
         https://web.archive.org/web/20140705143928/http://fab.cba.mit.edu/classes/MIT/961.09/projects/i0/Stepper_Motor_Speed_Profile.pdf
         """
         distance_to = self.distance_to_go()  # +ve is clockwise from current location
-        steps_to_stop = (self._speed * self._speed) / (
-            2.0 * self._acceleration
+        steps_to_stop = round(
+            (self._speed * self._speed) / (2.0 * self._acceleration)
         )  # Equation 16
         if (distance_to == 0 and steps_to_stop <= 2) or (
             self._stop == StopMode.SOFTSTOP and steps_to_stop <= 1
@@ -373,8 +375,8 @@ class TmcMotionControlStepDir(TmcMotionControl):
             self._movement_phase = MovementPhase.ACCELERATING
         else:
             # Subsequent step. Works for accel (n is +_ve) and decel (n is -ve).
-            self._cn = self._cn - (
-                (2.0 * self._cn) / ((4.0 * self._n) + 1)
+            self._cn = round(
+                self._cn - ((2.0 * self._cn) / ((4.0 * self._n) + 1))
             )  # Equation 13
             self._cn = max(self._cn, self._cmin)
             if self._cn == self._cmin:

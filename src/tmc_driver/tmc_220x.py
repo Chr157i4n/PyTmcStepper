@@ -106,10 +106,7 @@ class Tmc220x(TmcXXXX):
             self.pwmconf: PwmConf = PwmConf(self.tmc_com)
             self.drvstatus: DrvStatus = DrvStatus(self.tmc_com)
 
-            self.gstat.clear()
-            if self.tmc_mc is not None:
-                self.read_steps_per_rev()
-            self.tmc_com.flush_com_buffer()
+        super()._init()
 
     # Register Access
     # ----------------------------

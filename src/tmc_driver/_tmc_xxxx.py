@@ -106,8 +106,17 @@ class TmcXXXX(TmcStepperDriver):
             if self.tmc_ec is not None:
                 self.tmc_ec.set_get_register_callback(self._get_register)
 
-        self.max_speed_fullstep = 100
-        self.acceleration_fullstep = 100
+        if getattr(self, "tmc_mc", None) is not None:
+            self.max_speed_fullstep = 100
+            self.acceleration_fullstep = 100
+
+    def _init(self):
+        """initialization after registers are created"""
+        if self.tmc_com is not None:
+            self.clear_gstat_verify()
+            if self.tmc_mc is not None:
+                self.read_steps_per_rev()
+            self.tmc_com.flush_com_buffer()
 
     def __del__(self):
         self.deinit()
@@ -121,6 +130,19 @@ class TmcXXXX(TmcStepperDriver):
 
     # Register Access
     # ----------------------------
+    def clear_gstat_verify(self):
+        """clears the GSTAT register and verifies that it was cleared"""
+        tries = 5
+        while True:
+            try:
+                self.gstat.clear_verify()
+                break
+            except TmcDriverException:
+                time.sleep(0.1)
+            tries -= 1
+            if tries <= 0:
+                raise TmcDriverException("Could not clear GSTAT register")
+
     def read_steps_per_rev(self) -> int:
         """returns how many steps are needed for one revolution.
         this reads the value from the tmc driver.

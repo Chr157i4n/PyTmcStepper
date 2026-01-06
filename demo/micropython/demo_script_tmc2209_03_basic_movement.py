@@ -1,3 +1,5 @@
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 test file for testing basic movement
 """
@@ -15,8 +17,8 @@ print("---")
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
 tmc = Tmc2209(
-    TmcEnableControlPin(21),
-    TmcMotionControlStepDir(15, 20),
+    TmcEnableControlPin(18),
+    TmcMotionControlStepDir(17, 16),
     TmcComUartMicroPython(1, 4, 5),
     loglevel=Loglevel.DEBUG,
 )

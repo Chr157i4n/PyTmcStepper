@@ -44,7 +44,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
 
     def run_to_position_steps(
-        self, steps, movement_abs_rel: MovementAbsRel = None
+        self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
         """runs the motor to a specific position
 
@@ -58,6 +58,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         """
         if tmc_gpio.tmc_gpio.__class__.__name__ == "GpiozeroWrapper":
             tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, False)
+            # TODO: check for a better solution for gpiozero
 
         return super().run_to_position_steps(steps, movement_abs_rel)
 
@@ -75,6 +76,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
 
         if tmc_gpio.tmc_gpio.__class__.__name__ == "GpiozeroWrapper":
             tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, True)
+            # TODO: check for a better solution for gpiozero
 
         if speed == 0:
             # stop movement

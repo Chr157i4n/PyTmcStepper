@@ -1,15 +1,12 @@
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 test file for testing the VActual
 """
 
 import time
-
-try:
-    from src.tmc_driver.tmc_2209 import *
-    from src.tmc_driver.com._tmc_com_uart import *
-except ModuleNotFoundError:
-    from tmc_driver.tmc_2209 import *
-    from tmc_driver.com._tmc_com_uart import *
+from tmc_driver.tmc_2209 import *
+from tmc_driver.com._tmc_com_uart import *
 
 
 print("---")
@@ -21,35 +18,18 @@ print("---")
 # initiate the Tmc2209 class
 # use your pin for pin_en here
 # -----------------------------------------------------------------------
-if tmc_gpio.BOARD == Board.RASPBERRY_PI:
-    tmc = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlVActual(),
-        TmcComUart("/dev/serial0"),
-        loglevel=Loglevel.DEBUG,
-    )
-elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
-    tmc = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlVActual(),
-        TmcComUart("/dev/ttyAMA0"),
-        loglevel=Loglevel.DEBUG,
-    )
-elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
-    tmc = Tmc2209(
-        TmcEnableControlPin(13),
-        TmcMotionControlVActual(),
-        TmcComUart("/dev/ttyTHS1"),
-        loglevel=Loglevel.DEBUG,
-    )
-else:
-    # just in case
-    tmc = Tmc2209(
-        TmcEnableControlPin(21),
-        TmcMotionControlVActual(),
-        TmcComUart("/dev/serial0"),
-        loglevel=Loglevel.DEBUG,
-    )
+UART_PORT = {
+    Board.RASPBERRY_PI: "/dev/serial0",
+    Board.RASPBERRY_PI5: "/dev/ttyAMA0",
+    Board.NVIDIA_JETSON: "/dev/ttyTHS1",
+}
+
+tmc = Tmc2209(
+    TmcEnableControlPin(21),
+    TmcMotionControlStepDir(16, 20),
+    TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0")),
+    loglevel=Loglevel.DEBUG,
+)
 
 
 # -----------------------------------------------------------------------

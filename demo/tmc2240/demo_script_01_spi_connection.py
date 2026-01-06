@@ -1,15 +1,11 @@
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
 test file for testing the UART connection
 """
 
-import time
-
-try:
-    from src.tmc_driver.tmc_2240 import *
-    from src.tmc_driver.com._tmc_com_spi import *
-except ModuleNotFoundError:
-    from tmc_driver.tmc_2240 import *
-    from tmc_driver.com._tmc_com_spi import *
+from tmc_driver.tmc_2240 import *
+from tmc_driver.com._tmc_com_spi import *
 
 
 print("---")
@@ -17,22 +13,16 @@ print("SCRIPT START")
 print("---")
 
 
-tmc: Tmc2240 = None
-
-
 # -----------------------------------------------------------------------
 # initiate the Tmc2240 class
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
-if tmc_gpio.BOARD == Board.RASPBERRY_PI:
-    tmc = Tmc2240(None, None, TmcComSpi(0, 0), loglevel=Loglevel.DEBUG)
-elif tmc_gpio.BOARD == Board.RASPBERRY_PI5:
-    tmc = Tmc2240(None, None, TmcComSpi(0, 0), loglevel=Loglevel.DEBUG)
-elif tmc_gpio.BOARD == Board.NVIDIA_JETSON:
-    tmc = Tmc2240(None, None, TmcComSpi(0, 0), loglevel=Loglevel.DEBUG)
-else:
-    # just in case
-    tmc = Tmc2240(None, None, TmcComSpi(0, 0), loglevel=Loglevel.DEBUG)
+tmc = Tmc2240(
+    None,
+    None,
+    TmcComSpi(0, 0),
+    loglevel=Loglevel.DEBUG,
+)
 
 
 # -----------------------------------------------------------------------

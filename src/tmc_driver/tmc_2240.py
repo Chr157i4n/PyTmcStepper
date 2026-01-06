@@ -115,10 +115,7 @@ class Tmc2240(TmcXXXX, StallGuard):
             self.sgresult: SgResult = SgResult(self.tmc_com)
             self.sgind: SgInd = SgInd(self.tmc_com)
 
-            self.gstat.clear()
-            if self.tmc_mc is not None:
-                self.read_steps_per_rev()
-            self.tmc_com.flush_com_buffer()
+        super()._init()
 
     def deinit(self):
         """destructor"""

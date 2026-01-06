@@ -1,5 +1,14 @@
 # Changelog
 
+## version 0.12.0
+
+- updated wiring diagrams
+- moved some more code into TmcXXXX class
+- added retry for clearing gstat at init
+- added more typehints
+- cleaned up demo scripts
+- fixed logger initialization parameter not being used correctly
+
 ## version 0.11.0
 
 - added support for TMC5160

@@ -129,10 +129,7 @@ class Tmc5160(TmcXXXX, StallGuard):
             self.tcoolthrs: TCoolThrs = TCoolThrs(self.tmc_com)
             self.loststeps: LostSteps = LostSteps(self.tmc_com)
 
-            self.gstat.clear()
-            if self.tmc_mc is not None:
-                self.read_steps_per_rev()
-            self.tmc_com.flush_com_buffer()
+        super()._init()
 
     def deinit(self):
         """destructor"""

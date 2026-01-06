@@ -44,6 +44,17 @@ class StallGuard:
     tcoolthrs: tmc_shared_regs.TCoolThrs
     drvstatus: tmc_shared_regs.DrvStatus
 
+    # Stub methods - implemented by the driver class (Tmc2209, Tmc2240, Tmc5160)
+    def set_spreadcycle(self, en: bool) -> None:
+        """Set spreadcycle mode. Implemented by driver class."""
+        raise NotImplementedError("set_spreadcycle must be implemented by driver class")
+
+    def get_microstepping_resolution(self) -> int:
+        """Get microstepping resolution. Implemented by driver class."""
+        raise NotImplementedError(
+            "get_microstepping_resolution must be implemented by driver class"
+        )
+
     @property
     def sg_callback(self):
         """stallguard callback function"""
@@ -222,7 +233,7 @@ class StallGuard:
         self.tmc_logger.log("---", Loglevel.INFO)
         self.tmc_logger.log("homing", Loglevel.INFO)
 
-        self.set_spreadcycle(0)
+        self.set_spreadcycle(False)
 
         self.set_stallguard_callback(
             diag_pin,
@@ -239,11 +250,11 @@ class StallGuard:
 
         if homing_succeeded:
             self.tmc_logger.log("homing successful", Loglevel.INFO)
-            if cb_success is not None:
+            if cb_success is not None and callable(cb_success):
                 cb_success()
         else:
             self.tmc_logger.log("homing failed", Loglevel.INFO)
-            if cb_failure is not None:
+            if cb_failure is not None and callable(cb_failure):
                 cb_failure()
 
         return homing_succeeded

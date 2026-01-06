@@ -1,19 +1,12 @@
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
 """
-test file for testing the UART connection
+test file for testing the SPI connection
 """
-
-import time
-
-try:
-    from src.tmc_driver.tmc_2240 import *
-    from src.tmc_driver.com._tmc_com_spi_ftdi import *
-    from src.tmc_driver import tmc_gpio
-except ModuleNotFoundError:
-    from tmc_driver.tmc_2240 import *
-    from tmc_driver.com._tmc_com_spi_ftdi import *
-    from tmc_driver import tmc_gpio
+from tmc_driver.tmc_2240 import *
+from tmc_driver.com._tmc_com_spi_ftdi import *
+from tmc_driver import tmc_gpio
 from pyftdi.spi import SpiController
-
 
 print("---")
 print("SCRIPT START")
@@ -31,16 +24,6 @@ gpio_port = spi_ctrl.get_gpio()
 tmc_gpio.tmc_gpio = tmc_gpio.FtdiWrapper(gpio_port)
 
 tmc = Tmc2240(None, None, TmcComSpiFtdi(spi_port), loglevel=Loglevel.DEBUG)
-
-
-# -----------------------------------------------------------------------
-# set the loglevel of the libary (currently only printed)
-# set whether the movement should be relative or absolute
-# both optional
-# -----------------------------------------------------------------------
-tmc.tmc_logger.loglevel = Loglevel.DEBUG
-tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
-
 
 # -----------------------------------------------------------------------
 # these functions change settings in the TMC register
