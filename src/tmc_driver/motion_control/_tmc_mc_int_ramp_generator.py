@@ -43,6 +43,7 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
     def current_pos(self):
         """_current_pos property"""
         xactual: tmc5160_reg.XActual = self.get_register("xactual")
+        xactual.read()
         self._current_pos = xactual.xactual
         return self._current_pos
 
@@ -139,6 +140,7 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         """blocks the code until the movement is finished or stopped from a different thread!"""
         rampstat: tmc5160_reg.RampStat = self.get_register("rampstat")
         while True:
+            # self._tmc_logger.log(f"current pos: {self.current_pos}", Loglevel.MOVEMENT)
             rampstat.read()
             if rampstat.position_reached:
                 self._tmc_logger.log("position reached", Loglevel.MOVEMENT)
@@ -162,6 +164,8 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         Returns:
             stop (enum): how the movement was finished
         """
+        self._current_pos = self.current_pos  # sync current pos with register
+
         # pylint: disable=too-many-locals
         if movement_abs_rel is None:
             movement_abs_rel = self._movement_abs_rel
