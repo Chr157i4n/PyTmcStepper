@@ -33,7 +33,7 @@ class TmcEnableControlPin(TmcEnableControl):
     def deinit(self):
         """destructor"""
         super().deinit()
-        if getattr(self, "_pin_en", None) is not None:
+        if hasattr(self, "_pin_en"):
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_en)
             del self._pin_en
 
@@ -43,6 +43,6 @@ class TmcEnableControlPin(TmcEnableControl):
         Args:
             en (bool): whether the motor current output should be enabled
         """
-        if getattr(self, "_pin_en", None) is not None:
+        if hasattr(self, "_pin_en"):
             tmc_gpio.tmc_gpio.gpio_output(self._pin_en, not en)
             self._tmc_logger.log(f"Motor output active: {en}", Loglevel.INFO)

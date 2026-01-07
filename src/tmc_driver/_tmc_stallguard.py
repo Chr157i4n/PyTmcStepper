@@ -81,10 +81,7 @@ class StallGuard:
 
     def deinit(self):
         """destructor"""
-        if (
-            getattr(self, "_pin_stallguard", None) is not None
-            and self._pin_stallguard is not None
-        ):
+        if hasattr(self, "_pin_stallguard") and self._pin_stallguard is not None:
             tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
             self._pin_stallguard = None

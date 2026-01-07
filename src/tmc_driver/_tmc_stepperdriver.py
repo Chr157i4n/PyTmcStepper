@@ -91,16 +91,13 @@ class TmcStepperDriver:
 
     def deinit(self):
         """destructor"""
-        if getattr(self, "tmc_ec", None) is not None and self.tmc_ec is not None:
+        if hasattr(self, "tmc_ec") and self.tmc_ec is not None:
             self.tmc_ec.deinit()
             self.tmc_ec = None
-        if getattr(self, "tmc_mc", None) is not None and self.tmc_mc is not None:
+        if hasattr(self, "tmc_mc") and self.tmc_mc is not None:
             self.tmc_mc.deinit()
             self.tmc_mc = None
-        if (
-            getattr(self, "tmc_logger", None) is not None
-            and self.tmc_logger is not None
-        ):
+        if hasattr(self, "tmc_logger") and self.tmc_logger is not None:
             self.tmc_logger.deinit()
             del self.tmc_logger
 
@@ -116,14 +113,14 @@ class TmcStepperDriver:
     @property
     def current_pos(self) -> int:
         """_current_pos property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.current_pos
 
     @current_pos.setter
     def current_pos(self, current_pos: int):
         """_current_pos setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.current_pos = current_pos
 
@@ -140,77 +137,77 @@ class TmcStepperDriver:
     @property
     def mres(self) -> int:
         """_mres property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.mres
 
     @mres.setter
     def mres(self, mres: int):
         """_mres setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.mres = mres
 
     @property
     def steps_per_rev(self) -> int:
         """_steps_per_rev property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.steps_per_rev
 
     @property
     def fullsteps_per_rev(self) -> int:
         """_fullsteps_per_rev property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.fullsteps_per_rev
 
     @fullsteps_per_rev.setter
     def fullsteps_per_rev(self, fullsteps_per_rev: int):
         """_fullsteps_per_rev setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.fullsteps_per_rev = fullsteps_per_rev
 
     @property
     def movement_abs_rel(self) -> MovementAbsRel:
         """_movement_abs_rel property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.movement_abs_rel
 
     @movement_abs_rel.setter
     def movement_abs_rel(self, movement_abs_rel: MovementAbsRel):
         """_movement_abs_rel setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.movement_abs_rel = movement_abs_rel
 
     @property
     def movement_phase(self) -> MovementPhase:
         """_movement_phase property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.movement_phase
 
     @property
     def speed(self) -> float:
         """_speed property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.speed
 
     @speed.setter
     def speed(self, speed: int):
         """_speed setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.speed = speed
 
     @property
     def max_speed(self) -> int:
         """_max_speed property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.max_speed
 
@@ -223,42 +220,42 @@ class TmcStepperDriver:
     @property
     def max_speed_fullstep(self) -> int:
         """_max_speed_fullstep property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.max_speed_fullstep
 
     @max_speed_fullstep.setter
     def max_speed_fullstep(self, max_speed_fullstep: int):
         """_max_speed_fullstep setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.max_speed_fullstep = max_speed_fullstep
 
     @property
     def acceleration(self) -> int:
         """_acceleration property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.acceleration
 
     @acceleration.setter
     def acceleration(self, acceleration: int):
         """_acceleration setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.acceleration = acceleration
 
     @property
     def acceleration_fullstep(self) -> int:
         """_acceleration_fullstep property"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.acceleration_fullstep
 
     @acceleration_fullstep.setter
     def acceleration_fullstep(self, acceleration_fullstep: int):
         """_acceleration_fullstep setter"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         self.tmc_mc.acceleration_fullstep = acceleration_fullstep
 
@@ -266,7 +263,7 @@ class TmcStepperDriver:
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
         """motioncontrol wrapper"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.run_to_position_steps(steps, movement_abs_rel)
 
@@ -286,7 +283,7 @@ class TmcStepperDriver:
     # ----------------------------
     def test_step(self):
         """test method"""
-        if getattr(self, "tmc_mc", None) is None or self.tmc_mc is None:
+        if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         for _ in range(100):
             self.tmc_mc.set_direction(Direction.CW)

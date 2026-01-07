@@ -106,7 +106,7 @@ class TmcXXXX(TmcStepperDriver):
             if self.tmc_ec is not None:
                 self.tmc_ec.set_get_register_callback(self._get_register)
 
-        if getattr(self, "tmc_mc", None) is not None:
+        if hasattr(self, "tmc_mc") and self.tmc_mc is not None:
             self.max_speed_fullstep = 100
             self.acceleration_fullstep = 100
 
