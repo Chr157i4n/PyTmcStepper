@@ -3,10 +3,10 @@
 """
 test file for testing the SPI connection
 """
+from pyftdi.spi import SpiController
 from tmc_driver.tmc_2240 import *
 from tmc_driver.com._tmc_com_spi_ftdi import *
 from tmc_driver import tmc_gpio
-from pyftdi.spi import SpiController
 
 print("---")
 print("SCRIPT START")

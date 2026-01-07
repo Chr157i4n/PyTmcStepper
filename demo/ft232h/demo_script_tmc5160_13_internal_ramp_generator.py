@@ -4,7 +4,7 @@
 test file for testing basic movement
 """
 from pyftdi.spi import SpiController
-from tmc_driver.tmc_2240 import *
+from tmc_driver.tmc_5160 import *
 from tmc_driver.com._tmc_com_spi_ftdi import *
 from tmc_driver import tmc_gpio
 
@@ -23,9 +23,9 @@ spi_port = spi_ctrl.get_port(cs=0, freq=1e6, mode=0)
 gpio_port = spi_ctrl.get_gpio()
 tmc_gpio.tmc_gpio = tmc_gpio.FtdiWrapper(gpio_port)
 
-tmc = Tmc2240(
+tmc = Tmc5160(
     TmcEnableControlPin(5),
-    TmcMotionControlStepDir(6, 7),
+    TmcMotionControlIntRampGenerator(),
     TmcComSpiFtdi(spi_port),
     loglevel=Loglevel.DEBUG,
 )
@@ -36,7 +36,7 @@ tmc = Tmc2240(
 # set whether the movement should be relative or absolute
 # both optional
 # -----------------------------------------------------------------------
-tmc.tmc_logger.loglevel = Loglevel.DEBUG
+tmc.tmc_logger.loglevel = Loglevel.MOVEMENT
 tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 
 
@@ -76,10 +76,6 @@ tmc.max_speed_fullstep = 250
 # activate the motor current output
 # -----------------------------------------------------------------------
 tmc.set_motor_enabled(True)
-print("BEFORE MOVEMENT")
-print(f"Temperature:\t{tmc.get_temperature()} °C")
-print(f"VSupply:\t{tmc.get_vsupply()} V")
-
 
 # -----------------------------------------------------------------------
 # move the motor 1 revolution
@@ -104,9 +100,6 @@ tmc.run_to_position_revolutions(0)  # move 1 revolution backward
 # -----------------------------------------------------------------------
 # deactivate the motor current output
 # -----------------------------------------------------------------------
-print("AFTER MOVEMENT")
-print(f"Temperature:\t{tmc.get_temperature()} °C")
-print(f"VSupply:\t{tmc.get_vsupply()} V")
 tmc.set_motor_enabled(False)
 
 print("---\n---")
