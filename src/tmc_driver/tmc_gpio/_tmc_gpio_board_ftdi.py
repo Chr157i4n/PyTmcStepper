@@ -35,8 +35,6 @@ class FtdiWrapper(BaseGPIOWrapper):
 
     def deinit(self):
         """deinitialize GPIO library and close FTDI connection"""
-        if self._gpio_port is not None:
-            self._gpio_port.close()
 
     def _update_gpio_direction(self):
         """update GPIO direction on the device"""
