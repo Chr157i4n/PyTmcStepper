@@ -338,3 +338,11 @@ class Tmc5160(TmcXXXX, StallGuard):
 
         self.gconf.modify("diag0_stall", enable)
         self.gconf.modify("diag0_pushpull", enable)
+
+    def clear_rampstat(self):
+        """clears the rampstat register
+        use after a stallguard stop to clear the flag
+        """
+        time.sleep(0.1)
+        self.rampstat.clear()
+        time.sleep(0.1)
