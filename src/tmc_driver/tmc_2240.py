@@ -346,19 +346,17 @@ class Tmc2240(TmcXXXX, StallGuard):
 
     # TMC224x methods
     # ----------------------------
-    def set_stallguard_callback(
-        self, pin_stallguard, threshold, callback, min_speed=100
+    def stallguard_setup(
+        self,
+        threshold: int,
+        min_speed: int,
+        enable: bool = True,
     ):
-        """set a function to call back, when the driver detects a stall
-        via stallguard
-        high value on the diag pin can also mean a driver error
-
+        """internal setup for stallguard
         Args:
-            pin_stallguard (int): pin needs to be connected to DIAG
             threshold (int): value for SGTHRS
-            callback (func): will be called on StallGuard trigger
-            min_speed (int): min speed [steps/s] for StallGuard (Default value = 100)
+            min_speed (int): min speed [steps/s] for StallGuard
         """
-        super().set_stallguard_callback(pin_stallguard, threshold, callback, min_speed)
-        self.gconf.modify("diag0_stall", 1)
-        self.gconf.modify("diag0_pushpull", 1)
+        super().stallguard_setup(threshold, min_speed)
+        self.gconf.modify("diag0_stall", enable)
+        self.gconf.modify("diag0_pushpull", enable)
