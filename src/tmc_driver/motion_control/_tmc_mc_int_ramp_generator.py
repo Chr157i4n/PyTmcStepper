@@ -145,6 +145,18 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             if rampstat.position_reached:
                 self._tmc_logger.log("position reached", Loglevel.MOVEMENT)
                 return
+            if rampstat.event_stop_sg:
+                self._tmc_logger.log("stopped by stallguard", Loglevel.MOVEMENT)
+                self._stop = StopMode.HARDSTOP
+                return
+            if rampstat.event_stop_l:
+                self._tmc_logger.log("stopped by limit switch l", Loglevel.MOVEMENT)
+                self._stop = StopMode.HARDSTOP
+                return
+            if rampstat.event_stop_r:
+                self._tmc_logger.log("stopped by limit switch r", Loglevel.MOVEMENT)
+                self._stop = StopMode.HARDSTOP
+                return
             time.sleep(0.01)  # sleep 10ms to reduce CPU load
 
     def run_to_position_steps(
