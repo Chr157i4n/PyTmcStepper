@@ -279,7 +279,11 @@ class TmcStepperDriver:
         """motioncontrol wrapper"""
         return self.run_to_position_steps(revs * self.steps_per_rev, movement_abs_rel)
 
-    # StepperDriver methods
+    def reset_position(self):
+        """resets the current position to 0"""
+        self.current_pos_fullstep = 0
+
+    # Test Methods
     # ----------------------------
     def test_step(self):
         """test method"""

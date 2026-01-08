@@ -89,7 +89,7 @@ result = tmc.run_to_position_fullsteps(-200, MovementAbsRel.RELATIVE)
 
 if result == StopMode.HARDSTOP:
     print("Endstop 1 found")
-    tmc.reset_positions()  # set current position to 0
+    tmc.reset_position()
     tmc.clear_rampstat()
 
     result = tmc.run_to_position_fullsteps(200, MovementAbsRel.RELATIVE)

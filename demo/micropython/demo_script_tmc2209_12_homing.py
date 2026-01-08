@@ -85,7 +85,7 @@ result = tmc.do_homing(
 
 if result:
     print("Endstop 1 found")
-    tmc.current_pos_fullstep = 0  # reset position to 0
+    tmc.reset_position()
 
     result = tmc.do_homing(
         diag_pin=22,
