@@ -346,3 +346,11 @@ class Tmc5160(TmcXXXX, StallGuard):
         time.sleep(0.1)
         self.rampstat.clear()
         time.sleep(0.1)
+
+    def reset_positions(self):
+        """resets the position counters to the given value"""
+        self.xactual.xactual = 0
+        self.xactual.write_check()
+
+        self.xtarget.xtarget = 0
+        self.xtarget.write_check()
