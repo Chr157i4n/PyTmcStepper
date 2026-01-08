@@ -470,7 +470,7 @@ class CoolConf(shared.CoolConf):
     semin: int
     _REG_MAP = (
         TmcRegField("sfilt", 24, 0x1, bool, None, ""),
-        TmcRegField("sgt", 16, 0x7F, int, None, ""),
+        TmcRegField("sgt", 16, 0x7F, int, None, "", signed=True),
         TmcRegField("seimin", 15, 0x1, bool, None, ""),
         TmcRegField("sedn", 13, 0x3, int, None, ""),
         TmcRegField("semax", 8, 0xF, int, None, ""),

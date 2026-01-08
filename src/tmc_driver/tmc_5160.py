@@ -318,7 +318,7 @@ class Tmc5160(TmcXXXX, StallGuard):
     ):
         """internal setup for stallguard
         Args:
-            threshold (int): value for SGT [0 to 63] 10 worked well for my motor
+            threshold (int): value for SGT [-64 to 63] higher = less sensitive
             min_speed (int): min speed [steps/s] for StallGuard
             enable (bool): enable stallguard (True) or disable (False)
         """
