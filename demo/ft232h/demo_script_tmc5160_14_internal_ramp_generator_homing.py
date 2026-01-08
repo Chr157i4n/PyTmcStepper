@@ -69,12 +69,12 @@ print("---\n---")
 # set the Acceleration and maximal Speed in fullsteps
 # -----------------------------------------------------------------------
 tmc.acceleration_fullstep = 1000
-tmc.max_speed_fullstep = 250
+tmc.max_speed_fullstep = 100
 
 
 tmc.rampstat.clear()
 
-tmc.stallguard_setup(10, 100, True)
+tmc.stallguard_setup(20, 100, True)
 
 tmc.clear_rampstat()
 # -----------------------------------------------------------------------
