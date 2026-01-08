@@ -342,6 +342,7 @@ class Tmc5160(TmcXXXX, StallGuard):
     def clear_rampstat(self):
         """clears the rampstat register
         use after a stallguard stop to clear the flag
+        If the flag is not cleared, further movements are not possible
         """
         time.sleep(0.1)
         self.rampstat.clear()
