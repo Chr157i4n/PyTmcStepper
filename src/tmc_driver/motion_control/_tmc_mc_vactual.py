@@ -141,16 +141,16 @@ class TmcMotionControlVActual(TmcMotionControl):
 
         if duration == 0:
             return self._stop
-        duration_ms = duration * 1000
+        duration_us = duration * 1000 * 1000
 
         self._starttime = get_time_us()
         current_time = get_time_us()
-        while current_time < self._starttime + duration_ms:
+        while current_time < self._starttime + duration_us:
             if self._stop == StopMode.HARDSTOP:
                 break
             if acceleration != 0:
                 time_to_stop = (
-                    self._starttime + duration_ms - abs(current_vactual / acceleration)
+                    self._starttime + duration_us - abs(current_vactual / acceleration)
                 )
                 if self._stop == StopMode.SOFTSTOP:
                     time_to_stop = current_time - 1
