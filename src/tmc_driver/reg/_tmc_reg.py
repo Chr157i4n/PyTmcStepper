@@ -50,7 +50,12 @@ class TmcRegField:
 
     def get_bit_width(self) -> int:
         """Get the bit width of this field based on the mask"""
-        return self.mask.bit_length()
+        width = 0
+        mask = self.mask
+        while mask:
+            width += 1
+            mask >>= 1
+        return width
 
 
 class TmcReg:
