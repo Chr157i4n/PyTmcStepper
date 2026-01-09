@@ -69,13 +69,12 @@ class TmcMotionControlVActual(TmcMotionControl):
         self._tmc_logger.log(
             f"cur: {self._current_pos} | tar: {self._target_pos}", Loglevel.MOVEMENT
         )
-        # self._tmc_logger.log(f"mov: {movement_abs_rel}", Loglevel.MOVEMENT)
 
         self._stop = StopMode.NO
-        if movement_abs_rel == MovementAbsRel.ABSOLUTE or (
-            movement_abs_rel is None
-            and self._movement_abs_rel == MovementAbsRel.ABSOLUTE
-        ):
+        if movement_abs_rel is None:
+            movement_abs_rel = self._movement_abs_rel
+
+        if movement_abs_rel == MovementAbsRel.ABSOLUTE:
             steps = steps - self.current_pos
 
         rps = tmc_math.steps_to_rps(self.max_speed_fullstep, self.steps_per_rev)

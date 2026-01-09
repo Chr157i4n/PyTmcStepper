@@ -194,22 +194,23 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         """
         self._current_pos = self.current_pos  # sync current pos with register
 
-        # pylint: disable=too-many-locals
-        if movement_abs_rel is None:
-            movement_abs_rel = self._movement_abs_rel
-
         self.set_ramp_mode(RampMode.POSITIONING_MODE)
         self.set_motion_profile(self._max_speed, self._acceleration, self._acceleration)
 
-        self._tmc_logger.log(
-            f"Before movement cur: {self._current_pos} | tar: {self._target_pos}",
-            Loglevel.MOVEMENT,
-        )
+        self._stop = StopMode.NO
+
+        if movement_abs_rel is None:
+            movement_abs_rel = self._movement_abs_rel
 
         if movement_abs_rel == MovementAbsRel.RELATIVE:
             self.target_pos = self._current_pos + steps
         else:
             self.target_pos = steps
+
+        self._tmc_logger.log(
+            f"Before movement cur: {self._current_pos} | tar: {self._target_pos}",
+            Loglevel.MOVEMENT,
+        )
 
         self.wait_until_stop()
         self.target_pos = self.current_pos
