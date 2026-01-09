@@ -81,6 +81,8 @@ def steps_to_tstep(steps: int, mres: int) -> int:
     Returns:
         tstep (int): time per step
     """
+    if steps == 0:
+        return 0
     return int(round(12000000 / (steps * 256 / mres)))
 
 

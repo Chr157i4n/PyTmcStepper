@@ -317,12 +317,20 @@ class Tmc5160(TmcXXXX, StallGuard):
         enable: bool = True,
     ):
         """internal setup for stallguard
+
+        TMC5160 has only StallGuard2 which only works with Spreadcycle enabled
+        If you want to use StallGuard afterwards call this function again to disable Spreadcycle
+        and reset coolstep threshold
+
         Args:
             threshold (int): value for SGT [-64 to 63] higher = less sensitive
             min_speed (int): min speed [steps/s] for StallGuard
             enable (bool): enable stallguard (True) or disable (False)
         """
-        self.set_spreadcycle(False)
+        # self.set_spreadcycle(enable)
+
+        if not enable:
+            min_speed = 0
 
         self._set_coolstep_threshold(
             tmc_math.steps_to_tstep(min_speed, self.get_microstepping_resolution())

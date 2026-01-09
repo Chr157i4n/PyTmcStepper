@@ -74,7 +74,7 @@ tmc.max_speed_fullstep = 100
 
 tmc.rampstat.clear()
 
-tmc.stallguard_setup(20, 100, True)
+tmc.stallguard_setup(25, 100, True)
 
 tmc.clear_rampstat()
 # -----------------------------------------------------------------------
@@ -98,6 +98,8 @@ if result == StopMode.HARDSTOP:
         print("Endstop 2 found")
         middle = tmc.current_pos_fullstep // 2
         tmc.clear_rampstat()
+
+        tmc.stallguard_setup(0, 0, False)
         tmc.run_to_position_fullsteps(middle, MovementAbsRel.ABSOLUTE)
 
     else:
