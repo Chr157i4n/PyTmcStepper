@@ -37,6 +37,7 @@ class TmcXXXX(TmcStepperDriver):
     gconf: tmc_shared_regs.GConf
     chopconf: tmc_shared_regs.ChopConf
     mscnt: tmc_shared_regs.MsCnt
+    tpwmthrs: tmc_shared_regs.TPwmThrs
 
     # Constructor/Destructor
     # ----------------------------
@@ -379,6 +380,15 @@ class TmcXXXX(TmcStepperDriver):
             reg.log(self.tmc_logger)
 
         return reg, data, flags
+
+    def set_hybrid_threshold_speed(self, speed: int):
+        """sets the hybrid threshold speed
+
+        Args:
+            speed (int): speed in steps per second
+        """
+        tstep = tmc_math.steps_to_tstep(speed, self.get_microstepping_resolution())
+        self.tpwmthrs.modify("tpwmthrs", tstep)
 
     # Test Methods
     # ----------------------------
