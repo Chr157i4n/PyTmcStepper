@@ -42,17 +42,24 @@ class peripheryWrapper(BaseGPIOWrapper):
 
     def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin"""
-        if self._gpios[pin] is not None:
-            self._gpios[pin].close()
+        gpio = self._gpios[pin]
+        if isinstance(gpio, GPIO):
+            gpio.close()
             self._gpios[pin] = None
 
     def gpio_input(self, pin: int) -> int:
         """read GPIO pin"""
-        return self._gpios[pin].read()
+        gpio = self._gpios[pin]
+        if not isinstance(gpio, GPIO):
+            raise RuntimeError(f"GPIO pin {pin} not configured")
+        return gpio.read()
 
     def gpio_output(self, pin: int, value):
         """write GPIO pin"""
-        self._gpios[pin].write(bool(value))
+        gpio = self._gpios[pin]
+        if not isinstance(gpio, GPIO):
+            raise RuntimeError(f"GPIO pin {pin} not configured")
+        gpio.write(bool(value))
 
     def gpio_pwm_setup(self, pin: int, frequency: int = 10, duty_cycle: int = 0):
         """setup PWM"""

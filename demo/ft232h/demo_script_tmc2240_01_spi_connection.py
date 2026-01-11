@@ -3,10 +3,10 @@
 """
 test file for testing the SPI connection
 """
+from pyftdi.spi import SpiController
 from tmc_driver.tmc_2240 import *
 from tmc_driver.com._tmc_com_spi_ftdi import *
 from tmc_driver import tmc_gpio
-from pyftdi.spi import SpiController
 
 print("---")
 print("SCRIPT START")
@@ -18,7 +18,7 @@ print("---")
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
 spi_ctrl = SpiController()
-spi_ctrl.configure("ftdi://ftdi:232h/1", cs_count=1)
+spi_ctrl.configure("ftdi://ftdi:232h/1")
 spi_port = spi_ctrl.get_port(cs=0, freq=1e6, mode=0)
 gpio_port = spi_ctrl.get_gpio()
 tmc_gpio.tmc_gpio = tmc_gpio.FtdiWrapper(gpio_port)

@@ -25,8 +25,20 @@ class TmcRegField:
         conv_func,
         unit: str,
         clear_value: int | None = None,
+        signed: bool = False,
     ):
-        """Constructor"""
+        """Constructor
+
+        Args:
+            name (str): field name
+            pos (int): bit position
+            mask (int): bit mask
+            reg_class (type): type of the field value
+            conv_func: conversion function name (optional)
+            unit (str): unit string for display
+            clear_value (int|None): value to set when clearing (optional)
+            signed (bool): whether the field is signed (two's complement)
+        """
         self.name = name
         self.pos = pos
         self.mask = mask
@@ -34,6 +46,16 @@ class TmcRegField:
         self.conv_func = conv_func
         self.unit = unit
         self.clear_value = clear_value
+        self.signed = signed
+
+    def get_bit_width(self) -> int:
+        """Get the bit width of this field based on the mask"""
+        width = 0
+        mask = self.mask
+        while mask:
+            width += 1
+            mask >>= 1
+        return width
 
 
 class TmcReg:
@@ -74,6 +96,11 @@ class TmcReg:
         """
         for reg in self._REG_MAP:
             value = data >> reg.pos & reg.mask
+            # Convert from two's complement if signed
+            if reg.signed:
+                bit_width = reg.get_bit_width()
+                if value >= (1 << (bit_width - 1)):
+                    value -= 1 << bit_width
             setattr(self, reg.name, reg.reg_class(value))
 
     def serialise(self) -> int:
@@ -86,7 +113,12 @@ class TmcReg:
 
         for reg in self._REG_MAP:
             value = getattr(self, reg.name)
-            data |= (int(value) & reg.mask) << reg.pos
+            int_value = int(value)
+            # Convert to two's complement if signed and negative
+            if reg.signed and int_value < 0:
+                bit_width = reg.get_bit_width()
+                int_value = (1 << bit_width) + int_value
+            data |= (int_value & reg.mask) << reg.pos
 
         return data
 

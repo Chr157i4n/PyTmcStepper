@@ -310,19 +310,57 @@ class Tmc5160(TmcXXXX, StallGuard):
 
     # TMC5160 methods
     # ----------------------------
-    def set_stallguard_callback(
-        self, pin_stallguard, threshold, callback, min_speed=100
+    def stallguard_setup(
+        self,
+        threshold: int,
+        min_speed: int,
+        enable: bool = True,
     ):
-        """set a function to call back, when the driver detects a stall
-        via stallguard
-        high value on the diag pin can also mean a driver error
+        """internal setup for stallguard
+
+        TMC5160 has only StallGuard2 which only works with Spreadcycle enabled
+        If you want to use StallGuard afterwards call this function again to disable Spreadcycle
+        and reset coolstep threshold
 
         Args:
-            pin_stallguard (int): pin needs to be connected to DIAG
-            threshold (int): value for SGTHRS
-            callback (func): will be called on StallGuard trigger
-            min_speed (int): min speed [steps/s] for StallGuard (Default value = 100)
+            threshold (int): value for SGT [-64 to 63] higher = less sensitive
+            min_speed (int): min speed [steps/s] for StallGuard
+            enable (bool): enable stallguard (True) or disable (False)
         """
-        super().set_stallguard_callback(pin_stallguard, threshold, callback, min_speed)
-        self.gconf.modify("diag0_stall", 1)
-        self.gconf.modify("diag0_pushpull", 1)
+        # self.set_spreadcycle(enable)
+
+        if not enable:
+            min_speed = 0
+
+        self._set_coolstep_threshold(
+            tmc_math.steps_to_tstep(min_speed, self.get_microstepping_resolution())
+        )
+
+        self.coolconf.read()
+        self.coolconf.sgt = threshold
+        self.coolconf.write_check()
+
+        self.swmode.read()
+        self.swmode.sg_stop = enable
+        self.swmode.write_check()
+
+        self.gconf.modify("diag0_stall", enable)
+        self.gconf.modify("diag0_pushpull", enable)
+
+    def clear_rampstat(self):
+        """clears the rampstat register
+        use after a stallguard stop to clear the flag
+        If the flag is not cleared, further movements are not possible
+        """
+        time.sleep(0.1)
+        self.rampstat.clear()
+        time.sleep(0.1)
+
+    def reset_position(self):
+        """resets the current position to 0
+        additionally resets the xtarget register to 0
+        """
+        super().reset_position()
+
+        self.xtarget.xtarget = 0
+        self.xtarget.write_check()

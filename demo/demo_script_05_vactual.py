@@ -26,7 +26,7 @@ UART_PORT = {
 
 tmc = Tmc2209(
     TmcEnableControlPin(21),
-    TmcMotionControlStepDir(16, 20),
+    TmcMotionControlVActual(),
     TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0")),
     loglevel=Loglevel.DEBUG,
 )

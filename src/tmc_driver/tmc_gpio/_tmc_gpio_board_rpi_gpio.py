@@ -34,6 +34,15 @@ class GPIOModuleProtocol(Protocol):
     PUD_DOWN: int
     RISING: int
 
+    class PWM:
+        """PWM class protocol"""
+
+        def __init__(self, _channel: int, _frequency: float, /) -> None: ...
+        def start(self, _dutycycle: float, /) -> None: ...
+        def ChangeDutyCycle(self, _dutycycle: float, /) -> None: ...
+        def ChangeFrequency(self, _frequency: float, /) -> None: ...
+        def stop(self) -> None: ...
+
     def setwarnings(self, value: bool) -> None: ...
     def setmode(self, mode: int) -> None: ...
     def cleanup(self, pin: int | None = None) -> None: ...
@@ -42,7 +51,6 @@ class GPIOModuleProtocol(Protocol):
     ) -> None: ...
     def input(self, pin: int) -> int: ...
     def output(self, pin: int, value: int) -> None: ...
-    def PWM(self, pin: int, frequency: int) -> Any: ...  # Returns PWM object
     def add_event_detect(
         self, pin: int, edge: int, callback: Any = None, bouncetime: int = 0
     ) -> None: ...
@@ -87,8 +95,10 @@ class BaseRPiGPIOWrapper(BaseGPIOWrapper):
 
     def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin"""
-        if self._gpios_pwm[pin] is not None:
-            self._gpios_pwm[pin].stop()
+        gpio_pwm = self._gpios_pwm[pin]
+
+        if gpio_pwm is not None:
+            gpio_pwm.stop()
             self._gpios_pwm[pin] = None
         self.GPIO.cleanup(pin)
 
@@ -108,7 +118,10 @@ class BaseRPiGPIOWrapper(BaseGPIOWrapper):
 
     def gpio_pwm_set_frequency(self, pin: int, frequency: int):
         """set PWM frequency"""
-        self._gpios_pwm[pin].ChangeFrequency(frequency)
+        gpio_pwm = self._gpios_pwm[pin]
+        if gpio_pwm is None:
+            raise RuntimeError(f"GPIO pin {pin} not configured as PWM")
+        gpio_pwm.ChangeFrequency(frequency)
 
     def gpio_pwm_set_duty_cycle(self, pin: int, duty_cycle: int):
         """set PWM duty cycle
@@ -117,7 +130,10 @@ class BaseRPiGPIOWrapper(BaseGPIOWrapper):
             pin (int): pin number
             duty_cycle (int): duty cycle in percent (0-100)
         """
-        self._gpios_pwm[pin].ChangeDutyCycle(duty_cycle)
+        gpio_pwm = self._gpios_pwm[pin]
+        if gpio_pwm is None:
+            raise RuntimeError(f"GPIO pin {pin} not configured as PWM")
+        gpio_pwm.ChangeDutyCycle(duty_cycle)
 
     def gpio_add_event_detect(self, pin: int, callback: types.FunctionType):
         """add event detect"""

@@ -202,7 +202,7 @@ class THigh(shared.THigh):
 
 
 class VDcMin(shared.VDcMin):
-    """THIGH register class"""
+    """VDCMIN register class"""
 
     ADDR = 0x33
 
@@ -211,7 +211,7 @@ class VDcMin(shared.VDcMin):
 
 
 class RampMode(shared.RampMode):
-    """THIGH register class"""
+    """RAMPMODE register class"""
 
     ADDR = 0x20
 
@@ -220,25 +220,25 @@ class RampMode(shared.RampMode):
 
 
 class XActual(shared.XActual):
-    """THIGH register class"""
+    """XACTUAL register class - Actual motor position (signed)"""
 
     ADDR = 0x21
 
     xactual: int
-    _REG_MAP = (TmcRegField("xactual", 0, 0xFFFFF, int, None, ""),)
+    _REG_MAP = (TmcRegField("xactual", 0, 0xFFFFFFFF, int, None, "", signed=True),)
 
 
 class VActual(shared.VActual):
-    """THIGH register class"""
+    """VACTUAL register class - Actual motor velocity (signed)"""
 
     ADDR = 0x22
 
     vactual: int
-    _REG_MAP = (TmcRegField("vactual", 0, 0xFFFFF, int, None, ""),)
+    _REG_MAP = (TmcRegField("vactual", 0, 0xFFFFFF, int, None, "", signed=True),)
 
 
 class VStart(shared.VStart):
-    """THIGH register class"""
+    """VSTART register class"""
 
     ADDR = 0x23
 
@@ -247,7 +247,7 @@ class VStart(shared.VStart):
 
 
 class A1(shared.A1):
-    """THIGH register class"""
+    """A1 register class"""
 
     ADDR = 0x24
 
@@ -256,7 +256,7 @@ class A1(shared.A1):
 
 
 class V1(shared.V1):
-    """THIGH register class"""
+    """V1 register class"""
 
     ADDR = 0x25
 
@@ -265,7 +265,7 @@ class V1(shared.V1):
 
 
 class AMax(shared.AMax):
-    """THIGH register class"""
+    """AMAX register class"""
 
     ADDR = 0x26
 
@@ -274,7 +274,7 @@ class AMax(shared.AMax):
 
 
 class VMax(shared.VMax):
-    """THIGH register class"""
+    """VMAX register class"""
 
     ADDR = 0x27
 
@@ -283,7 +283,7 @@ class VMax(shared.VMax):
 
 
 class DMax(shared.DMax):
-    """THIGH register class"""
+    """DMAX register class"""
 
     ADDR = 0x28
 
@@ -292,7 +292,7 @@ class DMax(shared.DMax):
 
 
 class D1(shared.D1):
-    """THIGH register class"""
+    """D1 register class"""
 
     ADDR = 0x2A
 
@@ -301,7 +301,7 @@ class D1(shared.D1):
 
 
 class VStop(shared.VStop):
-    """THIGH register class"""
+    """VSTOP register class"""
 
     ADDR = 0x2B
 
@@ -310,7 +310,7 @@ class VStop(shared.VStop):
 
 
 class TZeroWait(shared.TZeroWait):
-    """THIGH register class"""
+    """TZEROWAIT register class"""
 
     ADDR = 0x2C
 
@@ -319,16 +319,16 @@ class TZeroWait(shared.TZeroWait):
 
 
 class XTarget(shared.XTarget):
-    """THIGH register class"""
+    """XTARGET register class - Target position for ramp mode (signed)"""
 
     ADDR = 0x2D
 
     xtarget: int
-    _REG_MAP = (TmcRegField("xtarget", 0, 0xFFFFF, int, None, ""),)
+    _REG_MAP = (TmcRegField("xtarget", 0, 0xFFFFFFFF, int, None, "", signed=True),)
 
 
 class SWMode(shared.SWMode):
-    """THIGH register class"""
+    """SW_MODE register class"""
 
     ADDR = 0x34
 
@@ -361,7 +361,7 @@ class SWMode(shared.SWMode):
 
 
 class RampStat(shared.RampStat):
-    """THIGH register class"""
+    """RAMP_STAT register class"""
 
     ADDR = 0x35
 
@@ -470,7 +470,7 @@ class CoolConf(shared.CoolConf):
     semin: int
     _REG_MAP = (
         TmcRegField("sfilt", 24, 0x1, bool, None, ""),
-        TmcRegField("sgt", 16, 0x7F, int, None, ""),
+        TmcRegField("sgt", 16, 0x7F, int, None, "", signed=True),
         TmcRegField("seimin", 15, 0x1, bool, None, ""),
         TmcRegField("sedn", 13, 0x3, int, None, ""),
         TmcRegField("semax", 8, 0xF, int, None, ""),

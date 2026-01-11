@@ -44,28 +44,40 @@ class GpiozeroWrapper(BaseGPIOWrapper):
     ):
         """setup GPIO pin"""
         if mode == GpioMode.OUT:
-            if self._gpios[pin] is None or self._gpios[pin].closed:
+            gpio = self._gpios[pin]
+            if gpio is None or gpio.closed:
                 self._gpios[pin] = DigitalOutputDevice(pin, initial_value=bool(initial))
         else:
-            if self._gpios[pin] is None or self._gpios[pin].closed:
+            gpio = self._gpios[pin]
+            if gpio is None or gpio.closed:
                 self._gpios[pin] = DigitalInputDevice(pin)
 
     def gpio_cleanup(self, pin: int):
         """cleanup GPIO pin"""
-        if self._gpios[pin] is not None:
-            self._gpios[pin].close()
+        gpio = self._gpios[pin]
+        if gpio is not None:
+            gpio.close()
             self._gpios[pin] = None
-        if self._gpios_pwm[pin] is not None:
-            self._gpios_pwm[pin].close()
+        gpio_pwm = self._gpios_pwm[pin]
+        if gpio_pwm is not None:
+            gpio_pwm.close()
             self._gpios_pwm[pin] = None
 
     def gpio_input(self, pin: int) -> int:
         """read GPIO pin"""
-        return self._gpios[pin].value
+        gpio = self._gpios[pin]
+        if not isinstance(gpio, DigitalInputDevice):
+            raise RuntimeError(f"GPIO pin {pin} not configured as input")
+        return gpio.value
 
     def gpio_output(self, pin: int, value):
         """write GPIO pin"""
-        self._gpios[pin].value = value
+        gpio = self._gpios[pin]
+        if not isinstance(gpio, DigitalOutputDevice):
+            raise RuntimeError(f"GPIO pin {pin} not configured as output")
+        if gpio.closed:
+            return
+        gpio.value = value
 
     def gpio_pwm_enable(self, pin: int, enable: bool):
         """switch to PWM"""
@@ -84,8 +96,12 @@ class GpiozeroWrapper(BaseGPIOWrapper):
 
     def gpio_pwm_set_frequency(self, pin: int, frequency: int):
         """set PWM frequency"""
-        if self._gpios_pwm[pin] is not None:
-            self._gpios_pwm[pin].frequency = frequency
+        self.gpio_pwm_enable(pin, True)
+
+        gpio = self._gpios_pwm[pin]
+        if not isinstance(gpio, PWMOutputDevice):
+            raise RuntimeError(f"GPIO pin {pin} not configured as PWM")
+        gpio.frequency = frequency
 
     def gpio_pwm_set_duty_cycle(self, pin: int, duty_cycle: int):
         """set PWM duty cycle
@@ -94,17 +110,26 @@ class GpiozeroWrapper(BaseGPIOWrapper):
             pin (int): pin number
             duty_cycle (int): duty cycle in percent (0-100)
         """
-        self._gpios_pwm[pin].value = duty_cycle / 100
+        if duty_cycle == 0:
+            self.gpio_pwm_enable(pin, False)
+            return
+        self.gpio_pwm_enable(pin, True)
+
+        gpio = self._gpios_pwm[pin]
+        if not isinstance(gpio, PWMOutputDevice):
+            raise RuntimeError(f"GPIO pin {pin} not configured as PWM")
+        gpio.value = duty_cycle / 100
 
     def gpio_add_event_detect(self, pin: int, callback: types.FunctionType):
         """add event detect"""
-        if isinstance(self._gpios[pin], DigitalInputDevice):
-            self._gpios[pin].when_activated = callback
+        gpio = self._gpios_pwm[pin]
+        if not isinstance(gpio, DigitalInputDevice):
+            raise RuntimeError(f"GPIO pin {pin} not configured as input")
+        gpio.when_activated = callback
 
     def gpio_remove_event_detect(self, pin: int):
         """remove event detect"""
-        if (
-            isinstance(self._gpios[pin], DigitalInputDevice)
-            and self._gpios[pin].when_activated is not None
-        ):
-            self._gpios[pin].when_activated = None
+        gpio = self._gpios_pwm[pin]
+        if not isinstance(gpio, DigitalInputDevice):
+            raise RuntimeError(f"GPIO pin {pin} not configured as input")
+        gpio.when_activated = None

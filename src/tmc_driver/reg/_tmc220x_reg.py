@@ -143,7 +143,7 @@ class VActual(shared.VActual):
     ADDR = 0x22
 
     vactual: int
-    _REG_MAP = (TmcRegField("vactual", 0, 0xFFFFFF, int, None, ""),)
+    _REG_MAP = (TmcRegField("vactual", 0, 0xFFFFFF, int, None, "", signed=True),)
 
 
 class MsCnt(shared.MsCnt):

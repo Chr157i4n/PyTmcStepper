@@ -140,10 +140,10 @@ class TmcMotionControlStepDir(TmcMotionControl):
 
     def deinit(self):
         """destructor"""
-        if getattr(self, "_pin_step", None) is not None:
+        if hasattr(self, "_pin_step"):
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_step)
             del self._pin_step
-        if getattr(self, "_pin_dir", None) is not None and self._pin_dir is not None:
+        if hasattr(self, "_pin_dir") and self._pin_dir is not None:
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_dir)
             del self._pin_dir
 

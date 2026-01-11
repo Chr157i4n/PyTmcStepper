@@ -4,7 +4,7 @@
 test file for testing basic movement
 """
 from pyftdi.spi import SpiController
-from tmc_driver.tmc_2240 import *
+from tmc_driver.tmc_5160 import *
 from tmc_driver.com._tmc_com_spi_ftdi import *
 from tmc_driver import tmc_gpio
 
@@ -23,9 +23,9 @@ spi_port = spi_ctrl.get_port(cs=0, freq=1e6, mode=0)
 gpio_port = spi_ctrl.get_gpio()
 tmc_gpio.tmc_gpio = tmc_gpio.FtdiWrapper(gpio_port)
 
-tmc = Tmc2240(
+tmc = Tmc5160(
     TmcEnableControlPin(5),
-    TmcMotionControlStepDir(6, 7),
+    TmcMotionControlIntRampGenerator(),
     TmcComSpiFtdi(spi_port),
     loglevel=Loglevel.DEBUG,
 )
@@ -69,44 +69,49 @@ print("---\n---")
 # set the Acceleration and maximal Speed in fullsteps
 # -----------------------------------------------------------------------
 tmc.acceleration_fullstep = 1000
-tmc.max_speed_fullstep = 250
+tmc.max_speed_fullstep = 100
 
 
+tmc.rampstat.clear()
+
+tmc.stallguard_setup(25, 100, True)
+
+tmc.clear_rampstat()
 # -----------------------------------------------------------------------
 # activate the motor current output
 # -----------------------------------------------------------------------
 tmc.set_motor_enabled(True)
-print("BEFORE MOVEMENT")
-print(f"Temperature:\t{tmc.get_temperature()} °C")
-print(f"VSupply:\t{tmc.get_vsupply()} V")
-
 
 # -----------------------------------------------------------------------
 # move the motor 1 revolution
 # -----------------------------------------------------------------------
-tmc.run_to_position_fullsteps(200)  # move to position 200 (fullsteps)
-tmc.run_to_position_fullsteps(0)  # move to position 0
+result = tmc.run_to_position_fullsteps(-200, MovementAbsRel.RELATIVE)
 
-tmc.run_to_position_fullsteps(
-    200, MovementAbsRel.RELATIVE
-)  # move 200 fullsteps forward
-tmc.run_to_position_fullsteps(
-    -200, MovementAbsRel.RELATIVE
-)  # move 200 fullsteps backward
+if result == StopMode.HARDSTOP:
+    print("Endstop 1 found")
+    tmc.reset_position()
+    tmc.clear_rampstat()
 
-tmc.run_to_position_steps(400)  # move to position 400 (µsteps)
-tmc.run_to_position_steps(0)  # move to position 0
+    result = tmc.run_to_position_fullsteps(200, MovementAbsRel.RELATIVE)
 
-tmc.run_to_position_revolutions(1)  # move 1 revolution forward
-tmc.run_to_position_revolutions(0)  # move 1 revolution backward
+    if result == StopMode.HARDSTOP:
+        print("Endstop 2 found")
+        middle = tmc.current_pos_fullstep // 2
+        tmc.clear_rampstat()
+
+        tmc.stallguard_setup(0, 0, False)
+        tmc.run_to_position_fullsteps(middle, MovementAbsRel.ABSOLUTE)
+
+    else:
+        print("Endstop 2 not found")
+
+else:
+    print("Endstop 1 not found")
 
 
 # -----------------------------------------------------------------------
 # deactivate the motor current output
 # -----------------------------------------------------------------------
-print("AFTER MOVEMENT")
-print(f"Temperature:\t{tmc.get_temperature()} °C")
-print(f"VSupply:\t{tmc.get_vsupply()} V")
 tmc.set_motor_enabled(False)
 
 print("---\n---")

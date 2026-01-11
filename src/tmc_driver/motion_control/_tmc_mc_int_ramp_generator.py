@@ -43,16 +43,33 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
     def current_pos(self):
         """_current_pos property"""
         xactual: tmc5160_reg.XActual = self.get_register("xactual")
+        xactual.read()
         self._current_pos = xactual.xactual
         return self._current_pos
 
     @current_pos.setter
     def current_pos(self, current_pos: int):
         """_current_pos setter"""
-        super().current_pos = current_pos
+        self._current_pos = current_pos
         xactual: tmc5160_reg.XActual = self.get_register("xactual")
         xactual.xactual = current_pos
         xactual.write()
+
+    @property
+    def target_pos(self):
+        """_target_pos property"""
+        xtarget: tmc5160_reg.XTarget = self.get_register("xtarget")
+        xtarget.read()
+        self._target_pos = xtarget.xtarget
+        return self._target_pos
+
+    @target_pos.setter
+    def target_pos(self, target_pos: int):
+        """_target_pos setter"""
+        self._target_pos = target_pos
+        xtarget: tmc5160_reg.XTarget = self.get_register("xtarget")
+        xtarget.xtarget = target_pos
+        xtarget.write()
 
     def __init__(self):
         """constructor"""
@@ -139,9 +156,22 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         """blocks the code until the movement is finished or stopped from a different thread!"""
         rampstat: tmc5160_reg.RampStat = self.get_register("rampstat")
         while True:
+            # self._tmc_logger.log(f"current pos: {self.current_pos}", Loglevel.MOVEMENT)
             rampstat.read()
             if rampstat.position_reached:
                 self._tmc_logger.log("position reached", Loglevel.MOVEMENT)
+                return
+            if rampstat.event_stop_sg:
+                self._tmc_logger.log("stopped by stallguard", Loglevel.MOVEMENT)
+                self._stop = StopMode.HARDSTOP
+                return
+            if rampstat.event_stop_l:
+                self._tmc_logger.log("stopped by limit switch l", Loglevel.MOVEMENT)
+                self._stop = StopMode.HARDSTOP
+                return
+            if rampstat.event_stop_r:
+                self._tmc_logger.log("stopped by limit switch r", Loglevel.MOVEMENT)
+                self._stop = StopMode.HARDSTOP
                 return
             time.sleep(0.01)  # sleep 10ms to reduce CPU load
 
@@ -162,27 +192,28 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         Returns:
             stop (enum): how the movement was finished
         """
-        # pylint: disable=too-many-locals
-        if movement_abs_rel is None:
-            movement_abs_rel = self._movement_abs_rel
-
-        if movement_abs_rel == MovementAbsRel.RELATIVE:
-            self._target_pos = self._current_pos + steps
-        else:
-            self._target_pos = steps
+        self._current_pos = self.current_pos  # sync current pos with register
 
         self.set_ramp_mode(RampMode.POSITIONING_MODE)
         self.set_motion_profile(self._max_speed, self._acceleration, self._acceleration)
 
+        self._stop = StopMode.NO
+
+        if movement_abs_rel is None:
+            movement_abs_rel = self._movement_abs_rel
+
+        if movement_abs_rel == MovementAbsRel.RELATIVE:
+            self.target_pos = self._current_pos + steps
+        else:
+            self.target_pos = steps
+
         self._tmc_logger.log(
-            f"cur: {self._current_pos} | tar: {self._target_pos}", Loglevel.MOVEMENT
+            f"Before movement cur: {self._current_pos} | tar: {self._target_pos}",
+            Loglevel.MOVEMENT,
         )
 
-        xtarget: tmc5160_reg.XTarget = self.get_register("xtarget")
-        xtarget.xtarget = self._target_pos
-        xtarget.write()
-
         self.wait_until_stop()
+        self.target_pos = self.current_pos
 
         loststeps: tmc5160_reg.LostSteps = self.get_register("loststeps")
         loststeps.read()
@@ -190,5 +221,10 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             self._tmc_logger.log(
                 f"Lost steps detected: {loststeps.lost_steps}", Loglevel.MOVEMENT
             )
+
+        self._tmc_logger.log(
+            f"After movement cur: {self.current_pos} | tar: {self._target_pos}",
+            Loglevel.MOVEMENT,
+        )
 
         return self._stop

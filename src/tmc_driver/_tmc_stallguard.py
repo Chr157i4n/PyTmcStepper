@@ -81,10 +81,7 @@ class StallGuard:
 
     def deinit(self):
         """destructor"""
-        if (
-            getattr(self, "_pin_stallguard", None) is not None
-            and self._pin_stallguard is not None
-        ):
+        if hasattr(self, "_pin_stallguard") and self._pin_stallguard is not None:
             tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
             self._pin_stallguard = None
@@ -110,10 +107,8 @@ class StallGuard:
             Loglevel.INFO,
         )
 
-        self._set_stallguard_threshold(threshold)
-        self._set_coolstep_threshold(
-            tmc_math.steps_to_tstep(min_speed, self.get_microstepping_resolution())
-        )
+        self.stallguard_setup(threshold, min_speed)
+
         self._sg_callback = callback
         self._pin_stallguard = pin_stallguard
 
@@ -194,6 +189,24 @@ class StallGuard:
             raise TmcMotionControlException("tmc_mc is None; cannot reset current pos")
         self.tmc_mc.current_pos = 0
 
+    def stallguard_setup(
+        self,
+        threshold: int,
+        min_speed: int,
+    ):
+        """internal setup for stallguard
+        Args:
+            threshold (int): value for SGTHRS
+            min_speed (int): min speed [steps/s] for StallGuard
+        """
+        self.tmc_logger.log(f"Stallguard threshold: {threshold}", Loglevel.DEBUG)
+
+        self.set_spreadcycle(False)
+        self._set_stallguard_threshold(threshold)
+        self._set_coolstep_threshold(
+            tmc_math.steps_to_tstep(min_speed, self.get_microstepping_resolution())
+        )
+
     def do_homing(
         self,
         diag_pin: int,
@@ -223,8 +236,6 @@ class StallGuard:
         if self.tmc_mc is None:
             raise TmcMotionControlException("tmc_mc is None; cannot do homing")
 
-        self.tmc_logger.log(f"Stallguard threshold: {threshold}", Loglevel.DEBUG)
-
         if max_speed is None:
             max_speed = self.tmc_mc.max_speed_homing
         if cb_success is _CB_SENTINEL:
@@ -232,8 +243,6 @@ class StallGuard:
 
         self.tmc_logger.log("---", Loglevel.INFO)
         self.tmc_logger.log("homing", Loglevel.INFO)
-
-        self.set_spreadcycle(False)
 
         self.set_stallguard_callback(
             diag_pin,

@@ -69,13 +69,12 @@ class TmcMotionControlVActual(TmcMotionControl):
         self._tmc_logger.log(
             f"cur: {self._current_pos} | tar: {self._target_pos}", Loglevel.MOVEMENT
         )
-        # self._tmc_logger.log(f"mov: {movement_abs_rel}", Loglevel.MOVEMENT)
 
         self._stop = StopMode.NO
-        if movement_abs_rel == MovementAbsRel.ABSOLUTE or (
-            movement_abs_rel is None
-            and self._movement_abs_rel == MovementAbsRel.ABSOLUTE
-        ):
+        if movement_abs_rel is None:
+            movement_abs_rel = self._movement_abs_rel
+
+        if movement_abs_rel == MovementAbsRel.ABSOLUTE:
             steps = steps - self.current_pos
 
         rps = tmc_math.steps_to_rps(self.max_speed_fullstep, self.steps_per_rev)
@@ -141,16 +140,16 @@ class TmcMotionControlVActual(TmcMotionControl):
 
         if duration == 0:
             return self._stop
-        duration_ms = duration * 1000
+        duration_us = duration * 1000 * 1000
 
         self._starttime = get_time_us()
         current_time = get_time_us()
-        while current_time < self._starttime + duration_ms:
+        while current_time < self._starttime + duration_us:
             if self._stop == StopMode.HARDSTOP:
                 break
             if acceleration != 0:
                 time_to_stop = (
-                    self._starttime + duration_ms - abs(current_vactual / acceleration)
+                    self._starttime + duration_us - abs(current_vactual / acceleration)
                 )
                 if self._stop == StopMode.SOFTSTOP:
                     time_to_stop = current_time - 1
