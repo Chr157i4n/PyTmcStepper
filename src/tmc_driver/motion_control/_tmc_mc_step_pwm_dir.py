@@ -56,10 +56,6 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         Returns:
             StopMode: the stop mode
         """
-        if tmc_gpio.tmc_gpio.__class__.__name__ == "GpiozeroWrapper":
-            tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, False)
-            # TODO: check for a better solution for gpiozero
-
         return super().run_to_position_steps(steps, movement_abs_rel)
 
     def run_speed_pwm(self, speed: int | None = None):
@@ -73,10 +69,6 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
 
         if speed is None:
             speed = self.max_speed
-
-        if tmc_gpio.tmc_gpio.__class__.__name__ == "GpiozeroWrapper":
-            tmc_gpio.tmc_gpio.gpio_pwm_enable(self._pin_step, True)
-            # TODO: check for a better solution for gpiozero
 
         if speed == 0:
             # stop movement

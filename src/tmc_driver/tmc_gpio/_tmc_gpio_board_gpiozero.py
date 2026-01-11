@@ -75,6 +75,8 @@ class GpiozeroWrapper(BaseGPIOWrapper):
         gpio = self._gpios[pin]
         if not isinstance(gpio, DigitalOutputDevice):
             raise RuntimeError(f"GPIO pin {pin} not configured as output")
+        if gpio.closed:
+            return
         gpio.value = value
 
     def gpio_pwm_enable(self, pin: int, enable: bool):
@@ -94,6 +96,8 @@ class GpiozeroWrapper(BaseGPIOWrapper):
 
     def gpio_pwm_set_frequency(self, pin: int, frequency: int):
         """set PWM frequency"""
+        self.gpio_pwm_enable(pin, True)
+
         gpio = self._gpios_pwm[pin]
         if not isinstance(gpio, PWMOutputDevice):
             raise RuntimeError(f"GPIO pin {pin} not configured as PWM")
@@ -106,6 +110,12 @@ class GpiozeroWrapper(BaseGPIOWrapper):
             pin (int): pin number
             duty_cycle (int): duty cycle in percent (0-100)
         """
+        if duty_cycle == 0:
+            self.gpio_pwm_enable(pin, False)
+            return
+        else:
+            self.gpio_pwm_enable(pin, True)
+
         gpio = self._gpios_pwm[pin]
         if not isinstance(gpio, PWMOutputDevice):
             raise RuntimeError(f"GPIO pin {pin} not configured as PWM")
