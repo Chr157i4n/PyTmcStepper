@@ -1,5 +1,13 @@
 # Changelog
 
+## version 0.13.0
+
+- added demo script for TMC5160 internal ramp generator
+- added support for StallGuard and homing using the TMC5160 internal ramp generator
+- some smaller changes
+- fixed TMC5160 relative movement
+- fixed TmcMotionControlVActual (ms instead of µs)
+
 ## version 0.12.0
 
 - updated wiring diagrams
