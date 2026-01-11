@@ -6,7 +6,7 @@
 STEP_PWM/DIR Motion Control module
 """
 
-from ._tmc_mc import MovementAbsRel, Direction, StopMode
+from ._tmc_mc import Direction, StopMode
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
 from ..tmc_logger import TmcLogger, Loglevel
 from .. import tmc_gpio
