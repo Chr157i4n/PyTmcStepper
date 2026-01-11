@@ -43,21 +43,6 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         super().stop(stop_mode)
         tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
 
-    def run_to_position_steps(
-        self, steps, movement_abs_rel: MovementAbsRel | None = None
-    ) -> StopMode:
-        """runs the motor to a specific position
-
-        Args:
-            steps (int): position in µsteps
-            movement_abs_rel (enum, optional): whether the movement is absolute or relative
-                (Default value = None)
-
-        Returns:
-            StopMode: the stop mode
-        """
-        return super().run_to_position_steps(steps, movement_abs_rel)
-
     def run_speed_pwm(self, speed: int | None = None):
         """runs the motor
         does not block the code

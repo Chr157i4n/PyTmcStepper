@@ -113,8 +113,7 @@ class GpiozeroWrapper(BaseGPIOWrapper):
         if duty_cycle == 0:
             self.gpio_pwm_enable(pin, False)
             return
-        else:
-            self.gpio_pwm_enable(pin, True)
+        self.gpio_pwm_enable(pin, True)
 
         gpio = self._gpios_pwm[pin]
         if not isinstance(gpio, PWMOutputDevice):
