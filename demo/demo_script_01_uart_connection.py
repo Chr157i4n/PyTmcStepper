@@ -13,9 +13,6 @@ print("SCRIPT START")
 print("---")
 
 
-tmc: Tmc2209 = None
-
-
 # -----------------------------------------------------------------------
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here

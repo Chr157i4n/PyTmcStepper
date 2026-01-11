@@ -17,7 +17,6 @@ print("---")
 # initiate the Tmc2209 class
 # use your pins for pin_en, pin_step, pin_dir here
 # -----------------------------------------------------------------------
-
 UART_PORT = {
     Board.RASPBERRY_PI: "/dev/serial0",
     Board.RASPBERRY_PI5: "/dev/ttyAMA0",
