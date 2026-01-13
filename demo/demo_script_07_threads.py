@@ -48,7 +48,7 @@ tmc1.movement_abs_rel = MovementAbsRel.ABSOLUTE
 # -----------------------------------------------------------------------
 for tmc in tmc_driverlist:
     tmc.set_direction_reg(False)
-    tmc.set_current(300)
+    tmc.set_current_rms(300)
     tmc.set_interpolation(True)
     tmc.set_spreadcycle(False)
     tmc.set_microstepping_resolution(2)

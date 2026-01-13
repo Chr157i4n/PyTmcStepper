@@ -37,7 +37,7 @@ tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
 tmc.set_direction_reg(False)
-tmc.set_current(300)
+tmc.set_current_rms(300)
 tmc.set_interpolation(True)
 tmc.set_spreadcycle(False)
 tmc.set_microstepping_resolution(2)
@@ -77,21 +77,21 @@ print(f"VSupply:\t{tmc.get_vsupply()} V")
 # -----------------------------------------------------------------------
 # move the motor 1 revolution
 # -----------------------------------------------------------------------
-tmc.run_to_position_fullsteps(200)  # move to position 200 (fullsteps)
-tmc.run_to_position_fullsteps(0)  # move to position 0
+tmc.run_to_position_fullsteps(1000)  # move to position 200 (fullsteps)
+# tmc.run_to_position_fullsteps(0)  # move to position 0
 
-tmc.run_to_position_fullsteps(
-    200, MovementAbsRel.RELATIVE
-)  # move 200 fullsteps forward
-tmc.run_to_position_fullsteps(
-    -200, MovementAbsRel.RELATIVE
-)  # move 200 fullsteps backward
+# tmc.run_to_position_fullsteps(
+#     200, MovementAbsRel.RELATIVE
+# )  # move 200 fullsteps forward
+# tmc.run_to_position_fullsteps(
+#     -200, MovementAbsRel.RELATIVE
+# )  # move 200 fullsteps backward
 
-tmc.run_to_position_steps(400)  # move to position 400 (µsteps)
-tmc.run_to_position_steps(0)  # move to position 0
+# tmc.run_to_position_steps(400)  # move to position 400 (µsteps)
+# tmc.run_to_position_steps(0)  # move to position 0
 
-tmc.run_to_position_revolutions(1)  # move 1 revolution forward
-tmc.run_to_position_revolutions(0)  # move 1 revolution backward
+# tmc.run_to_position_revolutions(1)  # move 1 revolution forward
+# tmc.run_to_position_revolutions(0)  # move 1 revolution backward
 
 
 # -----------------------------------------------------------------------

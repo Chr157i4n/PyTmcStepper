@@ -29,7 +29,7 @@ tmc = Tmc2240(None, None, TmcComSpiFtdi(spi_port), loglevel=Loglevel.DEBUG)
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
 tmc.set_direction_reg(False)
-tmc.set_current(300)
+tmc.set_current_rms(300)
 tmc.set_interpolation(True)
 tmc.set_spreadcycle(False)
 tmc.set_microstepping_resolution(2)
