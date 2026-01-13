@@ -19,7 +19,7 @@ print("---")
 tmc = Tmc2240(
     TmcEnableControlPin(18),
     TmcMotionControlStepDir(17, 16),
-    TmcComSpiMicroPython(spi_id=0, cs_pin=17, sck_pin=18, mosi_pin=19, miso_pin=16),
+    TmcComSpiMicroPython(spi_id=0, cs_pin=5, sck_pin=2, mosi_pin=3, miso_pin=4),
     loglevel=Loglevel.DEBUG,
 )
 
