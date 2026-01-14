@@ -90,6 +90,7 @@ class Ioin(shared.Ioin):
     """IOIN register class"""
 
     ADDR = 0x4
+    DRIVER_NAME = "TMC5160"
 
     version: int
     sw_comp_in: bool

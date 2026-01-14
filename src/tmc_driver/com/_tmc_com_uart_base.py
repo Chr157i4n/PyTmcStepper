@@ -344,3 +344,42 @@ class TmcComUartBase(TmcCom):
         self.tmc_logger.log("---")
 
         return status
+
+    def scan_for_devices(
+        self,
+        driver_ioin_regs: list | None = None,
+        address_range: range = range(0, 8),
+    ) -> list[tuple[int, str | None]]:
+        """scan for devices on the UART bus
+
+        Args:
+            driver_ioin_regs: list of IOIN register classes to test (default: None)
+            address_range: range of addresses to scan (default: range(0, 8))
+
+        Returns:
+            list of tuples: (address, driver name or None)
+        """
+        found_devices = []
+
+        for address in address_range:
+            self.driver_address = address
+            if driver_ioin_regs is None:
+                if self.test_com():
+                    self.tmc_logger.log(
+                        f"Found device at address {address}", Loglevel.INFO
+                    )
+                    found_devices.append((address, None))
+            else:
+                for driver_ioin_reg in driver_ioin_regs:
+                    ioin = driver_ioin_reg(self)
+                    if self.test_com(ioin):
+                        # Get driver name from DRIVER_NAME attribute if available
+                        driver_name = getattr(driver_ioin_reg, "DRIVER_NAME", None)
+                        self.tmc_logger.log(
+                            f"Found device at address {address}: {driver_name}",
+                            Loglevel.INFO,
+                        )
+                        found_devices.append((address, driver_name))
+                        break  # Move to the next address after finding a device
+
+        return found_devices
