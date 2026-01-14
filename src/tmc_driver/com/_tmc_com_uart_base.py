@@ -324,7 +324,8 @@ class TmcComUartBase(TmcCom):
                 Loglevel.DEBUG,
             )
             status = False
-
+        # only check version if a specific ioin register is given
+        # pylint: disable=unidiomatic-typecheck
         if status and type(ioin) is not tmc_shared_reg.Ioin:
             ioin.read()
 
