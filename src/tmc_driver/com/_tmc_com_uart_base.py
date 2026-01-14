@@ -235,14 +235,17 @@ class TmcComUartBase(TmcCom):
             return
         self._uart_flush()
 
-    def test_com(self):
+    def test_com(self, ioin: tmc_shared_reg.Ioin | None = None) -> bool:
         """test UART connection
+
+        Args:
+            ioin: pre-created IOIN register instance (optional)
 
         Returns:
             bool: True if communication is OK, False otherwise
 
         Raises:
-            TmcComException: if TMC register IOIN not available or serial not initialized
+            TmcComException: if serial not initialized
         """
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
@@ -251,7 +254,9 @@ class TmcComUartBase(TmcCom):
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
-        ioin: tmc_shared_reg.Ioin = self.get_register("ioin")  # type: ignore
+        if ioin is None:
+            ioin = tmc_shared_reg.Ioin(self)
+            setattr(ioin, "ADDR", 0x6)  # Default IOIN address
 
         self.r_frame[1] = self.driver_address
         self.r_frame[2] = ioin.ADDR
@@ -320,7 +325,7 @@ class TmcComUartBase(TmcCom):
             )
             status = False
 
-        if status:
+        if status and type(ioin) is not tmc_shared_reg.Ioin:
             ioin.read()
 
             if ioin.version < 0x21:

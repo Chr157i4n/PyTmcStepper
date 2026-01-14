@@ -138,16 +138,15 @@ class TmcComSpiBase(TmcCom):
     def flush_com_buffer(self):
         """this function clear the communication buffers of the Raspberry Pi"""
 
-    def test_com(self):
+    def test_com(self, ioin: tmc_shared_reg.Ioin):
         """test com connection
+
+        Args:
+            ioin: IOIN register instance
 
         Returns:
             bool: True if communication is OK, False otherwise
-
-        Raises:
-            TmcComException: if TMC register IOIN not available
         """
-        ioin: tmc_shared_reg.Ioin = self.get_register("ioin")  # type: ignore
         data, flags = ioin.read()
         del flags  # unused
 

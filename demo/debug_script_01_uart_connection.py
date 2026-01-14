@@ -14,21 +14,18 @@ print("---")
 
 
 # -----------------------------------------------------------------------
-# initiate the Tmc2209 class
-# use your pins for pin_en, pin_step, pin_dir here
+# initiate the TmcCom class
 # -----------------------------------------------------------------------
-tmc = Tmc2209(None, None, None, loglevel=Loglevel.DEBUG)
-
-
 UART_PORT = {
     Board.RASPBERRY_PI: "/dev/serial0",
     Board.RASPBERRY_PI5: "/dev/ttyAMA0",
     Board.NVIDIA_JETSON: "/dev/ttyTHS1",
 }
-tmc.tmc_com = TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0"))
+tmc_com = TmcComUart(UART_PORT.get(tmc_gpio.BOARD, "/dev/serial0"))
 
-tmc.tmc_com.tmc_logger = tmc.tmc_logger
-tmc.tmc_com.init()
+tmc_com.tmc_logger = TmcLogger(Loglevel.DEBUG)
+tmc_com.driver_address = 0
+tmc_com.init()
 
 
 # -----------------------------------------------------------------------
@@ -36,16 +33,16 @@ tmc.tmc_com.init()
 # -----------------------------------------------------------------------
 print("---\n---")
 
-tmc.test_com()
+tmc_com.test_com(Ioin(tmc_com))
 
 
 print("---\n---")
 
 
 # -----------------------------------------------------------------------
-# deinitiate the Tmc2209 class
+# deinitiate the TmcCom class
 # -----------------------------------------------------------------------
-del tmc
+del tmc_com
 
 print("---")
 print("SCRIPT FINISHED")
