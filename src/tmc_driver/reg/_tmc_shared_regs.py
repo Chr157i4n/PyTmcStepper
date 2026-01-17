@@ -111,7 +111,7 @@ class ChopConf(TmcReg):
     dedge: bool
     intpol: bool
     mres: int
-    mres_ms: bool
+    mres_ms: int
     tbl: int
     hend: int
     hstrt: int
