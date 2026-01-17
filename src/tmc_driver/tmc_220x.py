@@ -326,13 +326,7 @@ class Tmc220x(TmcXXXX):
         Args:
             mres (int): µstep resolution; has to be a power of 2 or 1 for fullstep
         """
-        if self.tmc_mc is not None:
-            self.tmc_mc.mres = mres
-
-        self.chopconf.read()
-        self.chopconf.mres_ms = mres
-        self.chopconf.write_check()
-
+        super().set_microstepping_resolution(mres)
         self.set_mstep_resolution_reg_select(True)
 
     def set_mstep_resolution_reg_select(self, en: bool):

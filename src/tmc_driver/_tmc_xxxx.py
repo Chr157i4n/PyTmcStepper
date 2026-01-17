@@ -271,13 +271,18 @@ class TmcXXXX(TmcStepperDriver):
             )
         return self.tmc_mc.mres
 
-    @abstractmethod
     def set_microstepping_resolution(self, mres: int):
         """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
 
         Args:
             mres (int): µstep resolution; has to be a power of 2 or 1 for fullstep
         """
+        if self.tmc_mc is not None:
+            self.tmc_mc.mres = mres
+
+        self.chopconf.read()
+        self.chopconf.mres_ms = mres
+        self.chopconf.write_check()
 
     @abstractmethod
     def set_current_peak(

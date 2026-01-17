@@ -1,5 +1,12 @@
 # Changelog
 
+## version 0.15.0
+
+- updated python-publish workflow
+- moved set_microstepping_resolution into TmcXXXX
+- fixed acceleration_fullstep property value calculation
+- fixed max_speed_fullstep property value calculation
+
 ## version 0.14.0
 
 - added init.py for submodules to easier import

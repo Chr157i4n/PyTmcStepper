@@ -56,6 +56,16 @@ class TmcMotionControl:
         self._current_pos = current_pos
 
     @property
+    def current_pos_fullstep(self) -> int:
+        """_current_pos as fullstep property"""
+        return self.current_pos // self.mres
+
+    @current_pos_fullstep.setter
+    def current_pos_fullstep(self, current_pos: int):
+        """_current_pos as fullstep setter"""
+        self.current_pos = current_pos * self.mres
+
+    @property
     def mres(self):
         """_mres property"""
         return self._mres
@@ -130,7 +140,7 @@ class TmcMotionControl:
     @property
     def max_speed_fullstep(self):
         """_max_speed_fullstep property"""
-        return self.max_speed * self.mres
+        return self.max_speed // self.mres
 
     @max_speed_fullstep.setter
     def max_speed_fullstep(self, max_speed_fullstep: int):
@@ -155,7 +165,7 @@ class TmcMotionControl:
     @property
     def acceleration_fullstep(self):
         """_acceleration_fullstep property"""
-        return self._acceleration * self.mres
+        return self._acceleration // self.mres
 
     @acceleration_fullstep.setter
     def acceleration_fullstep(self, acceleration_fullstep: int):

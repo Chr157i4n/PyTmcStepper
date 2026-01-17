@@ -264,19 +264,6 @@ class Tmc5160(TmcXXXX, StallGuard):
         """
         self.gconf.modify("en_pwm_mode", not en)
 
-    def set_microstepping_resolution(self, mres: int):
-        """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
-
-        Args:
-            mres (int): µstep resolution; has to be a power of 2 or 1 for fullstep
-        """
-        if self.tmc_mc is not None:
-            self.tmc_mc.mres = mres
-
-        self.chopconf.read()
-        self.chopconf.mres_ms = mres
-        self.chopconf.write_check()
-
     def get_interface_transmission_counter(self) -> int:
         """reads the interface transmission counter from the tmc register
         this value is increased on every succesfull write access
