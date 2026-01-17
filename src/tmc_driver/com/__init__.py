@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel
 """Communication module for TMC stepper drivers
 
 Provides UART and SPI communication implementations for different platforms:
@@ -35,19 +36,19 @@ def __getattr__(name):
         from ._tmc_com_uart import TmcComUart
 
         return TmcComUart
-    elif name == "TmcComSpi":
+    if name == "TmcComSpi":
         from ._tmc_com_spi import TmcComSpi
 
         return TmcComSpi
-    elif name == "TmcComUartMicroPython":
+    if name == "TmcComUartMicroPython":
         from ._tmc_com_uart_micropython import TmcComUartMicroPython
 
         return TmcComUartMicroPython
-    elif name == "TmcComSpiMicroPython":
+    if name == "TmcComSpiMicroPython":
         from ._tmc_com_spi_micropython import TmcComSpiMicroPython
 
         return TmcComSpiMicroPython
-    elif name == "TmcComSpiFtdi":
+    if name == "TmcComSpiFtdi":
         from ._tmc_com_spi_ftdi import TmcComSpiFtdi
 
         return TmcComSpiFtdi

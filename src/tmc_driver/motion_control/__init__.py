@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel
 """Motion control module for TMC stepper drivers
 
 Provides various motion control strategies:
@@ -51,43 +52,43 @@ def __getattr__(name):
         from ._tmc_mc import TmcMotionControl
 
         return TmcMotionControl
-    elif name == "Direction":
+    if name == "Direction":
         from ._tmc_mc import Direction
 
         return Direction
-    elif name == "MovementAbsRel":
+    if name == "MovementAbsRel":
         from ._tmc_mc import MovementAbsRel
 
         return MovementAbsRel
-    elif name == "MovementPhase":
+    if name == "MovementPhase":
         from ._tmc_mc import MovementPhase
 
         return MovementPhase
-    elif name == "StopMode":
+    if name == "StopMode":
         from ._tmc_mc import StopMode
 
         return StopMode
-    elif name == "TmcMotionControlStepDir":
+    if name == "TmcMotionControlStepDir":
         from ._tmc_mc_step_dir import TmcMotionControlStepDir
 
         return TmcMotionControlStepDir
-    elif name == "TmcMotionControlStepReg":
+    if name == "TmcMotionControlStepReg":
         from ._tmc_mc_step_reg import TmcMotionControlStepReg
 
         return TmcMotionControlStepReg
-    elif name == "TmcMotionControlStepPwmDir":
+    if name == "TmcMotionControlStepPwmDir":
         from ._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 
         return TmcMotionControlStepPwmDir
-    elif name == "TmcMotionControlVActual":
+    if name == "TmcMotionControlVActual":
         from ._tmc_mc_vactual import TmcMotionControlVActual
 
         return TmcMotionControlVActual
-    elif name == "TmcMotionControlIntRampGenerator":
+    if name == "TmcMotionControlIntRampGenerator":
         from ._tmc_mc_int_ramp_generator import TmcMotionControlIntRampGenerator
 
         return TmcMotionControlIntRampGenerator
-    elif name == "RampMode":
+    if name == "RampMode":
         from ._tmc_mc_int_ramp_generator import RampMode
 
         return RampMode

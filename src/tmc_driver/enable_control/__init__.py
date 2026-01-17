@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel
 """Enable control module for TMC stepper drivers
 
 Provides motor enable/disable functionality:
@@ -36,11 +37,11 @@ def __getattr__(name):
         from ._tmc_ec import TmcEnableControl
 
         return TmcEnableControl
-    elif name == "TmcEnableControlPin":
+    if name == "TmcEnableControlPin":
         from ._tmc_ec_pin import TmcEnableControlPin
 
         return TmcEnableControlPin
-    elif name == "TmcEnableControlToff":
+    if name == "TmcEnableControlToff":
         from ._tmc_ec_toff import TmcEnableControlToff
 
         return TmcEnableControlToff
