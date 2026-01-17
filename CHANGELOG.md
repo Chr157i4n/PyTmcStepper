@@ -1,6 +1,6 @@
 # Changelog
 
-## verison 0.14.0
+## version 0.14.0
 
 - added init.py for submodules to easier import
 - removed unused tmc_com property in submodules
