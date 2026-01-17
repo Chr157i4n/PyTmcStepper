@@ -1,27 +1,32 @@
 """
 test for _tmc_com_spi.py
+
+does not run if spidev is not installed
+spidev is not available on all systems
 """
 
 import unittest
 from unittest import mock
-from src.tmc_driver.com._tmc_com_spi import TmcComSpi
 
+try:
+    from src.tmc_driver.com._tmc_com_spi import TmcComSpi
 
-class TestTmcComSpi(unittest.TestCase):
-    """TestTmcComSpi"""
+    class TestTmcComSpi(unittest.TestCase):
+        """TestTmcComSpi"""
 
-    def setUp(self):
-        """setUp"""
-        self.tmc_spi = TmcComSpi(0, 0)
+        def setUp(self):
+            """setUp"""
+            self.tmc_spi = TmcComSpi(0, 0)
 
-    def test_read_int(self):
-        """test_read_int"""
-        with mock.patch.object(
-            TmcComSpi, "read_reg", return_value=(b"U\xc0\x1e\x00\x00\xca", None)
-        ):
-            reg_ans, _ = self.tmc_spi.read_int(0x00)
-            self.assertEqual(reg_ans, 94283625398474, "read_int is wrong")
+        def test_read_int(self):
+            """test_read_int"""
+            with mock.patch.object(
+                TmcComSpi, "read_reg", return_value=(b"U\xc0\x1e\x00\x00\xca", None)
+            ):
+                reg_ans, _ = self.tmc_spi.read_int(0x00)
+                self.assertEqual(reg_ans, 94283625398474, "read_int is wrong")
 
-
-if __name__ == "__main__":
-    unittest.main()
+    if __name__ == "__main__":
+        unittest.main()
+except ImportError:
+    pass
