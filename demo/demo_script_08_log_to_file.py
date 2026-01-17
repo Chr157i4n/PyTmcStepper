@@ -1,5 +1,5 @@
 """
-test file for testing writing the log messages to a file
+Demo file for writing the log messages to a file
 """
 
 import logging

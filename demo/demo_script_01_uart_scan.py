@@ -1,5 +1,5 @@
 """
-debug file for debuging the UART connection
+Demo file for UART device scan
 """
 
 from tmc_driver import TmcLogger, Loglevel, Board, tmc_gpio

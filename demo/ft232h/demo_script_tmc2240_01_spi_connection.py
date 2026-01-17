@@ -1,5 +1,5 @@
 """
-test file for testing the SPI connection
+Demo file for testing the SPI connection
 """
 
 from pyftdi.spi import SpiController

@@ -1,5 +1,5 @@
 """
-test file for testing basic movement
+Demo file for homing via Step/Dir interface using MicroPython
 """
 
 from tmc_driver import (

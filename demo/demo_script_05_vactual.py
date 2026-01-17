@@ -1,5 +1,5 @@
 """
-test file for testing the VActual
+Demo file for movement using VActual (only Tmc2209)
 """
 
 import time

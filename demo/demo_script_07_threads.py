@@ -1,5 +1,5 @@
 """
-test file for testing movement of motors with threads
+Demo file for movement of motors with threads
 """
 
 import time

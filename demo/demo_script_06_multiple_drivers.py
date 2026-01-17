@@ -1,5 +1,5 @@
 """
-test file for testing multiple drivers via one UART connection
+Demo file for multiple drivers via one shared UART connection
 """
 
 from tmc_driver import (

@@ -1,5 +1,5 @@
 """
-test file for testing basic movement
+Demo file for basic movement
 """
 
 from pyftdi.spi import SpiController

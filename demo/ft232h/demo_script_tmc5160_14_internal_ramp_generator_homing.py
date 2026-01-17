@@ -1,5 +1,5 @@
 """
-test file for testing basic movement
+Demo file for homing using the internal ramp generator of the TMC5160
 """
 
 from pyftdi.spi import SpiController

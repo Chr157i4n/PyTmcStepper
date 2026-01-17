@@ -1,5 +1,5 @@
 """
-test file for testing basic movement
+Demo file for continous movement of a motor using Step/Dir interface
 """
 
 import time

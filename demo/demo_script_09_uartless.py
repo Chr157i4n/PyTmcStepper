@@ -1,5 +1,5 @@
 """
-test file for testing basic movement
+Demo file for basic movement without UART (only STEP/DIR/EN control)
 """
 
 from tmc_driver import (

@@ -1,5 +1,5 @@
 """
-test file for testing the StallGuard feature
+Demo file for the StallGuard feature
 """
 
 from tmc_driver import (

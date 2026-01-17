@@ -1,5 +1,5 @@
 """
-test file for testing the STEP, DIR, EN connection
+Demo file for testing the STEP, DIR, EN connection
 """
 
 from tmc_driver import (

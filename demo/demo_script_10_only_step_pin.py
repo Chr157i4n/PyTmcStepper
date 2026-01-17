@@ -1,5 +1,6 @@
 """
-test file for testing basic movement
+Demo file for movement using only STEP pin.
+Using Register for Direction control and Toff-Register for Enable control
 """
 
 from tmc_driver import (

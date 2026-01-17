@@ -1,5 +1,5 @@
 """
-test file for testing the UART connection
+Demo file for testing the UART connection
 """
 
 from tmc_driver import Tmc2209, Loglevel, Board, tmc_gpio
