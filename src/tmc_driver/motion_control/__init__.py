@@ -47,6 +47,7 @@ except ImportError:
 
 
 def __getattr__(name):
+    # pylint: disable=too-many-return-statements
     """Lazy import of motion control classes to avoid circular imports"""
     if name == "TmcMotionControl":
         from ._tmc_mc import TmcMotionControl
