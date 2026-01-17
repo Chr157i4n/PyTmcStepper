@@ -17,7 +17,6 @@ from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
-from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
