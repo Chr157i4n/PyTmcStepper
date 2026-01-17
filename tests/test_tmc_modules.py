@@ -218,9 +218,15 @@ class TestTMCModules(unittest.TestCase):
                 self.assertIsInstance(instance.tmc_mc, TmcMotionControlStepDir)
 
                 instance.set_motor_enabled(True)
-                instance.set_motor_enabled(False)
 
                 instance.run_to_position_steps(10)
+                self.assertEqual(instance.current_pos, 10)
+                instance.run_to_position_steps(-5, MovementAbsRel.RELATIVE)
+                self.assertEqual(instance.current_pos, 5)
+                instance.run_to_position_steps(0)
+                self.assertEqual(instance.current_pos, 0)
+
+                instance.set_motor_enabled(False)
 
                 instance.deinit()
 
