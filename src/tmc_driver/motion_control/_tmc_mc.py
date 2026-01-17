@@ -155,7 +155,7 @@ class TmcMotionControl:
     @property
     def acceleration_fullstep(self):
         """_acceleration_fullstep property"""
-        return self._acceleration * self.mres
+        return self._acceleration // self.mres
 
     @acceleration_fullstep.setter
     def acceleration_fullstep(self, acceleration_fullstep: int):
