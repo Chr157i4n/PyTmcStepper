@@ -56,6 +56,16 @@ class TmcMotionControl:
         self._current_pos = current_pos
 
     @property
+    def current_pos_fullstep(self) -> int:
+        """_current_pos as fullstep property"""
+        return self.current_pos // self.mres
+
+    @current_pos_fullstep.setter
+    def current_pos_fullstep(self, current_pos: int):
+        """_current_pos as fullstep setter"""
+        self.current_pos = current_pos * self.mres
+
+    @property
     def mres(self):
         """_mres property"""
         return self._mres
