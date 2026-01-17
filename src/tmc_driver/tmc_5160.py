@@ -1,4 +1,3 @@
-# pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-arguments
@@ -26,13 +25,6 @@ from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from .tmc_logger import *
 from .reg._tmc5160_reg import *
-from ._tmc_exceptions import (
-    TmcException,
-    TmcComException,
-    TmcMotionControlException,
-    TmcEnableControlException,
-    TmcDriverException,
-)
 
 
 class Tmc5160(TmcXXXX, StallGuard):

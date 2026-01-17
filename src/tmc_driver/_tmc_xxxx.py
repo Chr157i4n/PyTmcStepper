@@ -1,5 +1,6 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=unused-import
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-public-methods
@@ -21,7 +22,13 @@ from .com._tmc_com import TmcCom
 from .reg._tmc_reg import TmcReg
 from .reg import _tmc_shared_regs as tmc_shared_regs
 from ._tmc_validation import validate_submodule
-from ._tmc_exceptions import TmcDriverException, TmcComException
+from ._tmc_exceptions import (
+    TmcException,
+    TmcComException,
+    TmcMotionControlException,
+    TmcEnableControlException,
+    TmcDriverException,
+)
 
 
 class TmcXXXX(TmcStepperDriver):
