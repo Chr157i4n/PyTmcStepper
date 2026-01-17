@@ -473,4 +473,4 @@ class TmcXXXX(TmcStepperDriver):
         self.tmc_logger.log("---")
         self.tmc_logger.log("TEST COM")
 
-        return self.tmc_com.test_com()
+        return self.tmc_com.test_com(self.ioin)
