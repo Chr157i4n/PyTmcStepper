@@ -4,9 +4,16 @@
 test file for testing the STEP, DIR, EN connection
 """
 
-from tmc_driver.tmc_2209 import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    Board,
+    tmc_gpio,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+    MovementAbsRel,
+)
 from tmc_driver.com._tmc_com_uart import *
-
 
 print("---")
 print("SCRIPT START")

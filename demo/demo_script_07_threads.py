@@ -5,7 +5,15 @@ test file for testing movement of motors with threads
 """
 
 import time
-from tmc_driver.tmc_2209 import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    Board,
+    tmc_gpio,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 from tmc_driver.com._tmc_com_uart import *
 
 

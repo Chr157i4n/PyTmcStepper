@@ -4,7 +4,13 @@
 test file for testing basic movement
 """
 
-from tmc_driver.tmc_2209 import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 
 
 print("---")

@@ -4,9 +4,15 @@
 test file for testing basic movement
 """
 from pyftdi.spi import SpiController
-from tmc_driver.tmc_2240 import *
 from tmc_driver.com._tmc_com_spi_ftdi import *
-from tmc_driver import tmc_gpio
+from tmc_driver import (
+    Tmc2240,
+    Loglevel,
+    tmc_gpio,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 
 print("---")
 print("SCRIPT START")

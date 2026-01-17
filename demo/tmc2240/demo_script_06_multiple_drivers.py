@@ -4,9 +4,17 @@
 test file for testing multiple drivers via one UART connection
 """
 
-from tmc_driver.tmc_2209 import *
+from tmc_driver import (
+    Tmc2209,
+    Tmc2240,
+    Board,
+    tmc_gpio,
+    Loglevel,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 from tmc_driver.com._tmc_com_uart import *
-from tmc_driver.tmc_2240 import *
 from tmc_driver.com._tmc_com_spi import *
 
 print("---")

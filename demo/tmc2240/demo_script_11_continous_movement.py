@@ -5,7 +5,13 @@ test file for testing basic movement
 """
 
 import time
-from tmc_driver.tmc_2240 import *
+from tmc_driver import (
+    Tmc2240,
+    Loglevel,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 from tmc_driver.com._tmc_com_spi import *
 
 

@@ -4,7 +4,7 @@
 test file for testing the UART connection
 """
 
-from tmc_driver.tmc_2240 import *
+from tmc_driver import Tmc2240, Loglevel
 from tmc_driver.com._tmc_com_spi import *
 
 

@@ -4,8 +4,14 @@
 test file for testing basic movement
 """
 
+from tmc_driver import (
+    Tmc2240,
+    Loglevel,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 from tmc_driver.com._tmc_com_spi_micropython import TmcComSpiMicroPython
-from tmc_driver.tmc_2240 import *
 
 
 print("---")

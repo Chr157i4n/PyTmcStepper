@@ -4,8 +4,14 @@
 test file for testing basic movement
 """
 
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+    MovementAbsRel,
+)
 from tmc_driver.com._tmc_com_uart_micropython import TmcComUartMicroPython
-from tmc_driver.tmc_2209 import *
 
 
 print("---")
