@@ -165,6 +165,14 @@ class TestTMCModules(unittest.TestCase):
                                 self.assertIsInstance(instance.tmc_mc, mc.__class__)
                                 self.assertIsInstance(instance.tmc_com, com.__class__)
 
+                                instance.set_microstepping_resolution(2)
+
+                                instance.acceleration_fullstep = 1000
+                                instance.max_speed_fullstep = 250
+
+                                self.assertEqual(instance.acceleration_fullstep, 1000)
+                                self.assertEqual(instance.max_speed_fullstep, 250)
+
                                 instance.set_motor_enabled(True)
                                 instance.set_motor_enabled(False)
 
