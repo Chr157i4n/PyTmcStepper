@@ -1,5 +1,6 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=unused-import
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-public-methods
@@ -13,6 +14,7 @@ this module has two different functions:
 
 import time
 from abc import abstractmethod
+from .tmc_gpio import Gpio
 from ._tmc_stepperdriver import *
 from .tmc_logger import Loglevel
 from .enable_control._tmc_ec import TmcEnableControl
@@ -21,7 +23,13 @@ from .com._tmc_com import TmcCom
 from .reg._tmc_reg import TmcReg
 from .reg import _tmc_shared_regs as tmc_shared_regs
 from ._tmc_validation import validate_submodule
-from ._tmc_exceptions import TmcDriverException, TmcComException
+from ._tmc_exceptions import (
+    TmcException,
+    TmcComException,
+    TmcMotionControlException,
+    TmcEnableControlException,
+    TmcDriverException,
+)
 
 
 class TmcXXXX(TmcStepperDriver):
@@ -92,13 +100,7 @@ class TmcXXXX(TmcStepperDriver):
         if self.tmc_com is not None:
             self.tmc_com.tmc_logger = self.tmc_logger
             self.tmc_com.driver_address = driver_address
-
             self.tmc_com.init()
-
-            if self.tmc_mc is not None:
-                setattr(self.tmc_mc, "tmc_com", self.tmc_com)
-            if self.tmc_ec is not None:
-                setattr(self.tmc_ec, "tmc_com", self.tmc_com)
 
             # Register callback for submodules to access registers
             self.tmc_com.set_get_register_callback(self._get_register)
@@ -479,4 +481,4 @@ class TmcXXXX(TmcStepperDriver):
         self.tmc_logger.log("---")
         self.tmc_logger.log("TEST COM")
 
-        return self.tmc_com.test_com()
+        return self.tmc_com.test_com(self.ioin)

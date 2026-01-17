@@ -76,6 +76,7 @@ class Ioin(shared.Ioin):
     """IOIN register class"""
 
     ADDR = 0x6
+    DRIVER_NAME = "TMC220X"
 
     version: int
     dir: bool

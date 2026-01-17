@@ -1,11 +1,15 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
-test file for testing basic movement
+Demo file for basic movement
 """
 
-from tmc_driver.com._tmc_com_spi_micropython import TmcComSpiMicroPython
-from tmc_driver.tmc_2240 import *
+from tmc_driver import (
+    Tmc2240,
+    Loglevel,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
+from tmc_driver.com import TmcComSpiMicroPython
 
 
 print("---")
@@ -19,7 +23,7 @@ print("---")
 tmc = Tmc2240(
     TmcEnableControlPin(18),
     TmcMotionControlStepDir(17, 16),
-    TmcComSpiMicroPython(spi_id=0, cs_pin=17, sck_pin=18, mosi_pin=19, miso_pin=16),
+    TmcComSpiMicroPython(spi_id=0, cs_pin=5, sck_pin=2, mosi_pin=3, miso_pin=4),
     loglevel=Loglevel.DEBUG,
 )
 
@@ -37,7 +41,7 @@ tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
 tmc.set_direction_reg(False)
-tmc.set_current(300)
+tmc.set_current_rms(300)
 tmc.set_interpolation(True)
 tmc.set_spreadcycle(False)
 tmc.set_microstepping_resolution(2)

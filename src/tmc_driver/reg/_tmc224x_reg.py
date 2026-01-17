@@ -94,6 +94,7 @@ class Ioin(shared.Ioin):
     """IOIN register class"""
 
     ADDR = 0x4
+    DRIVER_NAME = "TMC2240"
 
     version: int
     silicon_rv: int

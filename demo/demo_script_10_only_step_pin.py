@@ -1,11 +1,18 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
-test file for testing basic movement
+Demo file for movement using only STEP pin.
+Using Register for Direction control and Toff-Register for Enable control
 """
 
-from tmc_driver.tmc_2209 import *
-from tmc_driver.com._tmc_com_uart import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    Board,
+    tmc_gpio,
+    MovementAbsRel,
+    TmcEnableControlToff,
+    TmcMotionControlStepReg,
+)
+from tmc_driver.com import TmcComUart
 
 
 print("---")
@@ -45,7 +52,7 @@ tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 # -----------------------------------------------------------------------
 tmc.set_toff(0)
 tmc.set_direction_reg(False)
-tmc.set_current(300)
+tmc.set_current_rms(300)
 tmc.set_interpolation(True)
 tmc.set_spreadcycle(False)
 tmc.set_microstepping_resolution(2)

@@ -1,10 +1,14 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
-test file for testing basic movement
+Demo file for basic movement without UART (only STEP/DIR/EN control)
 """
 
-from tmc_driver.tmc_2209 import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    MovementAbsRel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
 
 
 print("---")

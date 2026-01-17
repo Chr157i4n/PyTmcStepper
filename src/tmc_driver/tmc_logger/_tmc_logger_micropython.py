@@ -46,5 +46,7 @@ class TmcLogger(TmcLoggerBase):
         pass
 
     def log(self, message, loglevel=None):
+        if self.loglevel is Loglevel.NONE:
+            return
         if loglevel is None or self.loglevel is None or loglevel >= self._loglevel:
             print(message)

@@ -1,12 +1,17 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
-test file for testing writing the log messages to a file
+Demo file for writing the log messages to a file
 """
 
 import logging
-from tmc_driver.tmc_2209 import *
-from tmc_driver.com._tmc_com_uart import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    Board,
+    tmc_gpio,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+)
+from tmc_driver.com import TmcComUart
 
 
 print("---")

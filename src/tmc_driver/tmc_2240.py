@@ -1,4 +1,3 @@
-# pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-arguments
@@ -17,7 +16,6 @@ from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
 from .com._tmc_com_spi_base import TmcComSpiBase
 from .com._tmc_com_uart_base import TmcComUartBase
-from . import tmc_gpio
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
 from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
 from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
@@ -26,13 +24,6 @@ from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from .tmc_logger import *
 from .reg._tmc224x_reg import *
-from ._tmc_exceptions import (
-    TmcException,
-    TmcComException,
-    TmcMotionControlException,
-    TmcEnableControlException,
-    TmcDriverException,
-)
 
 
 class Tmc2240(TmcXXXX, StallGuard):

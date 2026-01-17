@@ -1,12 +1,18 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
-test file for testing basic movement
+Demo file for homing using the internal ramp generator of the TMC5160
 """
+
 from pyftdi.spi import SpiController
-from tmc_driver.tmc_5160 import *
-from tmc_driver.com._tmc_com_spi_ftdi import *
-from tmc_driver import tmc_gpio
+from tmc_driver.com import TmcComSpiFtdi
+from tmc_driver import (
+    Tmc5160,
+    Loglevel,
+    tmc_gpio,
+    MovementAbsRel,
+    StopMode,
+    TmcEnableControlPin,
+    TmcMotionControlIntRampGenerator,
+)
 
 print("---")
 print("SCRIPT START")
@@ -44,7 +50,7 @@ tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
 tmc.set_direction_reg(False)
-tmc.set_current(300)
+tmc.set_current_rms(300)
 tmc.set_interpolation(True)
 tmc.set_spreadcycle(False)
 tmc.set_microstepping_resolution(2)

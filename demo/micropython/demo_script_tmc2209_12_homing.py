@@ -1,11 +1,15 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
-test file for testing basic movement
+Demo file for homing via Step/Dir interface using MicroPython
 """
 
-from tmc_driver.com._tmc_com_uart_micropython import TmcComUartMicroPython
-from tmc_driver.tmc_2209 import *
+from tmc_driver import (
+    Tmc2209,
+    Loglevel,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+    MovementAbsRel,
+)
+from tmc_driver.com import TmcComUartMicroPython
 
 
 print("---")
@@ -37,7 +41,7 @@ tmc.movement_abs_rel = MovementAbsRel.ABSOLUTE
 # these functions change settings in the TMC register
 # -----------------------------------------------------------------------
 tmc.set_direction_reg(False)
-tmc.set_current(300)
+tmc.set_current_rms(300)
 tmc.set_interpolation(True)
 tmc.set_spreadcycle(False)
 tmc.set_microstepping_resolution(2)

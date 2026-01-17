@@ -1,4 +1,3 @@
-# pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-arguments
@@ -21,15 +20,8 @@ from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
 from .enable_control._tmc_ec_toff import TmcEnableControlToff
 from .enable_control._tmc_ec_pin import TmcEnableControlPin
-from .tmc_logger import Loglevel, TmcLogger
+from .tmc_logger import Loglevel
 from .reg._tmc220x_reg import *
-from ._tmc_exceptions import (
-    TmcException,
-    TmcComException,
-    TmcMotionControlException,
-    TmcEnableControlException,
-    TmcDriverException,
-)
 
 
 class Tmc220x(TmcXXXX):

@@ -144,5 +144,5 @@ class TmcCom:
         """this function clear the communication buffers of the Raspberry Pi"""
 
     @abstractmethod
-    def test_com(self):
+    def test_com(self, ioin) -> bool:
         """test com connection"""
