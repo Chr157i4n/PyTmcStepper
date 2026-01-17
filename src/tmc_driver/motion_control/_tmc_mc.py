@@ -140,7 +140,7 @@ class TmcMotionControl:
     @property
     def max_speed_fullstep(self):
         """_max_speed_fullstep property"""
-        return self.max_speed * self.mres
+        return self.max_speed // self.mres
 
     @max_speed_fullstep.setter
     def max_speed_fullstep(self, max_speed_fullstep: int):
