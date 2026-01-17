@@ -92,11 +92,8 @@ class TmcStepperDriver:
         """constructor
 
         Args:
-            pin_en (int): EN pin number
-            pin_step (int, optional): STEP pin number. Defaults to -1.
-            pin_dir (int, optional): DIR pin number. Defaults to -1.
-            tmc_com (TmcUart, optional): TMC UART object. Defaults to None.
-            driver_address (int, optional): driver address [0-3]. Defaults to 0.
+            tmc_ec (TmcEnableControl): TMC Enable Control object
+            tmc_mc (TmcMotionControl): TMC Motion Control object
             gpio_mode (enum, optional): gpio mode. Defaults to None.
             loglevel (enum, optional): loglevel. Defaults to None.
             logprefix (str, optional): log prefix (name of the logger).
