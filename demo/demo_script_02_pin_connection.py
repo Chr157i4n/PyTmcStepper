@@ -1,5 +1,3 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
 test file for testing the STEP, DIR, EN connection
 """
@@ -13,7 +11,7 @@ from tmc_driver import (
     TmcMotionControlStepDir,
     MovementAbsRel,
 )
-from tmc_driver.com._tmc_com_uart import *
+from tmc_driver.com import TmcComUart
 
 print("---")
 print("SCRIPT START")

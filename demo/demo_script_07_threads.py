@@ -1,5 +1,3 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
 test file for testing movement of motors with threads
 """
@@ -14,7 +12,7 @@ from tmc_driver import (
     TmcEnableControlPin,
     TmcMotionControlStepDir,
 )
-from tmc_driver.com._tmc_com_uart import *
+from tmc_driver.com import TmcComUart
 
 
 print("---")

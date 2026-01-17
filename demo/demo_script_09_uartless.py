@@ -1,5 +1,3 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
 test file for testing basic movement
 """

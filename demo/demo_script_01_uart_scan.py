@@ -5,7 +5,7 @@ debug file for debuging the UART connection
 from tmc_driver import TmcLogger, Loglevel, Board, tmc_gpio
 from tmc_driver import tmc_2240
 from tmc_driver import tmc_2209
-from tmc_driver.com._tmc_com_uart import TmcComUart
+from tmc_driver.com import TmcComUart
 
 
 # -----------------------------------------------------------------------

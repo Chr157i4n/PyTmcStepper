@@ -1,10 +1,9 @@
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 """
 test file for testing basic movement
 """
+
 from pyftdi.spi import SpiController
-from tmc_driver.com._tmc_com_spi_ftdi import *
+from tmc_driver.com import TmcComSpiFtdi
 from tmc_driver import (
     Tmc2240,
     Loglevel,
