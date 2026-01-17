@@ -48,7 +48,10 @@ class TmcEnableControl:
 
     def deinit(self):
         """destructor"""
-        self.set_motor_enabled(False)
+        # Only disable motor if callback is still available
+        # During garbage collection, parent object may already be destroyed
+        if self._get_register_callback is not None:
+            self.set_motor_enabled(False)
 
     @abstractmethod
     def set_motor_enabled(self, en):
