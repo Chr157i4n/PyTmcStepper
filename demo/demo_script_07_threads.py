@@ -8,6 +8,7 @@ from tmc_driver import (
     Loglevel,
     Board,
     tmc_gpio,
+    MovementPhase,
     MovementAbsRel,
     TmcEnableControlPin,
     TmcMotionControlStepDir,
