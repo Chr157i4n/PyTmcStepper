@@ -14,6 +14,7 @@ this module has two different functions:
 
 import time
 from abc import abstractmethod
+from .tmc_gpio import Gpio
 from ._tmc_stepperdriver import *
 from .tmc_logger import Loglevel
 from .enable_control._tmc_ec import TmcEnableControl
