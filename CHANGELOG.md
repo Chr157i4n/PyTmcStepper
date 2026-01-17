@@ -1,5 +1,13 @@
 # Changelog
 
+## verison 0.14.0
+
+- added init.py for submodules to easier import
+- removed unused tmc_com property in submodules
+- updated current setting method to set_current_rms in demo scripts
+- fixed micropython logger printing, if Loglevel = NONE
+- fixed test_com function
+
 ## version 0.13.0
 
 - added demo script for TMC5160 internal ramp generator
