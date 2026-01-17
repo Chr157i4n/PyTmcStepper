@@ -10,7 +10,6 @@ TMC internal Ramp Generator Motion Control module
 import time
 from enum import IntEnum
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
-from ..com._tmc_com import TmcCom
 from ..tmc_logger import Loglevel
 from ..reg import _tmc5160_reg as tmc5160_reg
 
@@ -28,16 +27,6 @@ class RampMode(IntEnum):
 
 class TmcMotionControlIntRampGenerator(TmcMotionControl):
     """TMC internal Ramp Generator Motion Control class"""
-
-    @property
-    def tmc_com(self):
-        """get the tmc_logger"""
-        return self._tmc_com
-
-    @tmc_com.setter
-    def tmc_com(self, tmc_com):
-        """set the tmc_logger"""
-        self._tmc_com = tmc_com
 
     @property
     def current_pos(self):
@@ -74,7 +63,6 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
     def __init__(self):
         """constructor"""
         super().__init__()
-        self._tmc_com: TmcCom | None = None
         self._starttime: int = 0
 
     def set_ramp_mode(self, ramp_mode: RampMode):

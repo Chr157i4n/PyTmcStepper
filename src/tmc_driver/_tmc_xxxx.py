@@ -92,13 +92,7 @@ class TmcXXXX(TmcStepperDriver):
         if self.tmc_com is not None:
             self.tmc_com.tmc_logger = self.tmc_logger
             self.tmc_com.driver_address = driver_address
-
             self.tmc_com.init()
-
-            if self.tmc_mc is not None:
-                setattr(self.tmc_mc, "tmc_com", self.tmc_com)
-            if self.tmc_ec is not None:
-                setattr(self.tmc_ec, "tmc_com", self.tmc_com)
 
             # Register callback for submodules to access registers
             self.tmc_com.set_get_register_callback(self._get_register)

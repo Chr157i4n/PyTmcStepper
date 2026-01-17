@@ -4,7 +4,6 @@ STEP/REG Motion Control module
 
 from ._tmc_mc import Direction
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
-from ..com._tmc_com import TmcCom
 from ..tmc_logger import Loglevel
 from .. import tmc_gpio
 from ..reg import _tmc_shared_regs as tmc_shared_reg
@@ -13,20 +12,9 @@ from ..reg import _tmc_shared_regs as tmc_shared_reg
 class TmcMotionControlStepReg(TmcMotionControlStepDir):
     """STEP/REG Motion Control class"""
 
-    @property
-    def tmc_com(self):
-        """get the tmc_logger"""
-        return self._tmc_com
-
-    @tmc_com.setter
-    def tmc_com(self, tmc_com):
-        """set the tmc_logger"""
-        self._tmc_com = tmc_com
-
     def __init__(self, pin_step: int):
         """constructor"""
         super().__init__(pin_step, None)
-        self._tmc_com: TmcCom | None = None
 
     def deinit(self):
         """destructor"""
