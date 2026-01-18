@@ -1,4 +1,11 @@
-import _thread
+try:
+    import _thread
+except ImportError:
+    # Dummy _thread module for environments without threading support
+    class _thread:
+        @staticmethod
+        def start_new_thread(func, args):
+            func(*args)
 
 
 class Thread:
