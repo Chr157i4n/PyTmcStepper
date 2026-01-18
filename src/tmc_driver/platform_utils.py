@@ -11,6 +11,6 @@ def get_time_us():
     """Get current time in microseconds, compatible with CPython, MicroPython and CircuitPython"""
     if MICROPYTHON:
         return time.ticks_us()  # pylint: disable=no-member
-    elif CIRCUITPYTHON:
+    if CIRCUITPYTHON:
         return time.monotonic_ns() // 1000  # pylint: disable=no-member
     return time.time_ns() // 1000

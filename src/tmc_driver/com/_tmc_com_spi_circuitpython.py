@@ -19,7 +19,7 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
     Example usage:
         import board
         from tmc_driver.com import TmcComSpiCircuitPython
-        
+
         spi_com = TmcComSpiCircuitPython(
             cs=board.D17,
             clock=board.SCK,
@@ -63,9 +63,7 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
         """Initialize SPI hardware"""
         # Create SPI bus
         self._spi = busio.SPI(
-            clock=self._clock_pin,
-            MOSI=self._mosi_pin,
-            MISO=self._miso_pin
+            clock=self._clock_pin, MOSI=self._mosi_pin, MISO=self._miso_pin
         )
 
         # Setup CS pin (active low)
@@ -100,16 +98,11 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
         # Lock the SPI bus and perform transfer
         while not self._spi.try_lock():
             pass
-        
+
         try:
             # Configure SPI for TMC (Mode 3: CPOL=1, CPHA=1)
-            self._spi.configure(
-                baudrate=self._baudrate,
-                polarity=1,
-                phase=1,
-                bits=8
-            )
-            
+            self._spi.configure(baudrate=self._baudrate, polarity=1, phase=1, bits=8)
+
             # Perform transfer with CS control
             self._cs.value = False  # CS low (active)
             self._spi.write_readinto(tx_data, rx_data)

@@ -35,6 +35,7 @@ except ImportError:
 
 
 def __getattr__(name):
+    # pylint: disable=too-many-return-statements
     """Lazy import of communication classes to avoid circular imports"""
     if name == "TmcComUart":
         from ._tmc_com_uart import TmcComUart
