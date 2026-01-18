@@ -12,26 +12,32 @@ from ._tmc_gpio_board_base import *
 
 
 MICROPYTHON = sys.implementation.name == "micropython"
+CIRCUITPYTHON = sys.implementation.name == "circuitpython"
 
-# ------------------------------
-# LIB           | BOARD
-# ------------------------------
-# RPi.GPIO      | Pi4, Pi3 etc.
-# Jetson.GPIO   | Nvidia Jetson
-# gpiozero      | Pi5
-# pheriphery    | Luckfox Pico
-# OPi.GPIO      | Orange Pi
-# machine       | MicroPython
-# ------------------------------
+# -------------------------------------
+# LIB               | BOARD
+# -------------------------------------
+# RPi.GPIO          | Pi4, Pi3 etc.
+# Jetson.GPIO       | Nvidia Jetson
+# gpiozero          | Pi5
+# pheriphery        | Luckfox Pico
+# OPi.GPIO          | Orange Pi
+# machine           | MicroPython
+# busio/digitalio   | CircuitPython
+# -------------------------------------
 
 if MICROPYTHON:
     from ._tmc_gpio_board_micropython import MicroPythonGPIOWrapper
 
     tmc_gpio = MicroPythonGPIOWrapper()
     BOARD = Board.MICROPYTHON
+elif CIRCUITPYTHON:
+    from ._tmc_gpio_board_circuitpython import CircuitPythonGPIOWrapper
+
+    tmc_gpio = CircuitPythonGPIOWrapper()
+    BOARD = Board.CIRCUITPYTHON
 else:
     import os
-    from ._tmc_gpio_board_ftdi import FtdiWrapper
 
     # Board mapping: (module_path, class_name, Board enum)
     board_mapping = {
@@ -99,3 +105,12 @@ else:
             return MockGPIOWrapper(), Board.UNKNOWN
 
     tmc_gpio, BOARD = initialize_gpio()
+
+    # Lazy import for FtdiWrapper to avoid importing pyftdi unless needed
+    def __getattr__(name):
+        """lazy import FtdiWrapper when accessed"""
+        if name == "FtdiWrapper":
+            from ._tmc_gpio_board_ftdi import FtdiWrapper
+
+            return FtdiWrapper
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

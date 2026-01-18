@@ -44,6 +44,9 @@ class TestTMCMath(unittest.TestCase):
         self.assertEqual(
             round(tmc_math.steps_to_tstep(400, 2)), 234, "steps_to_tstep is wrong"
         )
+        self.assertEqual(
+            round(tmc_math.steps_to_tstep(0, 2)), 0, "steps_to_tstep is wrong"
+        )
 
     def test_constrain(self):
         """test_constrain"""
@@ -58,6 +61,7 @@ class TestTMCMath(unittest.TestCase):
         self.assertEqual(tmc_math.mean([-1, 0, 1]), 0, "mean is wrong")
         self.assertEqual(tmc_math.mean([0, 0, 0]), 0, "mean is wrong")
         self.assertEqual(tmc_math.mean([1, 3, 4, 5, 7]), 4, "mean is wrong")
+        self.assertEqual(tmc_math.mean([]), 0, "mean is wrong")
 
 
 if __name__ == "__main__":

@@ -55,12 +55,12 @@ class GStat(shared.GStat):
     def check(self):
         """check if the driver is ok"""
         self.read()
-        if self.reset:
-            raise TmcDriverException("TMC220X: reset detected")
         if self.uv_cp:
             raise TmcDriverException("TMC220X: undervoltage detected")
         if self.drv_err:
             raise TmcDriverException("TMC220X: driver error detected")
+        if self.reset:
+            raise TmcDriverException("TMC220X: reset detected")
 
 
 class IfCnt(shared.IfCnt):
@@ -192,9 +192,12 @@ class ChopConf(shared.ChopConf):
     @mres_ms.setter
     def mres_ms(self, mres: int):
         """set µstep resolution"""
-        mres_bit = int(math.log2(mres))
-        mres_bit = 8 - mres_bit
-        self.mres = mres_bit
+        mres_to_bit = {1: 8, 2: 7, 4: 6, 8: 5, 16: 4, 32: 3, 64: 2, 128: 1, 256: 0}
+        if mres not in mres_to_bit:
+            raise ValueError(
+                f"Invalid mres value: {mres}. Must be power of 2 from 1 to 256"
+            )
+        self.mres = mres_to_bit[mres]
 
 
 class PwmConf(shared.PwmConf):

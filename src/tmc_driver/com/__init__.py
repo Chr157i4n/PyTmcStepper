@@ -6,6 +6,8 @@ Provides UART and SPI communication implementations for different platforms:
 - TmcComSpi: Standard SPI communication (CPython with spidev)
 - TmcComUartMicroPython: UART for MicroPython
 - TmcComSpiMicroPython: SPI for MicroPython
+- TmcComUartCircuitPython: UART for CircuitPython
+- TmcComSpiCircuitPython: SPI for CircuitPython
 - TmcComSpiFtdi: SPI via FTDI USB devices
 
 Example:
@@ -25,12 +27,15 @@ try:
         from ._tmc_com_spi import TmcComSpi
         from ._tmc_com_uart_micropython import TmcComUartMicroPython
         from ._tmc_com_spi_micropython import TmcComSpiMicroPython
+        from ._tmc_com_uart_circuitpython import TmcComUartCircuitPython
+        from ._tmc_com_spi_circuitpython import TmcComSpiCircuitPython
         from ._tmc_com_spi_ftdi import TmcComSpiFtdi
 except ImportError:
     pass
 
 
 def __getattr__(name):
+    # pylint: disable=too-many-return-statements
     """Lazy import of communication classes to avoid circular imports"""
     if name == "TmcComUart":
         from ._tmc_com_uart import TmcComUart
@@ -48,6 +53,14 @@ def __getattr__(name):
         from ._tmc_com_spi_micropython import TmcComSpiMicroPython
 
         return TmcComSpiMicroPython
+    if name == "TmcComUartCircuitPython":
+        from ._tmc_com_uart_circuitpython import TmcComUartCircuitPython
+
+        return TmcComUartCircuitPython
+    if name == "TmcComSpiCircuitPython":
+        from ._tmc_com_spi_circuitpython import TmcComSpiCircuitPython
+
+        return TmcComSpiCircuitPython
     if name == "TmcComSpiFtdi":
         from ._tmc_com_spi_ftdi import TmcComSpiFtdi
 
@@ -60,5 +73,7 @@ __all__ = [
     "TmcComSpi",
     "TmcComUartMicroPython",
     "TmcComSpiMicroPython",
+    "TmcComUartCircuitPython",
+    "TmcComSpiCircuitPython",
     "TmcComSpiFtdi",
 ]

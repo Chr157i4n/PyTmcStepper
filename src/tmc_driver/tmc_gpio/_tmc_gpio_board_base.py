@@ -19,6 +19,7 @@ class Board(IntEnum):
     LUCKFOX_PICO = 4
     ORANGE_PI = 5
     MICROPYTHON = 6
+    CIRCUITPYTHON = 7
 
 
 class Gpio(IntEnum):

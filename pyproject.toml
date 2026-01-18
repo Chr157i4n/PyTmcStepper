@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PyTmcStepper"
-version = "0.15.0"
+version = "0.16.0"
 authors = [{ name = "Christian Köhlke", email = "christian@koehlke.de" }]
 description = "This is a Python libary to drive a stepper motor with a Trinamic stepper driver and a single board computer like a Raspberry Pi"
 readme = "README.md"
@@ -12,6 +12,8 @@ license = "GPL-3.0"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: MicroPython",
     "Operating System :: POSIX :: Linux",
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
