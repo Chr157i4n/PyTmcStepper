@@ -12,23 +12,30 @@ from ._tmc_gpio_board_base import *
 
 
 MICROPYTHON = sys.implementation.name == "micropython"
+CIRCUITPYTHON = sys.implementation.name == "circuitpython"
 
-# ------------------------------
-# LIB           | BOARD
-# ------------------------------
-# RPi.GPIO      | Pi4, Pi3 etc.
-# Jetson.GPIO   | Nvidia Jetson
-# gpiozero      | Pi5
-# pheriphery    | Luckfox Pico
-# OPi.GPIO      | Orange Pi
-# machine       | MicroPython
-# ------------------------------
+# -------------------------------------
+# LIB               | BOARD
+# -------------------------------------
+# RPi.GPIO          | Pi4, Pi3 etc.
+# Jetson.GPIO       | Nvidia Jetson
+# gpiozero          | Pi5
+# pheriphery        | Luckfox Pico
+# OPi.GPIO          | Orange Pi
+# machine           | MicroPython
+# busio/digitalio   | CircuitPython
+# -------------------------------------
 
 if MICROPYTHON:
     from ._tmc_gpio_board_micropython import MicroPythonGPIOWrapper
 
     tmc_gpio = MicroPythonGPIOWrapper()
     BOARD = Board.MICROPYTHON
+elif CIRCUITPYTHON:
+    from ._tmc_gpio_board_circuitpython import CircuitPythonGPIOWrapper
+
+    tmc_gpio = CircuitPythonGPIOWrapper()
+    BOARD = Board.CIRCUITPYTHON
 else:
     import os
     from ._tmc_gpio_board_ftdi import FtdiWrapper
