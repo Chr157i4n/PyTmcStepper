@@ -1,5 +1,12 @@
 # Changelog
 
+## version 0.16.0
+
+- added basic support for CircuitPython
+- added demo scripts for CircuitPython
+- added lazy import for FtdiWrapper, to fix pyfdti needing to be installed
+- added more unittests
+
 ## version 0.15.0
 
 - updated python-publish workflow
