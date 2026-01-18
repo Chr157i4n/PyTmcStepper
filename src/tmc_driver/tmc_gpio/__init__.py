@@ -38,7 +38,6 @@ elif CIRCUITPYTHON:
     BOARD = Board.CIRCUITPYTHON
 else:
     import os
-    from ._tmc_gpio_board_ftdi import FtdiWrapper
 
     # Board mapping: (module_path, class_name, Board enum)
     board_mapping = {
@@ -106,3 +105,12 @@ else:
             return MockGPIOWrapper(), Board.UNKNOWN
 
     tmc_gpio, BOARD = initialize_gpio()
+
+    # Lazy import for FtdiWrapper to avoid importing pyftdi unless needed
+    def __getattr__(name):
+        """lazy import FtdiWrapper when accessed"""
+        if name == "FtdiWrapper":
+            from ._tmc_gpio_board_ftdi import FtdiWrapper
+
+            return FtdiWrapper
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
