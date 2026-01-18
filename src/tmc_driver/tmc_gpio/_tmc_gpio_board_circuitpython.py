@@ -112,15 +112,10 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
             self._pwms[pin].duty_cycle = int(duty_cycle * 655.35)
 
     def gpio_add_event_detect(self, pin, callback):
-        """add event detect (rising edge interrupt)
-
-        Note: CircuitPython doesn't have built-in interrupt support like MicroPython.
-        This would need to be implemented using keypad or asyncio if needed.
-        """
-        # CircuitPython doesn't have Pin.irq() - would need asyncio or polling
+        """add event detect (rising edge interrupt)"""
+        # CircuitPython doesn't have Pin.irq() - would need asyncio
         raise NotImplementedError(
-            "GPIO interrupts not directly supported in CircuitPython. "
-            "Consider using asyncio or polling instead."
+            "GPIO interrupts not directly supported in CircuitPython."
         )
 
     def gpio_remove_event_detect(self, pin):
