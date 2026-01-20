@@ -53,7 +53,7 @@ source = ["src"]
 [tool.semantic_release]
 branch = "main"
 version_toml = ["pyproject.toml:project.version"]
-build_command = "python -m build"
+build_command = "pip install build && python -m build"
 changelog_file = 'CHANGELOG.md'
 commit = true
 allow_zero_version = true
