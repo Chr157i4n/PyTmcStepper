@@ -200,6 +200,9 @@ jobs:
       actions: write
       packages: write
     steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
     - name: Python Semantic Release
       id: release
       uses: python-semantic-release/python-semantic-release@v10.5.3
