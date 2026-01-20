@@ -7,7 +7,7 @@
 | src/tmc\_driver/\_\_init\_\_.py                                    |       18 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_exceptions.py                               |        5 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_math.py                                     |       26 |        0 |    100% |           |
-| src/tmc\_driver/\_tmc\_stallguard.py                               |      125 |       25 |     80% |50, 54, 61, 65-72, 80, 141-151, 189, 235, 237, 267, 281, 318 |
+| src/tmc\_driver/\_tmc\_stallguard.py                               |      125 |       28 |     78% |50, 54, 61, 65-72, 80, 85-87, 141-151, 189, 235, 237, 267, 281, 318 |
 | src/tmc\_driver/\_tmc\_stepperdriver.py                            |       72 |       10 |     86% |17-18, 147, 183, 200, 206-210 |
 | src/tmc\_driver/\_tmc\_validation.py                               |        5 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_xxxx.py                                     |      180 |       78 |     57% |143-147, 157, 173, 201-202, 210, 218-219, 227, 235-236, 244, 269, 320-323, 352-353, 365-372, 378-389, 397-398, 416-451, 459-479, 483-489 |
@@ -58,7 +58,7 @@
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       41 |        6 |     85% |31, 36, 41, 46, 64, 69 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |30, 94-97, 105, 121-125, 135-137, 140 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_micropython.py          |       23 |       23 |      0% |      5-52 |
-| **TOTAL**                                                          | **3084** | **1162** | **62%** |           |
+| **TOTAL**                                                          | **3084** | **1165** | **62%** |           |
 
 
 ## Setup coverage badge
