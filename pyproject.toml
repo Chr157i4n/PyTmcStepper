@@ -45,3 +45,7 @@ unsafe-load-any-extension = true
 
 [tool.pylint.format]
 max-line-length = 160
+
+[tool.coverage.run]
+relative_files = true
+source = ["src"]
