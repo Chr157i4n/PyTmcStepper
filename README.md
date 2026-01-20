@@ -272,6 +272,20 @@ tmc.run_to_position_steps(0)
 tmc.set_motor_enabled(False)
 ```
 
+special register access:
+
+```python
+from tmc_driver import Tmc2209, TmcEnableControlPin, TmcMotionControlStepDir
+from tmc_driver.com import TmcComUart
+
+tmc = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/serial0"))
+
+tmc.chopconf.read()         # read register from the driver
+print(tmc.chopconf.intpol)  # print current interpolation setting
+tmc.chopconf.intpol = True  # enable interpolation
+tmc.chopconf.write()        # write register to the driver
+```
+
 ## Troubleshoot
 
 If you have questions please check out the [Wiki](https://github.com/Chr157i4n/PyTmcStepper/wiki) and the other issues.
