@@ -28,7 +28,7 @@
 - added support for StallGuard and homing using the TMC5160 internal ramp generator
 - some smaller changes
 - fixed TMC5160 relative movement
-- fixed TmcMotionControlVActual (ms instead of µs)
+- fixed TmcMotionControlVActual (ms instead of us)
 
 ## version 0.12.0
 

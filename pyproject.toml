@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PyTmcStepper"
-version = "0.16.0"
+version = "0.17.0"
 authors = [{ name = "Christian Köhlke", email = "christian@koehlke.de" }]
 description = "This is a Python libary to drive a stepper motor with a Trinamic stepper driver and a single board computer like a Raspberry Pi"
 readme = "README.md"
@@ -49,3 +49,11 @@ max-line-length = 160
 [tool.coverage.run]
 relative_files = true
 source = ["src"]
+
+[tool.semantic_release]
+branch = "main"
+version_toml = ["pyproject.toml:project.version"]
+build_command = "python -m build"
+changelog_file = 'CHANGELOG.md'
+commit = true
+allow_zero_version = true
