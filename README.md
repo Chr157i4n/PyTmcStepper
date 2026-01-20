@@ -249,7 +249,9 @@ You can also use MicroPico to run the demo script by opening one and then pressi
 The library currently uses functions to access the TMC registers, but Python properties for internal getters/setters.
 
 ```python
-from tmc_driver.tmc_2209 import *
+from tmc_driver import Tmc2209, TmcEnableControlPin, TmcMotionControlStepDir
+from tmc_driver.com import TmcComUart
+
 tmc = Tmc2209(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), TmcComUart("/dev/serial0"))
 
 tmc.set_direction_reg(False)
