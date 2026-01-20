@@ -215,6 +215,8 @@ jobs:
       if: steps.release.outputs.released == 'true'
       with:
         packages-dir: dist
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
     - name: Publish package to GitHub
       uses: python-semantic-release/publish-action@v10.5.3
       if: steps.release.outputs.released == 'true'
