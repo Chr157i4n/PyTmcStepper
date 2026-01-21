@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for src/tmc_driver/tmc_gpio/_tmc_gpio_board_rpi_gpio.py: 79%</title>
+    <title>Coverage for src/tmc_driver/tmc_gpio/_tmc_gpio_board_rpi_gpio.py: 89%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_c827f16f.png">
     <link rel="stylesheet" href="style_cb_9ff733b0.css" type="text/css">
     <script src="coverage_html_cb_dd2e7eb5.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>src&#8201;/&#8201;tmc_driver&#8201;/&#8201;tmc_gpio&#8201;/&#8201;_tmc_gpio_board_rpi_gpio.py</b>:
-            <span class="pc_cov">79%</span>
+            <span class="pc_cov">89%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">61 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">48<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">13<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">54<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">7<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">21<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_7a01a19939c8b87c___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-01-20 23:41 +0000
+            created at 2026-01-21 22:41 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -200,10 +200,10 @@
     <p class="pln"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">    <span class="key">def</span> <span class="nam">gpio_pwm_set_frequency</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">pin</span><span class="op">:</span> <span class="nam">int</span><span class="op">,</span> <span class="nam">frequency</span><span class="op">:</span> <span class="nam">int</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">        <span class="str">"""set PWM frequency"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">        <span class="nam">gpio_pwm</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_gpios_pwm</span><span class="op">[</span><span class="nam">pin</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">        <span class="key">if</span> <span class="nam">gpio_pwm</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">        <span class="nam">gpio_pwm</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_gpios_pwm</span><span class="op">[</span><span class="nam">pin</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t122" href="#t122">122</a></span><span class="t">        <span class="key">if</span> <span class="nam">gpio_pwm</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t123" href="#t123">123</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span><span class="op">(</span><span class="fst">f"</span><span class="fst">GPIO pin </span><span class="op">{</span><span class="nam">pin</span><span class="op">}</span><span class="fst"> not configured as PWM</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t124" href="#t124">124</a></span><span class="t">        <span class="nam">gpio_pwm</span><span class="op">.</span><span class="nam">ChangeFrequency</span><span class="op">(</span><span class="nam">frequency</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t124" href="#t124">124</a></span><span class="t">        <span class="nam">gpio_pwm</span><span class="op">.</span><span class="nam">ChangeFrequency</span><span class="op">(</span><span class="nam">frequency</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t125" href="#t125">125</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t126" href="#t126">126</a></span><span class="t">    <span class="key">def</span> <span class="nam">gpio_pwm_set_duty_cycle</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">pin</span><span class="op">:</span> <span class="nam">int</span><span class="op">,</span> <span class="nam">duty_cycle</span><span class="op">:</span> <span class="nam">int</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t127" href="#t127">127</a></span><span class="t">        <span class="str">"""set PWM duty cycle</span>&nbsp;</span><span class="r"></span></p>
@@ -212,10 +212,10 @@
     <p class="pln"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t"><span class="str">            pin (int): pin number</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t"><span class="str">            duty_cycle (int): duty cycle in percent (0-100)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">        <span class="nam">gpio_pwm</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_gpios_pwm</span><span class="op">[</span><span class="nam">pin</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">        <span class="key">if</span> <span class="nam">gpio_pwm</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">        <span class="nam">gpio_pwm</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_gpios_pwm</span><span class="op">[</span><span class="nam">pin</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">        <span class="key">if</span> <span class="nam">gpio_pwm</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span><span class="op">(</span><span class="fst">f"</span><span class="fst">GPIO pin </span><span class="op">{</span><span class="nam">pin</span><span class="op">}</span><span class="fst"> not configured as PWM</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t136" href="#t136">136</a></span><span class="t">        <span class="nam">gpio_pwm</span><span class="op">.</span><span class="nam">ChangeDutyCycle</span><span class="op">(</span><span class="nam">duty_cycle</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t136" href="#t136">136</a></span><span class="t">        <span class="nam">gpio_pwm</span><span class="op">.</span><span class="nam">ChangeDutyCycle</span><span class="op">(</span><span class="nam">duty_cycle</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t137" href="#t137">137</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t138" href="#t138">138</a></span><span class="t">    <span class="key">def</span> <span class="nam">gpio_add_event_detect</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">pin</span><span class="op">:</span> <span class="nam">int</span><span class="op">,</span> <span class="nam">callback</span><span class="op">:</span> <span class="nam">types</span><span class="op">.</span><span class="nam">FunctionType</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t139" href="#t139">139</a></span><span class="t">        <span class="str">"""add event detect"""</span>&nbsp;</span><span class="r"></span></p>
@@ -271,7 +271,7 @@
             <a class="nav" href="z_7a01a19939c8b87c___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-01-20 23:41 +0000
+            created at 2026-01-21 22:41 +0000
         </p>
     </div>
 </footer>
