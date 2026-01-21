@@ -7,9 +7,11 @@ import unittest
 from unittest import mock
 from src.tmc_driver.tmc_2209 import *
 from src.tmc_driver.tmc_2240 import *
+from src.tmc_driver.tmc_5160 import *
 from src.tmc_driver.com._tmc_com import *
 import src.tmc_driver.reg._tmc2209_reg as tmc2209_reg
 import src.tmc_driver.reg._tmc224x_reg as tmc224x_reg
+import src.tmc_driver.reg._tmc5160_reg as tmc5160_reg
 
 
 class TestTmcCom(TmcCom):
@@ -162,6 +164,38 @@ class TestTMCCurrent(unittest.TestCase):
                     result, desired_current, delta=desired_current * 0.05
                 )
                 self.assertEqual(tmc.drv_conf.current_range, current_range)
+                self.assertEqual(tmc.global_scaler.global_scaler, global_scaler)
+                self.assertEqual(tmc.ihold_irun.irun, irun)
+
+    def test_tmc5160_set_current_rms(self):
+        """test_tmc5160_set_current"""
+        tmc_com_test = TestTmcCom()
+
+        tmc = Tmc5160(TmcEnableControlPin(21), TmcMotionControlStepDir(16, 20), None)
+        tmc.drv_conf = tmc5160_reg.DrvConf(tmc_com_test)
+        tmc.global_scaler = tmc5160_reg.GlobalScaler(tmc_com_test)
+        tmc.ihold_irun = tmc5160_reg.IHoldIRun(tmc_com_test)
+
+        # desired_current: (global_scaler, irun)
+        TEST_CASES = {
+            (300): (25, 31),
+            (400): (33, 31),
+            (500): (42, 31),
+            (1500): (125, 31),
+            (3000): (251, 31),
+            (3200): (256, 31),
+        }
+
+        for desired_current, (
+            global_scaler,
+            irun,
+        ) in TEST_CASES.items():
+            with self.subTest(desired_current=desired_current):
+                result = tmc.set_current_rms(desired_current)
+
+                self.assertAlmostEqual(
+                    result, desired_current, delta=desired_current * 0.05
+                )
                 self.assertEqual(tmc.global_scaler.global_scaler, global_scaler)
                 self.assertEqual(tmc.ihold_irun.irun, irun)
 

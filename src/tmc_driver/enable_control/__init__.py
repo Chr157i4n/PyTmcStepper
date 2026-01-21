@@ -33,10 +33,6 @@ except ImportError:
 
 def __getattr__(name):
     """Lazy import of enable control classes to avoid circular imports"""
-    if name == "TmcEnableControl":
-        from ._tmc_ec import TmcEnableControl
-
-        return TmcEnableControl
     if name == "TmcEnableControlPin":
         from ._tmc_ec_pin import TmcEnableControlPin
 

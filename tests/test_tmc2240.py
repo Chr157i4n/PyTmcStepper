@@ -2,9 +2,13 @@
 test for Tmc2240
 """
 
-import time
 import unittest
-from src.tmc_driver.tmc_2240 import *
+from src.tmc_driver import (
+    Tmc2240,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+    MovementAbsRel,
+)
 from src.tmc_driver.reg import _tmc224x_reg as tmc224x_reg
 
 faketmccom_return_value = 0

@@ -5,8 +5,8 @@
 [![PyPI downloads PyTmcStepper](https://img.shields.io/pypi/dm/PyTmcStepper)](https://pypi.org/project/PyTmcStepper)
 [![GitHub issues](https://img.shields.io/github/issues/Chr157i4n/PyTmcStepper.svg)](https://GitHub.com/Chr157i4n/PyTmcStepper/issues/)
 
-[![Test](https://github.com/Chr157i4n/PyTmcStepper/actions/workflows/test.yml/badge.svg)](https://github.com/Chr157i4n/PyTmcStepper/actions/workflows/test.yml)
-![Code Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Chr157i4n/PyTmcStepper/python-coverage-comment-action-data/endpoint.json)
+[![CI Pipeline](https://github.com/Chr157i4n/PyTmcStepper/actions/workflows/ci.yml/badge.svg)](https://github.com/Chr157i4n/PyTmcStepper/actions/workflows/ci.yml)
+[![Coverage badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Chr157i4n/PyTmcStepper/python-coverage-comment-action-data/endpoint.json)](https://htmlpreview.github.io/?https://github.com/Chr157i4n/PyTmcStepper/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
 \
 \
