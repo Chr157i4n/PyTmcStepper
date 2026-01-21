@@ -2,9 +2,13 @@
 test for Tmc2209
 """
 
-import time
 import unittest
-from src.tmc_driver.tmc_2209 import *
+from src.tmc_driver import (
+    Tmc2209,
+    TmcEnableControlPin,
+    TmcMotionControlStepDir,
+    MovementAbsRel,
+)
 from src.tmc_driver.reg import _tmc220x_reg as tmc220x_reg
 
 
