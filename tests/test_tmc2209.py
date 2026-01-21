@@ -15,6 +15,17 @@ from src.tmc_driver.reg import _tmc220x_reg as tmc220x_reg
 faketmccom_return_value = 0
 
 
+class _FakeIoin:
+    """_FakeIoin class for testing purposes"""
+
+    pin_state = False
+
+    def get(self, name: str) -> int:
+        """get pin value"""
+        self.pin_state = not self.pin_state
+        return self.pin_state
+
+
 class _FakeTmcCom:
     """_FakeTmcCom class for testing purposes"""
 
@@ -105,6 +116,27 @@ class TestTMCMove(unittest.TestCase):
         self.assertFalse(gstat.uv_cp, "GStat uv_cp bit should be False")
 
         gstat.check()  # should not raise
+
+    def test_pins(self):
+        """test_pins"""
+        self.assertEqual(
+            self.tmc.tmc_ec.pin_en,
+            1,
+            f"actual enable pin: {self.tmc.tmc_ec.pin_en}, expected enable pin: 1",
+        )
+        self.assertEqual(
+            self.tmc.tmc_mc.pin_step,
+            2,
+            f"actual step pin: {self.tmc.tmc_mc.pin_step}, expected step pin: 2",
+        )
+        self.assertEqual(
+            self.tmc.tmc_mc.pin_dir,
+            3,
+            f"actual dir pin: {self.tmc.tmc_mc.pin_dir}, expected dir pin: 3",
+        )
+
+        self.tmc.ioin = _FakeIoin()
+        self.tmc.test_dir_step_en()
 
 
 if __name__ == "__main__":
