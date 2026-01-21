@@ -446,7 +446,6 @@ class TmcXXXX(TmcStepperDriver):
         # check that the selected pin is off
         if self.ioin.get(ioin_reg_field_name):
             pin_ok = False
-            pin_ok = False
 
         return pin_ok
 
