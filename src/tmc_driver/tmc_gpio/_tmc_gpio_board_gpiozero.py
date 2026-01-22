@@ -122,14 +122,14 @@ class GpiozeroWrapper(BaseGPIOWrapper):
 
     def gpio_add_event_detect(self, pin: int, callback: types.FunctionType):
         """add event detect"""
-        gpio = self._gpios_pwm[pin]
+        gpio = self._gpios[pin]
         if not isinstance(gpio, DigitalInputDevice):
             raise RuntimeError(f"GPIO pin {pin} not configured as input")
         gpio.when_activated = callback
 
     def gpio_remove_event_detect(self, pin: int):
         """remove event detect"""
-        gpio = self._gpios_pwm[pin]
+        gpio = self._gpios[pin]
         if not isinstance(gpio, DigitalInputDevice):
             raise RuntimeError(f"GPIO pin {pin} not configured as input")
         gpio.when_activated = None
