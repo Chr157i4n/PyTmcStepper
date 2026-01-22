@@ -51,7 +51,13 @@ relative_files = true
 source = ["src"]
 
 [tool.coverage.report]
-omit = ["tests/*", "*_micropython.py", "*_circuitpython.py", "*_ftdi.py"]
+omit = [
+    "tests/*",
+    "*_micropython.py",
+    "*_circuitpython.py",
+    "*_ftdi.py",
+    "*_periphery.py",
+]
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
