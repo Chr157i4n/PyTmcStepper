@@ -7,7 +7,7 @@
 | src/tmc\_driver/\_\_init\_\_.py                                    |       17 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_exceptions.py                               |        5 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_math.py                                     |       26 |        0 |    100% |           |
-| src/tmc\_driver/\_tmc\_stallguard.py                               |      123 |       26 |     79% |61, 65-72, 80, 85-87, 141-151, 189, 235, 237, 267, 281, 318 |
+| src/tmc\_driver/\_tmc\_stallguard.py                               |      123 |       23 |     81% |61, 65-72, 80, 141-151, 189, 235, 237, 267, 281, 318 |
 | src/tmc\_driver/\_tmc\_stepperdriver.py                            |       72 |       10 |     86% |17-18, 147, 183, 200, 206-210 |
 | src/tmc\_driver/\_tmc\_validation.py                               |        5 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_xxxx.py                                     |      173 |       52 |     70% |143-147, 157, 173, 201-202, 210, 218-219, 227, 235-236, 244, 269, 320-323, 352-353, 365-372, 378-389, 397-398, 417, 421, 425, 427, 429, 440, 448, 459, 463, 482-488 |
@@ -43,13 +43,12 @@
 | src/tmc\_driver/tmc\_5160.py                                       |      131 |       25 |     81% |255-256, 275-278, 286-287, 310-326, 333-335, 341-344 |
 | src/tmc\_driver/tmc\_gpio/\_\_init\_\_.py                          |       46 |       24 |     48% |30-33, 35-38, 72-73, 87-105, 112-116 |
 | src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_base.py              |       26 |        0 |    100% |           |
-| src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_gpiozero.py          |       72 |       72 |      0% |    14-135 |
-| src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_periphery.py         |       31 |       31 |      0% |     14-85 |
+| src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_gpiozero.py          |       72 |       12 |     83% |63-64, 68-71, 77, 79, 103, 120, 127, 134 |
 | src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_rpi\_gpio.py         |       58 |        7 |     88% |81, 107, 123, 135, 172, 177, 182 |
 | src/tmc\_driver/tmc\_logger/\_\_init\_\_.py                        |        8 |        1 |     88% |        13 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       28 |        5 |     82% |31, 36, 41, 46, 64 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |30, 94-97, 105, 121-125, 135-137, 140 |
-| **TOTAL**                                                          | **2626** |  **584** | **78%** |           |
+| **TOTAL**                                                          | **2595** |  **490** | **81%** |           |
 
 
 ## Setup coverage badge
