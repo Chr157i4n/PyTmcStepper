@@ -2,14 +2,13 @@
 Demo file for basic movement
 """
 
-from tmc_driver import (
-    Tmc2240,
-    Loglevel,
-    MovementAbsRel,
-    TmcEnableControlPin,
-    TmcMotionControlStepDir,
-)
-from tmc_driver.com import TmcComSpiMicroPython
+# MicroPython-optimized imports: only import what's needed
+from tmc_driver.tmc_2240 import Tmc2240
+from tmc_driver.tmc_logger import Loglevel
+from tmc_driver.motion_control._tmc_mc import MovementAbsRel
+from tmc_driver.enable_control._tmc_ec_pin import TmcEnableControlPin
+from tmc_driver.motion_control._tmc_mc_step_dir import TmcMotionControlStepDir
+from tmc_driver.com._tmc_com_uart_micropython import TmcComUartMicroPython
 
 
 print("---")

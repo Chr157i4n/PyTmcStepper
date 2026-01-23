@@ -2,14 +2,12 @@
 Demo file for homing via Step/Dir interface using MicroPython
 """
 
-from tmc_driver import (
-    Tmc2209,
-    Loglevel,
-    TmcEnableControlPin,
-    TmcMotionControlStepDir,
-    MovementAbsRel,
-)
-from tmc_driver.com import TmcComUartMicroPython
+from tmc_driver.tmc_2209 import Tmc2209
+from tmc_driver.tmc_logger import Loglevel
+from tmc_driver.motion_control._tmc_mc import MovementAbsRel
+from tmc_driver.enable_control._tmc_ec_pin import TmcEnableControlPin
+from tmc_driver.motion_control._tmc_mc_step_dir import TmcMotionControlStepDir
+from tmc_driver.com._tmc_com_uart_micropython import TmcComUartMicroPython
 
 
 print("---")
