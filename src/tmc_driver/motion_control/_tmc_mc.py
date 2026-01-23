@@ -278,3 +278,21 @@ class TmcMotionControl:
         Returns:
             stop (enum): how the movement was finished
         """
+
+    def run_to_position_revolutions(
+        self, revolutions, movement_abs_rel: MovementAbsRel | None = None
+    ) -> StopMode:
+        """runs the motor to the given position.
+        with acceleration and deceleration
+        blocks the code until finished!
+
+        Args:
+            revolutions (int): amount of revs; can be negative
+            movement_abs_rel (enum): whether the movement should be absolute or relative
+
+        Returns:
+            stop (enum): how the movement was finished
+        """
+        return self.run_to_position_steps(
+            round(revolutions * self._steps_per_rev), movement_abs_rel
+        )
