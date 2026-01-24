@@ -90,16 +90,6 @@ class TmcMotionControlStepDir(TmcMotionControl):
         self._speed = speed
 
     @property
-    def speed_fullstep(self):
-        """_speed property"""
-        return self._speed * self.mres
-
-    @speed_fullstep.setter
-    def speed_fullstep(self, speed: int):
-        """_speed setter"""
-        self.speed = speed * self.mres
-
-    @property
     def pin_step(self):
         """_pin_step property"""
         return self._pin_step
