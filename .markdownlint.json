@@ -1,7 +1,11 @@
 {
+    "MD012": false,
     "MD013": false,
+    "MD024": false,
     "MD033": {
-        "allowed_elements": [ "br" ]
+        "allowed_elements": [
+            "br"
+        ]
     },
     "MD060": {
         "aligned_delimiter": false,
