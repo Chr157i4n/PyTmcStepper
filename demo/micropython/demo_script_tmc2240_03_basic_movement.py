@@ -8,7 +8,7 @@ from tmc_driver.tmc_logger import Loglevel
 from tmc_driver.motion_control._tmc_mc import MovementAbsRel
 from tmc_driver.enable_control._tmc_ec_pin import TmcEnableControlPin
 from tmc_driver.motion_control._tmc_mc_step_dir import TmcMotionControlStepDir
-from tmc_driver.com._tmc_com_uart_micropython import TmcComUartMicroPython
+from tmc_driver.com._tmc_com_spi_micropython import TmcComSpiMicroPython
 
 
 print("---")
