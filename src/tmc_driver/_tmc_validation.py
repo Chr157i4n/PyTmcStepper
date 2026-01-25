@@ -8,10 +8,7 @@ import sys
 from ._tmc_exceptions import TmcDriverException
 
 
-SUBMODULE_VALIDATION = not (
-    sys.implementation.name == "micropython"
-    or sys.implementation.name == "circuitpython"
-)
+SUBMODULE_VALIDATION = sys.implementation.name not in ("micropython", "circuitpython")
 
 
 def validate_submodule(
