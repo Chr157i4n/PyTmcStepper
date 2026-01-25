@@ -37,6 +37,7 @@ try:
         from ._tmc_mc_step_dir import TmcMotionControlStepDir
         from ._tmc_mc_step_reg import TmcMotionControlStepReg
         from ._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
+        from ._tmc_mc_step_pio import TmcMotionControlStepPio
         from ._tmc_mc_vactual import TmcMotionControlVActual
         from ._tmc_mc_int_ramp_generator import (
             TmcMotionControlIntRampGenerator,
@@ -81,6 +82,10 @@ def __getattr__(name):
         from ._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
 
         return TmcMotionControlStepPwmDir
+    if name == "TmcMotionControlStepPio":
+        from ._tmc_mc_step_pio import TmcMotionControlStepPio
+
+        return TmcMotionControlStepPio
     if name == "TmcMotionControlVActual":
         from ._tmc_mc_vactual import TmcMotionControlVActual
 
@@ -106,6 +111,7 @@ __all__ = [
     "TmcMotionControlStepDir",
     "TmcMotionControlStepReg",
     "TmcMotionControlStepPwmDir",
+    "TmcMotionControlStepPio",
     "TmcMotionControlVActual",
     "TmcMotionControlIntRampGenerator",
 ]
