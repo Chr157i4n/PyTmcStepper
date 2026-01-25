@@ -1,0 +1,522 @@
+# CHANGELOG
+
+<!-- version list -->
+
+## v0.19.0 (2026-01-25)
+
+### Bug Fixes
+
+- Correct speed_fullstep calculations in TmcMotionControl class
+  ([`a0a4d04`](https://github.com/Chr157i4n/PyTmcStepper/commit/a0a4d04b96b0295ab71fb69692818209b5188ecb))
+
+- Pylint
+  ([`c4497a1`](https://github.com/Chr157i4n/PyTmcStepper/commit/c4497a1744df197dbfce2d8ccea763694116b3ab))
+
+- Update import statement to use TmcComSpiMicroPython instead of TmcComUartMicroPython
+  ([`c0c330d`](https://github.com/Chr157i4n/PyTmcStepper/commit/c0c330dc862786cdb93f78ab0cd9722a84eb08a6))
+
+- Use direct import instead of __init__.py on micropython and circuitpython (__init__.py imports
+  everything which needs to much ram)
+  ([`19d7109`](https://github.com/Chr157i4n/PyTmcStepper/commit/19d7109974e09c0d9f05c3ec098b590639534850))
+
+### Chores
+
+- Renamed changelog, so python semantic release can create a new one (with the correct format)
+  ([`b2d20cf`](https://github.com/Chr157i4n/PyTmcStepper/commit/b2d20cf8bf33d3bbf82bf26dff4451c628e31e2e))
+
+- Set minimum coverage thresholds for code coverage comments
+  ([`be3e152`](https://github.com/Chr157i4n/PyTmcStepper/commit/be3e152e408aee86de3a88bd38f05ce5bc0b5cf1))
+
+### Features
+
+- Moved run_to_position_revolutions method to TmcMotionControl class
+  ([`420546b`](https://github.com/Chr157i4n/PyTmcStepper/commit/420546b9daf666908d67fad4c836ba76698f982e))
+
+- Only validate submodule on CPython (not on Micropython/Circuitpython to save memory)
+  ([`fe4a0ce`](https://github.com/Chr157i4n/PyTmcStepper/commit/fe4a0ce0d9a889c741ccfe5d7579c34a0a0501f0))
+
+### Refactoring
+
+- Remove unused speed_fullstep property from TmcMotionControlStepDir class
+  ([`916d18f`](https://github.com/Chr157i4n/PyTmcStepper/commit/916d18fec88c18585df90feb4d3b8e837752436f))
+
+
+## v0.18.4 (2026-01-22)
+
+### Bug Fixes
+
+- Correct GPIO pin reference in event detection methods in GpiozeroWrapper
+  ([`1827ffe`](https://github.com/Chr157i4n/PyTmcStepper/commit/1827ffe208468a108b45c91a585fe37aa44eac1b))
+
+### Chores
+
+- Add coverage report omission for specific test files
+  ([`e0aa951`](https://github.com/Chr157i4n/PyTmcStepper/commit/e0aa951a03078ac5827bc5fe7a579aeaf633ee7e))
+
+- Remove version declaration from __init__.py
+  ([`42e6ba7`](https://github.com/Chr157i4n/PyTmcStepper/commit/42e6ba79bb11576808f025ec4c0ee22a398ea3f9))
+
+- Update coverage report configuration to exclude additional lines
+  ([`2a073e2`](https://github.com/Chr157i4n/PyTmcStepper/commit/2a073e2ea6b4daed0c4b3652dd24b69ba9fe8a8c))
+
+- Update coverage report to exclude additional test files and add new test for Tmc2209 with gpiozero
+  ([`c429e30`](https://github.com/Chr157i4n/PyTmcStepper/commit/c429e304d20030e5eabb592e47589c78fae214f7))
+
+
+## v0.18.3 (2026-01-21)
+
+### Bug Fixes
+
+- Remove redundant assignment in pin check logic
+  ([`7293032`](https://github.com/Chr157i4n/PyTmcStepper/commit/7293032e60fe1b464b78791469220e6b2683c0b4))
+
+- Remove unused lazy import for TmcEnableControl
+  ([`b40bc08`](https://github.com/Chr157i4n/PyTmcStepper/commit/b40bc0853427eddda47fff4732bacaffa3c38c1c))
+
+- Rename workflow from 'Test' to 'CI Pipeline'
+  ([`4954905`](https://github.com/Chr157i4n/PyTmcStepper/commit/4954905402c0f0b1740f051ace66df0b7c96c47e))
+
+- Update CI badge in README.md
+  ([`368c292`](https://github.com/Chr157i4n/PyTmcStepper/commit/368c292977a9561ac6953d10470f787b32a928c8))
+
+- Update coverage badge link in README.md
+  ([`f3cd647`](https://github.com/Chr157i4n/PyTmcStepper/commit/f3cd6476b800e55e5bfa8bd7c17f759734978373))
+
+### Continuous Integration
+
+- Update Python version to 3.13 in CI workflow
+  ([`b8300f1`](https://github.com/Chr157i4n/PyTmcStepper/commit/b8300f1a4dad52af3a7a96647031a93cad4b2c44))
+
+### Testing
+
+- Add unit test for TMC pin functionality and fake I/O class
+  ([`8ae956c`](https://github.com/Chr157i4n/PyTmcStepper/commit/8ae956cf586b5b7cf48a6d5b346775c32f83e21d))
+
+- Add unit test for TMC5160 set current RMS functionality
+  ([`bbd3827`](https://github.com/Chr157i4n/PyTmcStepper/commit/bbd382714dca26e81d6cc8f85403a0f323aceb56))
+
+- Add unit tests for different import methods
+  ([`8f6126b`](https://github.com/Chr157i4n/PyTmcStepper/commit/8f6126bcaaabb5f8e8e991af639e763bf915450d))
+
+- Add unit tests for TMC move (intramp)
+  ([`d1ea07e`](https://github.com/Chr157i4n/PyTmcStepper/commit/d1ea07e3cb413a20cf21f8048e6e8d20726f72b4))
+
+- Add unit tests for TMC move functionality in test_tmc_move_vactual.py
+  ([`e616d02`](https://github.com/Chr157i4n/PyTmcStepper/commit/e616d02888254f0cbfefeeba431a6c08f1dc3731))
+
+- Add unit tests for TMC move with step PWM direction and step register
+  ([`9070ae0`](https://github.com/Chr157i4n/PyTmcStepper/commit/9070ae0f964fc846eddee7c4e46373899264690c))
+
+- Update import statements in TMC test files
+  ([`895f928`](https://github.com/Chr157i4n/PyTmcStepper/commit/895f928e415d0c9993a6f1e78fa7a53849f2ff89))
+
+
+## v0.18.2 (2026-01-20)
+
+### Bug Fixes
+
+- Rename workflow file
+  ([`df1b1de`](https://github.com/Chr157i4n/PyTmcStepper/commit/df1b1de8a4466ab230310dbf42f7ba6b6dae36fb))
+
+
+## v0.18.1 (2026-01-20)
+
+### Bug Fixes
+
+- Readd token to pypi publish
+  ([`3456775`](https://github.com/Chr157i4n/PyTmcStepper/commit/34567756bb668caed09b73bd27fb8353a95b7109))
+
+
+## v0.18.0 (2026-01-20)
+
+### Bug Fixes
+
+- Add missing job names for grype-scan and release jobs in CI workflow
+  ([`a05c286`](https://github.com/Chr157i4n/PyTmcStepper/commit/a05c286c2ebb231b4ff60c20a9ea352520b64e7c))
+
+- Add Python setup and dependency installation steps for semantic release
+  ([`821cc90`](https://github.com/Chr157i4n/PyTmcStepper/commit/821cc90c97b20f1677995245ede3f8037ff2f86d))
+
+- Update build command in pyproject.toml and remove redundant steps in CI workflow
+  ([`ccb5b2c`](https://github.com/Chr157i4n/PyTmcStepper/commit/ccb5b2ced98d7cfc25b9db2267678cf712e83144))
+
+### Features
+
+- Add fetch-depth option to checkout step in release job
+  ([`db1f46e`](https://github.com/Chr157i4n/PyTmcStepper/commit/db1f46ee1b0303b35f7b4180104143e5e1172f9d))
+
+- Implement semantic release and package publishing steps in CI workflow
+  ([`c279abc`](https://github.com/Chr157i4n/PyTmcStepper/commit/c279abc6348f9cce720f20cb05e691fb7d422076))
+
+
+## v0.17.0 (2026-01-20)
+
+### Bug Fixes
+
+- Split unittest and code coverage step
+  ([`4e64ab9`](https://github.com/Chr157i4n/PyTmcStepper/commit/4e64ab985dced6530330de2a7e4b4a988cebd478))
+
+- Update import statements for TMC2209 usage in README
+  ([`7e75e6f`](https://github.com/Chr157i4n/PyTmcStepper/commit/7e75e6f72453b245539fb122412049b553b5ddc6))
+
+- Update Python version matrix in unittest job (toml support needed for coverage)
+  ([`9a15f1d`](https://github.com/Chr157i4n/PyTmcStepper/commit/9a15f1dd1e02bd85d871a5f54834ff8521201753))
+
+### Documentation
+
+- Update README to include test and code coverage badges Unittest and coverage badge
+  ([`f30bd13`](https://github.com/Chr157i4n/PyTmcStepper/commit/f30bd1344e9450bab768f5ceec320907edb603fc))
+
+### Features
+
+- Add artifact upload step for coverage comment in unittest job
+  ([`2cb9d6b`](https://github.com/Chr157i4n/PyTmcStepper/commit/2cb9d6b3ea43dc89550e3ac5b8df811977d50ff5))
+
+- Add coverage configuration to pyproject.toml
+  ([`ad90b4f`](https://github.com/Chr157i4n/PyTmcStepper/commit/ad90b4fadaaccab06ad44f3c87801a5641f40a3c))
+
+- Add example for special register access with TMC2209 in README
+  ([`cf1006f`](https://github.com/Chr157i4n/PyTmcStepper/commit/cf1006f6bba4d16784ba72e6019de63b8d78ffe5))
+
+- Update unittest job to enable coverage reporting and adjust permissions
+  ([`bf56353`](https://github.com/Chr157i4n/PyTmcStepper/commit/bf56353468bd2b2bd32b8307c0b25557dd874072))
+
+
+## v0.16.0 (2026-01-18)
+
+### Bug Fixes
+
+- Add dummy _thread implementation for environments without threading support (CircuitPython) #141
+  ([`dac75ad`](https://github.com/Chr157i4n/PyTmcStepper/commit/dac75adbc74c83bc11e9888439e081905c22ae82))
+
+- Add missing classifiers for Python implementations in pyproject.toml
+  ([`7e063b3`](https://github.com/Chr157i4n/PyTmcStepper/commit/7e063b3b88a7783ca5f0bbf6bfaa91fe94ece489))
+
+- Add safety check before disabling motor in deinit method
+  ([`f94a478`](https://github.com/Chr157i4n/PyTmcStepper/commit/f94a478c3aa9b71196f31927677a8f9e1ce4b928))
+
+- Changed msres_ms setter to use a lookup table, because math.log2 is not available on CircuitPython
+  #141
+  ([`1646aad`](https://github.com/Chr157i4n/PyTmcStepper/commit/1646aad20253b9f17933d8e267facf02454e3ff3))
+
+- Implement lazy import for FtdiWrapper to optimize module loading
+  ([`760b224`](https://github.com/Chr157i4n/PyTmcStepper/commit/760b224db72b35511993a2a6647dbca793094535))
+
+- Pylint
+  ([`f154f97`](https://github.com/Chr157i4n/PyTmcStepper/commit/f154f97c5352e4938c2c2ca2ba6996323d2e78c8))
+
+- Reorder reset check for consistency
+  ([`95bac7d`](https://github.com/Chr157i4n/PyTmcStepper/commit/95bac7d0449d4b91beb5fcc73c7c8c5fe473c170))
+
+- Simplify gpio_add_event_detect docstring and raise NotImplementedError for CircuitPython
+  ([`6a099f5`](https://github.com/Chr157i4n/PyTmcStepper/commit/6a099f510a847434eaa22339e9cb4b07639df592))
+
+### Features
+
+- Add UART and SPI communication classes for CircuitPython #141
+  ([`5daa241`](https://github.com/Chr157i4n/PyTmcStepper/commit/5daa24190cfa6d5d395255dc255c0895992a57e3))
+
+- Enhance get_time_us function to support CircuitPython #141
+  ([`6addc04`](https://github.com/Chr157i4n/PyTmcStepper/commit/6addc0450204fce20ae7a0a798922e6022004aa0))
+
+### Testing
+
+- Add assertions for motor position after movement in TestTMCModules
+  ([`c04864e`](https://github.com/Chr157i4n/PyTmcStepper/commit/c04864ec349e86abe245e2d02d9133a95a524e5b))
+
+- Enhance TMC2209 and TMC2240 tests with additional assertions for register checks
+  ([`15b30a8`](https://github.com/Chr157i4n/PyTmcStepper/commit/15b30a81dfc26bfb3413b5570b08140645ffd370))
+
+- Put Spi test in try-except block to prevent errors, if spidev is not available
+  ([`4bcf206`](https://github.com/Chr157i4n/PyTmcStepper/commit/4bcf2061da9e08988654ac91060fabcc579d57cb))
+
+
+## v0.15.0 (2026-01-17)
+
+### Bug Fixes
+
+- Change acceleration_fullstep calculation to use integer division
+  ([`e3d3fda`](https://github.com/Chr157i4n/PyTmcStepper/commit/e3d3fdabb0632174115c5935c1ed79f86b781f5a))
+
+- Change mres_ms type from bool to int in ChopConf class
+  ([`834f07c`](https://github.com/Chr157i4n/PyTmcStepper/commit/834f07ce4971b34ff62b0ad9ae661915b5007842))
+
+- TmcStepperDriver init docstring
+  ([`dde9be1`](https://github.com/Chr157i4n/PyTmcStepper/commit/dde9be18c6d99fd9789bb1b6c7186480fa404fe6))
+
+- Update max_speed_fullstep calculation to use integer division
+  ([`37e6c9d`](https://github.com/Chr157i4n/PyTmcStepper/commit/37e6c9d5fb8ebcaa307d774ed007181dfe07a15f))
+
+### Chores
+
+- Update action versions in python-publish workflow
+  ([`14a31fa`](https://github.com/Chr157i4n/PyTmcStepper/commit/14a31fad64554f2ad29defb7bc2de086e252ba32))
+
+### Features
+
+- Add current_pos_fullstep property for fullstep position handling
+  ([`5c51150`](https://github.com/Chr157i4n/PyTmcStepper/commit/5c5115066d0d3bd79d0ee5c6b21357e2f7305cb3))
+
+- Add dynamic attribute forwarding for TmcStepperDriver
+  ([`5e8e873`](https://github.com/Chr157i4n/PyTmcStepper/commit/5e8e873e6748f0d2689dbadfcb16a118067c05af))
+
+### Refactoring
+
+- Consolidate microstepping resolution logic in TmcXXXX class
+  ([`8a1d619`](https://github.com/Chr157i4n/PyTmcStepper/commit/8a1d6190ba07b5f571bcfcc83bc8e1e6359cf8b9))
+
+### Testing
+
+- Add assertions for microstepping resolution and motor speed in TestTMCModules
+  ([`75aa164`](https://github.com/Chr157i4n/PyTmcStepper/commit/75aa164ff30a570f1faa05a870a43d5759f3d310))
+
+
+## v0.14.0 (2026-01-17)
+
+### Bug Fixes
+
+- Add missing import for Gpio in TmcXXXX driver module
+  ([`f598955`](https://github.com/Chr157i4n/PyTmcStepper/commit/f598955691eb44867303bc677c8eb2229e6af3db))
+
+- Add missing import for MovementPhase in demo script
+  ([`cd07408`](https://github.com/Chr157i4n/PyTmcStepper/commit/cd0740805e2426d5539666077c5d4fdc16edde2f))
+
+- Pass ioin argument to test_com method in TmcXXXX class
+  ([`1456cd6`](https://github.com/Chr157i4n/PyTmcStepper/commit/1456cd6ed243e1b4695df904f61cdedfa2df5d6b))
+
+- Pylint
+  ([`a1a16aa`](https://github.com/Chr157i4n/PyTmcStepper/commit/a1a16aa090b06d9a68e79de1d1b9417e77df319c))
+
+- Pylint
+  ([`d6c6620`](https://github.com/Chr157i4n/PyTmcStepper/commit/d6c662065f19e7e25e56bd1ca5606e57b2dd61a9))
+
+- Pylint
+  ([`f52ca2a`](https://github.com/Chr157i4n/PyTmcStepper/commit/f52ca2a3bd26c6d7ee2b01f67b9d35e262c53db4))
+
+### Refactoring
+
+- Added __init__.py in tmc_drvier module
+  ([`4d38270`](https://github.com/Chr157i4n/PyTmcStepper/commit/4d382700b8bf50c5e6d6d78071294b20777b9bef))
+
+- Clean up unused imports and reorganize exception imports in driver files
+  ([`90657bf`](https://github.com/Chr157i4n/PyTmcStepper/commit/90657bf907029e8082b0c1ac3b6f4044091e71fa))
+
+- Remove empty demo module files for tmc2240 and main demo
+  ([`19e4186`](https://github.com/Chr157i4n/PyTmcStepper/commit/19e4186755ace28d416ebf3d143902addd84c4b1))
+
+- Remove unused imports
+  ([`9c121ef`](https://github.com/Chr157i4n/PyTmcStepper/commit/9c121efff629e573e382908f7acd188c4b7f8c69))
+
+- Remove unused tmc_com property and imports from motion control modules
+  ([`c5c5e8e`](https://github.com/Chr157i4n/PyTmcStepper/commit/c5c5e8e3150d7734cc41f1215e1d8010d0e9bf94))
+
+- Update demo script descriptions for clarity
+  ([`a4eabd4`](https://github.com/Chr157i4n/PyTmcStepper/commit/a4eabd4ea73ed57ff9cb36281b0095e304b3fe26))
+
+- Update import statements and remove wildcard imports
+  ([`78a5484`](https://github.com/Chr157i4n/PyTmcStepper/commit/78a548418aff98d38c5481340f9240b9f40629fb))
+
+
+## v0.13.0 (2026-01-11)
+
+### Bug Fixes
+
+- Changed get_bit_width method to calculate bit width manually (micropython compatibility)
+  ([`c2689b7`](https://github.com/Chr157i4n/PyTmcStepper/commit/c2689b7800d50fce56a424d9ab2e5e84e06ef168))
+
+- Cleaned up demo scripts
+  ([`93f88d5`](https://github.com/Chr157i4n/PyTmcStepper/commit/93f88d566065fca0bf64b7d28aea46d51373aa8f))
+
+- Correct duration calculation from milliseconds to microseconds in set_vactual_dur method
+  ([`185d96f`](https://github.com/Chr157i4n/PyTmcStepper/commit/185d96fe53c555d067fa50c350e663cef40982c7))
+
+- Moved gpiozero pwm switching into _tmc_gpio_board_gpiozero.py
+  ([`c580131`](https://github.com/Chr157i4n/PyTmcStepper/commit/c5801313f3742c382231fee96fbef8082687ea2a))
+
+- Pylint
+  ([`d2254a3`](https://github.com/Chr157i4n/PyTmcStepper/commit/d2254a306a965496451c2a935ca14e50738da6a9))
+
+- Remove unnecessary cs_count parameter from SPI configuration
+  ([`22277eb`](https://github.com/Chr157i4n/PyTmcStepper/commit/22277eb64e15c953fd6b28abed81e49b83f8d164))
+
+- Remove unnecessary loglevel and movement settings from demo script
+  ([`f28f71a`](https://github.com/Chr157i4n/PyTmcStepper/commit/f28f71ad1a858ce1c7c44a0af3db5a16965d0f9c))
+
+- Streamline movement handling in motion control classes
+  ([`ef02b52`](https://github.com/Chr157i4n/PyTmcStepper/commit/ef02b52aa7535872dc4627bd0aecca7fc2e72795))
+
+- Update motion control to use TmcMotionControlVActual in demo script
+  ([`09b6fa9`](https://github.com/Chr157i4n/PyTmcStepper/commit/09b6fa954602231772ca4d4d1e03b35d2d2d202c))
+
+- Update SGT threshold to be signed
+  ([`a3e7224`](https://github.com/Chr157i4n/PyTmcStepper/commit/a3e72241c7093fe9811b5bb31633ee3b9c43ddca))
+
+- Update VActual register to support signed values for vactual
+  ([`3462873`](https://github.com/Chr157i4n/PyTmcStepper/commit/3462873169da0f7b7569fc00b85d3e7dd44bd647))
+
+### Features
+
+- Add clear_rampstat method to reset ramp status after stall
+  ([`997b16c`](https://github.com/Chr157i4n/PyTmcStepper/commit/997b16ceedcda1d4c4bcc22e6c0518e27d71f6cc))
+
+- Add demo script for TMC5160 internal ramp generator homing
+  ([`ddd1b61`](https://github.com/Chr157i4n/PyTmcStepper/commit/ddd1b6169f81255bd54712e04f76f1a5c2d8dff1))
+
+- Add PWM class protocol to GPIOModuleProtocol
+  ([`138a9bb`](https://github.com/Chr157i4n/PyTmcStepper/commit/138a9bbba935ab655c94d556e21ec38d8ac6bcb6))
+
+- Add reset_positions method to reset position counters
+  ([`aa14d29`](https://github.com/Chr157i4n/PyTmcStepper/commit/aa14d29c1b4ee6b23bb6a5dd0f68a5b99300ec14))
+
+- Add stallguard and limit switch event handling in ramp generator
+  ([`0b43224`](https://github.com/Chr157i4n/PyTmcStepper/commit/0b43224a21ff2dacb8141591e4bc4d8e30d2435d))
+
+- Added method to set hybrid threshold speed in TmcXXXX class for hybrid switching between
+  Stealthchop and Spreadcycle
+  ([`81e6f11`](https://github.com/Chr157i4n/PyTmcStepper/commit/81e6f11a2ba6a1448bf06cde1d1605acb75e7df6))
+
+- Implement target position property and update current position handling
+  ([`e7dc520`](https://github.com/Chr157i4n/PyTmcStepper/commit/e7dc520d25c724844224499ad87f28b309c8d6d7))
+
+- Unify position reset method naming and functionality across drivers
+  ([`ccd9999`](https://github.com/Chr157i4n/PyTmcStepper/commit/ccd9999209365734755fe8b40a1bac2605714e62))
+
+### Refactoring
+
+- Consolidate stallguard setup logic in TMC drivers
+  ([`9498d36`](https://github.com/Chr157i4n/PyTmcStepper/commit/9498d36bb677a7c56e47de2d3c24b7dec7630b75))
+
+- Streamline GPIO handling and error checking across wrappers
+  ([`b20faab`](https://github.com/Chr157i4n/PyTmcStepper/commit/b20faab01cdcec96f989cb869180636b617f41fa))
+
+
+## v0.12.0 (2026-01-06)
+
+### Documentation
+
+- Update installation instructions in README.md for editable install
+  ([`5686580`](https://github.com/Chr157i4n/PyTmcStepper/commit/5686580bde862c75a92976a0388d64f7a448aadd))
+
+### Refactoring
+
+- Add setter for speed_fullstep in TmcMotionControl class
+  ([`418028f`](https://github.com/Chr157i4n/PyTmcStepper/commit/418028f88bf1e07f5f11b44dc0014f33d111b68d))
+
+- Centralize initialization logic in TmcXXXX class
+  ([`a806283`](https://github.com/Chr157i4n/PyTmcStepper/commit/a806283db9f3489c40ae5add2879284cedb88a91))
+
+- Enhance TmcStepperDriver properties with type hints and error handling
+  ([`e0d585d`](https://github.com/Chr157i4n/PyTmcStepper/commit/e0d585dcf68affd6de6792883d4c3c9421e8265f))
+
+- Implement clear_gstat_verify method for GSTAT register management #118
+  ([`326ba4b`](https://github.com/Chr157i4n/PyTmcStepper/commit/326ba4bdc6bcf8f8dbe055b58bb6202d684dfd89))
+
+
+## v0.11.0 (2026-01-01)
+
+### Refactoring
+
+- Remove sys dependency and centralize time function for MicroPython compatibility
+  ([`2be9b80`](https://github.com/Chr157i4n/PyTmcStepper/commit/2be9b8056fcfaac980ef31d5ee40acc71457e489))
+
+- Replace individual register read functions with a unified read_register method
+  ([`1e8e41a`](https://github.com/Chr157i4n/PyTmcStepper/commit/1e8e41a8ff849ce15f1979da3fca2bcaa8a26656))
+
+
+## v0.10.0 (2025-12-30)
+
+
+## v0.9.3 (2025-12-27)
+
+
+## v0.9.2 (2025-12-27)
+
+### Refactoring
+
+- Changed TmcCom classes, so i does not know the exakt reg defintions and added more Exceptions
+  ([`12fdd47`](https://github.com/Chr157i4n/PyTmcStepper/commit/12fdd470178497d1da60a1e9f63b45ada8653d83))
+
+
+## v0.9.1 (2025-12-22)
+
+
+## v0.9.0 (2025-12-20)
+
+
+## v0.8.0 (2025-12-13)
+
+
+## v0.7.8 (2025-11-23)
+
+
+## v0.7.7 (2025-11-09)
+
+
+## v0.7.6 (2025-05-17)
+
+
+## v0.7.5 (2025-05-01)
+
+
+## v0.7.4 (2025-04-12)
+
+
+## v0.7.3 (2025-03-15)
+
+
+## v0.7.2 (2025-03-14)
+
+
+## v0.7.1 (2025-03-10)
+
+
+## v0.5.7 (2025-02-05)
+
+
+## v0.5.6 (2024-12-19)
+
+### Bug Fixes
+
+- Return status instead of hardcoded True in test_uart
+  ([`5e57e2c`](https://github.com/Chr157i4n/PyTmcStepper/commit/5e57e2c0fb265511c30c4863f9cef3877ce88553))
+
+
+## v0.5.5 (2024-10-06)
+
+
+## v0.5.4 (2024-08-31)
+
+
+## v0.5.3 (2024-08-25)
+
+
+## v0.5.2 (2024-08-01)
+
+
+## v0.5.1 (2024-07-23)
+
+
+## v0.4.5 (2024-04-17)
+
+
+## v0.4.4 (2024-04-13)
+
+
+## v0.4.3 (2024-02-09)
+
+
+## v0.4.2 (2024-01-15)
+
+
+## v0.4.1 (2023-11-26)
+
+
+## v0.3.4 (2023-11-13)
+
+
+## v0.3.3 (2023-11-11)
+
+
+## v0.3.2 (2023-11-07)
+
+- Initial Release
