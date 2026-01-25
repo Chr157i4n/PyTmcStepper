@@ -14,28 +14,32 @@ this module has two different functions:
 
 from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
-from .com._tmc_com_spi_base import TmcComSpiBase
-from .com._tmc_com_uart_base import TmcComUartBase
-from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
-from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
-from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
-from .enable_control._tmc_ec_toff import TmcEnableControlToff
-from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from ._tmc_stallguard import StallGuard
 from .tmc_logger import *
 from .reg._tmc224x_reg import *
+from ._tmc_validation import SUBMODULE_VALIDATION
+
+if SUBMODULE_VALIDATION:
+    from .com._tmc_com_spi_base import TmcComSpiBase
+    from .com._tmc_com_uart_base import TmcComUartBase
+    from .motion_control._tmc_mc_step_reg import TmcMotionControlStepDir
+    from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
+    from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
+    from .enable_control._tmc_ec_toff import TmcEnableControlToff
+    from .enable_control._tmc_ec_pin import TmcEnableControlPin
 
 
 class Tmc2240(TmcXXXX, StallGuard):
     """Tmc2240"""
 
-    SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
-    SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
-    SUPPORTED_MC_TYPES = (
-        TmcMotionControlStepDir,
-        TmcMotionControlStepReg,
-        TmcMotionControlStepPwmDir,
-    )
+    if SUBMODULE_VALIDATION:
+        SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
+        SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
+        SUPPORTED_MC_TYPES = (
+            TmcMotionControlStepDir,
+            TmcMotionControlStepReg,
+            TmcMotionControlStepPwmDir,
+        )
     DRIVER_FAMILY = "TMC2240"
 
     # Constructor/Destructor

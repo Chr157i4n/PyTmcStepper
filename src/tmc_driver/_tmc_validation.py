@@ -4,7 +4,14 @@ TMC validation module
 This module provides validation functions for TMC driver components.
 """
 
+import sys
 from ._tmc_exceptions import TmcDriverException
+
+
+SUBMODULE_VALIDATION = not (
+    sys.implementation.name == "micropython"
+    or sys.implementation.name == "circuitpython"
+)
 
 
 def validate_submodule(

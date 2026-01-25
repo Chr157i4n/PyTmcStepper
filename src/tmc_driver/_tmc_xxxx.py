@@ -22,7 +22,7 @@ from .motion_control._tmc_mc import TmcMotionControl
 from .com._tmc_com import TmcCom
 from .reg._tmc_reg import TmcReg
 from .reg import _tmc_shared_regs as tmc_shared_regs
-from ._tmc_validation import validate_submodule
+from ._tmc_validation import validate_submodule, SUBMODULE_VALIDATION
 from ._tmc_exceptions import (
     TmcException,
     TmcComException,
@@ -35,9 +35,10 @@ from ._tmc_exceptions import (
 class TmcXXXX(TmcStepperDriver):
     """TmcXXXX"""
 
-    SUPPORTED_COM_TYPES = ()
-    SUPPORTED_EC_TYPES = ()
-    SUPPORTED_MC_TYPES = ()
+    if SUBMODULE_VALIDATION:
+        SUPPORTED_COM_TYPES = ()
+        SUPPORTED_EC_TYPES = ()
+        SUPPORTED_MC_TYPES = ()
     DRIVER_FAMILY = "TMCXXXX"
 
     gstat: tmc_shared_regs.GStat
@@ -87,15 +88,16 @@ class TmcXXXX(TmcStepperDriver):
             tmc_ec, tmc_mc, gpio_mode, loglevel, logprefix, log_handlers, log_formatter
         )
 
-        validate_submodule(
-            tmc_com, self.SUPPORTED_COM_TYPES, self.__class__.__name__, "tmc_com"
-        )
-        validate_submodule(
-            tmc_ec, self.SUPPORTED_EC_TYPES, self.__class__.__name__, "tmc_ec"
-        )
-        validate_submodule(
-            tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc"
-        )
+        if SUBMODULE_VALIDATION:
+            validate_submodule(
+                tmc_com, self.SUPPORTED_COM_TYPES, self.__class__.__name__, "tmc_com"
+            )
+            validate_submodule(
+                tmc_ec, self.SUPPORTED_EC_TYPES, self.__class__.__name__, "tmc_ec"
+            )
+            validate_submodule(
+                tmc_mc, self.SUPPORTED_MC_TYPES, self.__class__.__name__, "tmc_mc"
+            )
 
         if self.tmc_com is not None:
             self.tmc_com.tmc_logger = self.tmc_logger

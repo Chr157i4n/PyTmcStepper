@@ -14,27 +14,31 @@ this module has two different functions:
 
 from ._tmc_xxxx import *
 from .com._tmc_com import TmcCom
-from .com._tmc_com_uart_base import TmcComUartBase
-from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
-from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
-from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
-from .enable_control._tmc_ec_toff import TmcEnableControlToff
-from .enable_control._tmc_ec_pin import TmcEnableControlPin
 from .tmc_logger import Loglevel
 from .reg._tmc220x_reg import *
+from ._tmc_validation import SUBMODULE_VALIDATION
+
+if SUBMODULE_VALIDATION:
+    from .com._tmc_com_uart_base import TmcComUartBase
+    from .motion_control._tmc_mc_step_reg import TmcMotionControlStepReg
+    from .motion_control._tmc_mc_step_pwm_dir import TmcMotionControlStepPwmDir
+    from .motion_control._tmc_mc_vactual import TmcMotionControlVActual
+    from .enable_control._tmc_ec_toff import TmcEnableControlToff
+    from .enable_control._tmc_ec_pin import TmcEnableControlPin
 
 
 class Tmc220x(TmcXXXX):
     """Tmc220X"""
 
-    SUPPORTED_COM_TYPES = (TmcComUartBase,)
-    SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
-    SUPPORTED_MC_TYPES = (
-        TmcMotionControlStepDir,
-        TmcMotionControlStepReg,
-        TmcMotionControlStepPwmDir,
-        TmcMotionControlVActual,
-    )
+    if SUBMODULE_VALIDATION:
+        SUPPORTED_COM_TYPES = (TmcComUartBase,)
+        SUPPORTED_EC_TYPES = (TmcEnableControlToff, TmcEnableControlPin)
+        SUPPORTED_MC_TYPES = (
+            TmcMotionControlStepDir,
+            TmcMotionControlStepReg,
+            TmcMotionControlStepPwmDir,
+            TmcMotionControlVActual,
+        )
     DRIVER_FAMILY = "TMC220X"
 
     # Constructor/Destructor
