@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v0.20.0 (2026-01-25)
+
+### Chores
+
+- Remove outdated CHANGELOG.BAK.md file
+  ([`7cadaba`](https://github.com/Chr157i4n/PyTmcStepper/commit/7cadaba4680d86f9c6e660d2f1e61c17c794fbe7))
+
+- Update markdownlint configuration for improved formatting
+  ([`ec410c6`](https://github.com/Chr157i4n/PyTmcStepper/commit/ec410c64664967362fc042f3886e4c5660f3aede))
+
+### Features
+
+- Test changelog updating
+  ([`dfab353`](https://github.com/Chr157i4n/PyTmcStepper/commit/dfab3532b8bb1eac92d91a23ee536607fd427529))
+
+
 ## v0.19.0 (2026-01-25)
 
 ### Bug Fixes
