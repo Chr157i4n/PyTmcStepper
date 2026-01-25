@@ -414,6 +414,23 @@
 
 ## v0.11.0 (2026-01-01)
 
+### Bug Fixes
+
+- TMC2240: fixed THigh reg addr
+
+### Features
+
+- added support for TMC5160
+- changed set_current to set_current_rms and set_current_peak
+- added typehints
+- refactor logger (split micropython and cpython implementation into their own files)
+- added clear function for regs
+- added str function for regs
+- added demo script for homing
+- replaced individual register read function with unified read_register method
+- TMC5160: added reg defs
+- TMC5160: added MotionControl for internal Ramp Generator
+
 ### Refactoring
 
 - Remove sys dependency and centralize time function for MicroPython compatibility
@@ -425,53 +442,171 @@
 
 ## v0.10.0 (2025-12-30)
 
+### Bug Fixes
+
+- fixed pwm cleanup
+- fixed reg definition (seimin in Coolconf of TMC2209)
+
+### Features
+
+- added unittests for submodule combinations
+- renamed drv_enn to enn in reg def for consistency
+- added class TmcXXXX for code shared between all TMC drivers
+- changed reg definitions (Tuple of TmcRegFields instead of Array of Arrays)
+- moved do_homing() to_tmc_stallguard.py
+- do_homing -> added args cb_success and cb_failure
+- do_homing now uses tmc_mc instead of static internal motion controller
+- removed do_homing2()
+- removed driver_address from constructor of COM submodules
+- removed _deinit_finished
 
 ## v0.9.3 (2025-12-27)
 
+### Bug Fixes
+
+- fixed reg access in submodules (with callback)
 
 ## v0.9.2 (2025-12-27)
+
+### Bug Fixes
+
+- fixed wrong reg access (TMC2209 iholddelay and en_spreadcycle)
+
+### Features
+
+- added validation of submodules
+- enhanced TMC2240 set_current function (added rref as argument)
 
 ### Refactoring
 
 - Changed TmcCom classes, so i does not know the exakt reg defintions and added more Exceptions
   ([`12fdd47`](https://github.com/Chr157i4n/PyTmcStepper/commit/12fdd470178497d1da60a1e9f63b45ada8653d83))
+- formatting and linting
+- added typehints for register definitions
 
 
 ## v0.9.1 (2025-12-22)
 
+### Refactoring
+
+- refactored tmc_gpio modules
+- refactored tmc_com modules
+- dropped support for python 3.9 and older
+- added more typehints
+- added MicroPico project files for better Micropython support
+- moved all project metadata into pyproject.toml
 
 ## v0.9.0 (2025-12-20)
 
+### Features
+
+- added support for MicroPython
+- added support for relative movements in TmcMotionControlVActual
+- added TmcMotionControlException in TmcMotionControlVActual if the VActual reg is not available (TMC2240)
+- removed statistics dependency
+- added property current_pos_fullstep
 
 ## v0.8.0 (2025-12-13)
 
+### Features
+
+- added support for FT232H (can be used on Windows; currently only with TMC2240 and SPI)
+- added missing deinit in TmcEnableControl
 
 ## v0.7.8 (2025-11-23)
 
+### Bug Fixes
+
+- fixed RPi4 using wrong gpio lib
+- changed init/deinit of classes
 
 ## v0.7.7 (2025-11-09)
 
+### Bug Fixes
+
+- fixed wrong reg adress of IOIN for TMC220X
 
 ## v0.7.6 (2025-05-17)
 
+### Bug Fixes
+
+- fixed driver addr in demo/demo_script_06_multiple_drivers.py
+- fixed doubled log output when using multiple drivers
+- fixed VActual bit mask
+
+### Features
+
+- added PwmConf reg
+- added initial value to gpio_setup when using gpiozero (RPi5)
 
 ## v0.7.5 (2025-05-01)
 
+### Bug Fixes
+
+- fixed gstat Exception on TMC2240
+
+### Refactoring
+
+- removed spidev dependency from TMC220X
+- added TPwmThrs reg
 
 ## v0.7.4 (2025-04-12)
 
+### Features
+
+- added custom exceptions
+- added TmcMotionControlStepPwmDir
+- fixed homing
 
 ## v0.7.3 (2025-03-15)
 
+### Features
+
+- increased SPI speed (from 5khz to 8mhz)
+- added SPI speed to TmcComSpi constructor
+- return status flags as dict received with every SPI read access
 
 ## v0.7.2 (2025-03-14)
 
+### Features
+
+- moved StallGuard code into own mixin class
+- renamed sgresult and sgthrs reg values in order to have them consistend between drivers
+
+### Bug Fixes
+
+- fixed StallGuard on TMC2240 (diag0_pushpull and diag0_stall needed to be activated)
 
 ## v0.7.1 (2025-03-10)
 
+### Features
+
+- added Support for TMC2240
+- changed registers to be initialized as Lists (Bitmasks and Bitpositions)
+- added Support for SPI
+- Split code for EnableControl and MotionControl into their own classes
+- added Classes for EnableControl TmcEnableControlPin
+- added Classes for EnableControl TmcEnableControlToff
+- added Classes for MotionControl TmcMotionControlStepDir
+- added Classes for MotionControl TmcMotionControlStepReg
+- added Classes for MotionControl TmcMotionControlVActual
+- added support for coolstep
+- changed library name to PyTmcStepper
+- refactored deserialisation and serialisation of register values to use classes
+- changed file names according to PEP8
+- changed class names according to PEP8
 
 ## v0.5.7 (2025-02-05)
 
+### Bug Fixes
+
+- fixed print output in test_uart()
+- use mapping table for mapping gpio library to the board
+- make fullsteps_per_rev configurable in constructor
+
+### Refactoring
+
+- refactored GPIO access to use inherited classes
 
 ## v0.5.6 (2024-12-19)
 
@@ -479,44 +614,171 @@
 
 - Return status instead of hardcoded True in test_uart
   ([`5e57e2c`](https://github.com/Chr157i4n/PyTmcStepper/commit/5e57e2c0fb265511c30c4863f9cef3877ce88553))
+- fixed links in readme
+- switched to python 3.13 in unittests
 
+### Refactoring
+
+- refactored test_dir_step_en function
 
 ## v0.5.5 (2024-10-06)
 
+### Features
+
+- changed Nvidia Jetson detection
 
 ## v0.5.4 (2024-08-31)
 
+### Features
+
+- added Orange Pi Support
 
 ## v0.5.3 (2024-08-25)
 
+### Features
+
+- added math function constrain
+- added function set_speed
+- added function set_speed_fullstep
+- added demo_script_11_continous_movement
+- reworked github actions pipeline (one multi-staged-pipeline)
 
 ## v0.5.2 (2024-08-01)
 
+### Features
+
+- added extra error handling for when the UART serial is not set
 
 ## v0.5.1 (2024-07-23)
 
+### Features
+
+- added toff setting
+- added support for controlling direction during movement over UART
+- added demo script for motor movement using only the STEP pin
+- decoupled gpio access from gpio library
+- added support for Raspberry Pi5 (gpiozero)
+- added support for Luckfox Pico (python-periphery)
 
 ## v0.4.5 (2024-04-17)
 
+### Features
+
+- enhancement of logging module
+
+### Bug Fixes
+
+- small bugfix
 
 ## v0.4.4 (2024-04-13)
 
+### Features
+
+- change logger to use logging module
 
 ## v0.4.3 (2024-02-09)
 
+### Bug Fixes
+
+- small bugfix
 
 ## v0.4.2 (2024-01-15)
 
+### Features
+
+- added support for Nvidia Jetson
+- added seperate file for GPIO board imports
+- changed min python version to 3.7
 
 ## v0.4.1 (2023-11-26)
 
+### Features
+
+- removed dependency enum34
+- removed dependency bitstring
+- changed min python version to 3.6
+- changed docstring format to google
+- split code into different files
+- added logger class
+- moved demo scripts into demo folder
+- added unittest
+- switched all string to f-strings
 
 ## v0.3.4 (2023-11-13)
 
+### Features
+
+- fixed do_homing()
+- added minspeed to do_homing()
+- added TMC_2209_math.py
 
 ## v0.3.3 (2023-11-11)
 
+### Features
+
+- added correct StallGuard min_speed calculation
 
 ## v0.3.2 (2023-11-07)
 
-- Initial Release
+### Features
+
+- add pylint github action
+- fixed code to pass pylint check
+
+## v0.3.1
+
+### Features
+
+- Added threaded movement
+- Added test_script_07_threads.py
+- Added softstop
+- Added get_movement_phase()
+
+## v0.3.0
+
+### Refactoring
+
+- Change code to snake_case
+
+## v0.2.2
+
+### Features
+
+- Added set_deinitialize_true
+- Fixed ifcnt wrap around from 255 to 0
+
+## v0.2.1
+
+### Features
+
+- Added setPDNdisable
+- Added setMaxSpeed_fullstep and setAcceleration_fullstep
+
+## v0.2.0
+
+### Features
+
+- Pin parameter order in constructor changed to EN, STEP, DIR
+- STEP and DIR pins are optional parameters
+- CRC check for read access reply datagrams
+- If only zeroes are received an error will be thrown
+- Added ignore_delay to StallGuard callback
+- Implemented write access retry
+- Implemented velocity ramping with VActual
+- Add ability to print StallGuard results and TStep in VActual
+- If write or read access fails, GSTAT will be checked for driver errors
+- Added CHANGELOG.md
+
+## v0.1.7
+
+### Features
+
+- Updated README
+- Added number of revolutions as parameter for doHoming
+- Added output whether doHoming was successful or not
+
+## v0.1.6
+
+### Features
+
+- Added ability to invert direction in setVActual_rps with negative revolutions
