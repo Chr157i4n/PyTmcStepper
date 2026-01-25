@@ -57,6 +57,7 @@ omit = [
     "*_circuitpython.py",
     "*_ftdi.py",
     "*_periphery.py",
+    "*_pio.py",
 ]
 exclude_lines = [
     "pragma: no cover",
