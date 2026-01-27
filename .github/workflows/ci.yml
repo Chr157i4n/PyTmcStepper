@@ -214,7 +214,8 @@ jobs:
     name: Release and Publish Package
     runs-on: ubuntu-latest
     needs:
-      - unittest
+      - unittest_cpython
+      - unittest_micropython
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
