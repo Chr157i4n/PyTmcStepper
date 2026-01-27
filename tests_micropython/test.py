@@ -4,6 +4,12 @@ print(sys.version)
 print(sys.implementation)
 
 
+import os
+
+cwd = os.getcwd()
+print("Current working directory:", cwd)
+
+
 import unittest
 from src.tmc_driver import (
     Tmc2209,
