@@ -18,7 +18,7 @@ for file in files:
 
 
 import unittest
-from src.tmc_driver import (
+from tmc_driver import (
     Tmc2209,
     TmcEnableControlPin,
     TmcMotionControlStepDir,
