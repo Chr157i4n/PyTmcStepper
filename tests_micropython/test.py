@@ -4,6 +4,7 @@ print(sys.version)
 print(sys.implementation)
 
 sys.path.insert(0, "src")
+sys.path.insert(0, "micropython/lib")
 
 import os
 
