@@ -3,6 +3,7 @@ import sys
 print(sys.version)
 print(sys.implementation)
 
+sys.path.insert(0, "src")
 
 import os
 
