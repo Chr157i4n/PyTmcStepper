@@ -52,8 +52,8 @@ jobs:
         pylint $(find -wholename './src/*.py')
 
 
-  unittest:
-    name: Unittests
+  unittest_cpython:
+    name: Unittests CPython
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -80,7 +80,26 @@ jobs:
         pip install pyftdi
     - name: Run unittests
       run: |
-        python -m unittest
+        python -m unittest discover -s tests/cpython -p "test_*.py"
+
+
+  unittest_micropython:
+    name: Unittests MicroPython
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install MicroPython
+      uses: BrianPugh/install-micropython@v2
+    - name: Install dependencies
+      run: |
+        micropython -m mip install unittest
+        micropython -m mip install unittest-discover
+    - name: Test MicroPython
+      run: |
+        micropython -m unittest discover -s tests/micropython -p "test_*.py"
 
 
   code-coverage:
