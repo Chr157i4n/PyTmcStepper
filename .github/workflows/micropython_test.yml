@@ -17,6 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
         micropython -m mip install unittest
+        micropython -m mip install unittest-discover
     - name: Test MicroPython
       run: |
-        micropython tests_micropython/run_tests.py
+        micropython -m unittest discover tests_micropython
