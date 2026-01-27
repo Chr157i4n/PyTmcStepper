@@ -1,7 +1,7 @@
 class Pin:
     OUT = 0
 
-    def __init__(self, pin, mode=None):
+    def __init__(self, pin, mode=None, value=0):
         self.pin = pin
         self.mode = mode
 
