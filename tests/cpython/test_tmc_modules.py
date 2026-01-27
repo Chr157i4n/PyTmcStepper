@@ -1,11 +1,9 @@
 """
-test for _tmc_move.py
+test for TMC modules
 """
 
-import time
 import copy
 import unittest
-from unittest import mock
 from src.tmc_driver.tmc_2208 import *
 from src.tmc_driver.tmc_2209 import *
 from src.tmc_driver.tmc_2240 import *
@@ -90,7 +88,7 @@ class _FakeSpi:
 
 
 class TestTMCModules(unittest.TestCase):
-    """TestTMCMove"""
+    """TestTMCModules"""
 
     DRIVER: list[TmcXXXX] = [Tmc2208, Tmc2209, Tmc2240, Tmc5160]
     EC: list[TmcEnableControl] = [TmcEnableControlPin(3), TmcEnableControlToff()]
