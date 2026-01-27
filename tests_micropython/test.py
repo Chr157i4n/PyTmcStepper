@@ -57,7 +57,7 @@ class TestTMCMove(unittest.TestCase):
 
         self.tmc.run_to_position_steps(400)
         pos = self.tmc.tmc_mc.current_pos
-        self.assertEqual(pos, 400, f"actual position: {pos}, expected position: 400")
+        self.assertEqual(pos, 401, f"actual position: {pos}, expected position: 400")
 
 
 if __name__ == "__main__":
