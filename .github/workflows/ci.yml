@@ -128,7 +128,7 @@ jobs:
         pip install pyftdi
     - name: Run unittests
       run: |
-        python -m coverage run -m unittest discover
+        python -m coverage run -m unittest discover -s tests/cpython -p "test_*.py"
     - name: Coverage comment
       id: coverage_comment
       uses: py-cov-action/python-coverage-comment-action@v3
