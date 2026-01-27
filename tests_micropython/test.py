@@ -9,6 +9,12 @@ import os
 cwd = os.getcwd()
 print("Current working directory:", cwd)
 
+files = os.listdir(cwd)
+
+# Print the files
+for file in files:
+    print(file)
+
 
 import unittest
 from src.tmc_driver import (
