@@ -20,4 +20,4 @@ jobs:
         micropython -m mip install unittest-discover
     - name: Test MicroPython
       run: |
-        micropython -m unittest discover tests_micropython
+        micropython -m unittest discover -s tests_micropython -p "test_*.py"
