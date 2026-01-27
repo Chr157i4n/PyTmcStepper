@@ -19,4 +19,4 @@ jobs:
         micropython -m mip install unittest
     - name: Test MicroPython
       run: |
-        micropython tests_micropython/test.py
+        micropython tests_micropython/run_tests.py

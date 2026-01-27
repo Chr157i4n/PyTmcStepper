@@ -1,21 +1,7 @@
 import sys
 
-print(sys.version)
-print(sys.implementation)
-
 sys.path.insert(0, "src")
 sys.path.insert(0, "micropython/lib")
-
-import os
-
-cwd = os.getcwd()
-print("Current working directory:", cwd)
-
-files = os.listdir(cwd)
-
-# Print the files
-for file in files:
-    print(file)
 
 
 import unittest
