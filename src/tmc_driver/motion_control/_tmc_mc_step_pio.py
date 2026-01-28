@@ -437,7 +437,8 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
         # Wait for all steps to complete
         self._tmc_logger.log(
-            f"Waiting for completion: sent={steps_sent}, target={steps}", Loglevel.DEBUG
+            f"Waiting for completion: sent={steps_sent}, target={steps}, stopmode={self._stop}",
+            Loglevel.MOVEMENT,
         )
         timeout_counter = 0
         while self._steps_completed < steps and self._stop == StopMode.NO:
@@ -446,7 +447,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
             if timeout_counter % 1000 == 0:  # Every second
                 self._tmc_logger.log(
                     f"Still waiting: completed={self._steps_completed}/{steps}, sent={steps_sent}",
-                    Loglevel.DEBUG,
+                    Loglevel.MOVEMENT,
                 )
             if timeout_counter > 10000:  # 10 second timeout
                 self._tmc_logger.log(
@@ -457,7 +458,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
         self._tmc_logger.log(
             f"Movement complete: completed={self._steps_completed}, target={steps}",
-            Loglevel.DEBUG,
+            Loglevel.MOVEMENT,
         )
 
         # Don't unregister IRQ handler - it stays registered from _init_pio()
