@@ -391,7 +391,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
                 self._movement_phase = MovementPhase.MAXSPEED
                 remaining_cruise = accel_steps + cruise_steps - steps_sent
                 block_steps = min(
-                    remaining_cruise, 1000
+                    remaining_cruise, 100
                 )  # Larger blocks at constant speed
                 self._cn = self._cmin
 
