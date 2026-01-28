@@ -114,9 +114,6 @@ class TmcMotionControlStepPio(TmcMotionControl):
         sm_id: State machine ID within the PIO block (0-3)
     """
 
-    # Class-level tracking of used state machines
-    _used_state_machines: dict = {}
-
     @property
     def max_speed(self):
         """_max_speed property"""
@@ -187,11 +184,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
         self._sm: rp2.StateMachine | None = None
         self._pio_frequency: int = 20000  # PIO frequency in Hz
-        self._steps_remaining: int = 0
-        self._pio_active: bool = False
-        self._total_steps_sent: int = 0
         self._steps_completed: int = 0
-
         self._sqrt_twoa: float = 1.0
         self._step_interval: int = 0
         self._min_pulse_width: int = 1
@@ -200,14 +193,6 @@ class TmcMotionControlStepPio(TmcMotionControl):
         self._c0: int = 0
         self._cn: int = 0
         self._cmin: int = 0
-
-        # Track state machine usage
-        sm_key = (pio_id, sm_id)
-        if sm_key in TmcMotionControlStepPio._used_state_machines:
-            raise TmcMotionControlException(
-                f"PIO {pio_id} State Machine {sm_id} is already in use"
-            )
-        TmcMotionControlStepPio._used_state_machines[sm_key] = self
 
     def init(self, tmc_logger: TmcLogger):
         """init: called by the Tmc class"""
@@ -274,10 +259,6 @@ class TmcMotionControlStepPio(TmcMotionControl):
         time.sleep_ms(1)
         self._sm.restart()
         self._sm.active(1)
-
-        self._steps_remaining = steps
-        self._pio_active = True
-        self._total_steps_sent = 0
         self._steps_completed = 0
 
     def _drain_rx_fifo(self):
@@ -464,7 +445,6 @@ class TmcMotionControlStepPio(TmcMotionControl):
         # Don't unregister IRQ handler - it stays registered from _init_pio()
         # self._sm.irq(handler=None)
         self._movement_phase = MovementPhase.STANDSTILL
-        self._pio_active = False
 
         if self._stop != StopMode.NO:
             stop_mode = self._stop
