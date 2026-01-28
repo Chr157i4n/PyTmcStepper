@@ -20,18 +20,20 @@ classifiers = [
     "Natural Language :: English",
     "Topic :: System :: Hardware :: Hardware Drivers",
 ]
-dependencies = ["pyserial"]
 
 [project.urls]
 Homepage = "https://github.com/Chr157i4n/PyTmcStepper"
 "Bug Tracker" = "https://github.com/Chr157i4n/PyTmcStepper/issues"
 
 [project.optional-dependencies]
-RASPBERRY_PI = ["RPi.GPIO"]
-RASPBERRY_PI5 = ["gpiozero"]
-NVIDIA_JETSON = ["Jetson.GPIO"]
-LUCKFOX_PICO = ["python-periphery"]
-ORANGE_PI = ["OPi.GPIO"]
+uart = ["pyserial"]
+spi = ["spidev"]
+ftdi = ["pyftdi"]
+raspberry_pi = ["RPi.GPIO"]
+raspberry_pi5 = ["gpiozero"]
+nvidia_jetson = ["Jetson.GPIO"]
+luckfox_pico = ["python-periphery"]
+orange_pi = ["OPi.GPIO"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

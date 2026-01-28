@@ -72,12 +72,12 @@ The following table shows the supported boards and which libraries for GPIO acce
 
 Library     | Installation Parameter    | Boards
 ----------- | ------------------------- | -----------
-RPi.GPIO    | RASPBERRY_PI              | Pi4, Pi3 etc.
-gpiozero    | RASPBERRY_PI5             | Pi5
-Jetson.GPIO | NVIDIA_JETSON             | Nvidia Jetson
-periphery   | LUCKFOX_PICO              | Luckfox Pico
-OPi.GPIO    | ORANGE_PI                 | Orange Pi
-pyftdi      | -                         | Windows/Linux
+RPi.GPIO    | raspberry_pi              | Pi4, Pi3 etc.
+gpiozero    | raspberry_pi5             | Pi5
+Jetson.GPIO | nvidia_jetson             | Nvidia Jetson
+periphery   | luckfox_pico              | Luckfox Pico
+OPi.GPIO    | orange_pi                 | Orange Pi
+pyftdi      | ftdi                      | Windows/Linux
 machine     | -                         | Pico, Pico2, ESP32, etc.
 
 Those libraries are needed for this library to work. You can either install the correct library yourself.
