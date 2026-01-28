@@ -21,7 +21,7 @@
 | src/tmc\_driver/enable\_control/\_tmc\_ec.py                       |       20 |        1 |     95% |        40 |
 | src/tmc\_driver/enable\_control/\_tmc\_ec\_pin.py                  |       26 |        0 |    100% |           |
 | src/tmc\_driver/enable\_control/\_tmc\_ec\_toff.py                 |       12 |        0 |    100% |           |
-| src/tmc\_driver/motion\_control/\_\_init\_\_.py                    |       40 |        8 |     80% |45-46, 53-55, 92-96 |
+| src/tmc\_driver/motion\_control/\_\_init\_\_.py                    |       43 |       10 |     77% |46-47, 54-56, 86-88, 97-101 |
 | src/tmc\_driver/motion\_control/\_tmc\_mc.py                       |      135 |       13 |     90% |61, 66, 87, 92-93, 98, 113, 118, 123, 128, 158, 236, 296 |
 | src/tmc\_driver/motion\_control/\_tmc\_mc\_int\_ramp\_generator.py |      117 |       31 |     74% |42-45, 50-53, 131-141, 152-164, 209 |
 | src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_dir.py            |      186 |       18 |     90% |42, 47-50, 55, 76, 81-90, 163, 246, 260, 355, 369 |
@@ -48,7 +48,7 @@
 | src/tmc\_driver/tmc\_logger/\_\_init\_\_.py                        |        8 |        1 |     88% |        13 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       28 |        5 |     82% |31, 36, 41, 46, 64 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |30, 94-97, 105, 121-125, 135-137, 140 |
-| **TOTAL**                                                          | **2602** |  **488** | **81%** |           |
+| **TOTAL**                                                          | **2605** |  **490** | **81%** |           |
 
 
 ## Setup coverage badge
