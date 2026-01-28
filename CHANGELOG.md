@@ -2,6 +2,43 @@
 
 <!-- version list -->
 
+## v0.21.0 (2026-01-28)
+
+### Bug Fixes
+
+- Improve soft stop handling in PIO motion control
+  ([`5e05fa6`](https://github.com/Chr157i4n/PyTmcStepper/commit/5e05fa667853514ff889d3336b24c993fc9a79eb))
+
+- Reduce maximum block size for cruise steps in PIO motion control
+  ([`13849a5`](https://github.com/Chr157i4n/PyTmcStepper/commit/13849a5b3cc84298261fc02dbe506680970fef66))
+
+- Update logging levels for movement completion in PIO motion control
+  ([`55c0e20`](https://github.com/Chr157i4n/PyTmcStepper/commit/55c0e20b954511744d3d3e318f15bfb3519ac84e))
+
+### Chores
+
+- Exclude *_pio.py from coverage report
+  ([`85fd355`](https://github.com/Chr157i4n/PyTmcStepper/commit/85fd355ab6f3d652368dd68ea82d0fbeb753090a))
+
+### Features
+
+- Add PIO-based motion control for TMC stepper drivers (working, but not perfect) #143
+  ([`f716439`](https://github.com/Chr157i4n/PyTmcStepper/commit/f716439477f4518b0b4da213ebde782b8be5d912))
+
+### Refactoring
+
+- Remove unused state machine tracking and related attributes in PIO motion control
+  ([`c35a920`](https://github.com/Chr157i4n/PyTmcStepper/commit/c35a9209fc668c6f1a51599730407a52404faecd))
+
+### Testing
+
+- Added micropython (UNIX-Port) unittest
+  ([`57e561c`](https://github.com/Chr157i4n/PyTmcStepper/commit/57e561ccbb1eacc45c2442e8bde084e8d2f66146))
+
+- Update test description for TMC modules
+  ([`b9d1a94`](https://github.com/Chr157i4n/PyTmcStepper/commit/b9d1a945dd392f32046b39c3bb470c42a84977a4))
+
+
 ## v0.20.0 (2026-01-25)
 
 ### Chores
