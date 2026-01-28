@@ -361,17 +361,23 @@ class TmcMotionControlStepPio(TmcMotionControl):
         )
 
         steps_sent = 0
+        soft_stop_initiated = False
 
         # Main loop: send data to PIO FIFO
-        while steps_sent < steps and self._stop == StopMode.NO:
+        while steps_sent < steps:
+
             # Wait for FIFO space (max 4 entries)
             while self._sm.tx_fifo() >= 4:
                 time.sleep_us(100)
                 if self._stop != StopMode.NO:
                     break
 
-            if self._stop != StopMode.NO:
+            if self._stop == StopMode.HARDSTOP:
+                self._sm.active(0)  # Immediately stop PIO
                 break
+            elif self._stop == StopMode.SOFTSTOP and not soft_stop_initiated:
+                steps_sent = accel_steps + cruise_steps  # Jump to deceleration phase
+                soft_stop_initiated = True
 
             # Determine current phase and calculate delay
             if steps_sent < accel_steps:
@@ -468,12 +474,11 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
     def stop(self, stop_mode: StopMode = StopMode.HARDSTOP):
         """stop the current movement
+        SOFTSTOP in PIO is delayed until the current queued blocks are done, this
+        can be up to several hundred steps depending on the FIFO state.
+        HARDSTOP immediately stops the PIO state machine.
 
         Args:
             stop_mode (enum): whether the movement should be stopped immediately or softly
         """
         super().stop(stop_mode)
-        if stop_mode == StopMode.HARDSTOP and self._pio_active:
-            # Reinitialize PIO to stop immediately
-            self._init_pio()
-            self._pio_active = False
