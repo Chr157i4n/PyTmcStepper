@@ -84,7 +84,7 @@ Those libraries are needed for this library to work. You can either install the 
 You can also install the needed GPIO library by specifying the Installation Parameter while installing this library:
 
 ```shell
-pip3 install PyTmcStepper[RASPBERRY_PI]
+pip3 install PyTmcStepper[raspberry_pi, uart]
 ```
 
 ## Driver Support
