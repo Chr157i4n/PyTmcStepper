@@ -235,10 +235,6 @@ class TmcMotionControlStepPio(TmcMotionControl):
             self._sm.active(0)
             self._sm = None
 
-        sm_key = (self._pio_id, self._sm_id)
-        if sm_key in TmcMotionControlStepPio._used_state_machines:
-            del TmcMotionControlStepPio._used_state_machines[sm_key]
-
         if hasattr(self, "_pin_dir") and self._pin_dir is not None:
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_dir)
             del self._pin_dir
