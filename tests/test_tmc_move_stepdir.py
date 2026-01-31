@@ -97,6 +97,7 @@ class TestTMCMove(unittest.TestCase):
         self.tmc.tmc_mc.run_to_position_steps_threaded(800)
         time.sleep(0.05)
         self.tmc.tmc_mc.stop()
+        self.tmc.tmc_mc.wait_for_movement_finished_threaded()
         pos = self.tmc.tmc_mc.current_pos
         print(f"motorposition: {pos}")
         self.assertTrue(
