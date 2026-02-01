@@ -2,6 +2,43 @@
 
 <!-- version list -->
 
+## v0.21.1 (2026-02-01)
+
+### Bug Fixes
+
+- Remove unused state machine cleanup code in TmcMotionControlStepPio
+  ([`8e71a47`](https://github.com/Chr157i4n/PyTmcStepper/commit/8e71a47d6b9844e555c1a236207fa378354d7530))
+
+- Update coverage omit patterns to exclude additional pio files
+  ([`84c17b1`](https://github.com/Chr157i4n/PyTmcStepper/commit/84c17b16fd3aded6a33e518b66eb2475c29f51c5))
+
+### Chores
+
+- Moved pyserial to optional dep and changed casing of optional-dependencies
+  ([`b8de0ea`](https://github.com/Chr157i4n/PyTmcStepper/commit/b8de0ea16598f100f0ae55c6a9b9e04ef4655f12))
+
+- Moved unittest files back into tests folder
+  ([`4ef6c78`](https://github.com/Chr157i4n/PyTmcStepper/commit/4ef6c786b5982c1cc71fb6450a331700ed024e47))
+
+### Documentation
+
+- Update installation instructions for Raspberry Pi support
+  ([`5d9dbaa`](https://github.com/Chr157i4n/PyTmcStepper/commit/5d9dbaade714926c45dfa710c5fcc3d46df8e747))
+
+### Refactoring
+
+- Changed pio implementation to easier add Circuitpython #143
+  ([`76d075b`](https://github.com/Chr157i4n/PyTmcStepper/commit/76d075b97390d57062f618e197ac469c5b029329))
+
+### Testing
+
+- Add wait_for_movement_finished_threaded to run_to_position_steps_threaded
+  ([`28ac61a`](https://github.com/Chr157i4n/PyTmcStepper/commit/28ac61ad2273100ce311297e0a6d9decdd5af081))
+
+- Fix test path in workflow
+  ([`5adb9b1`](https://github.com/Chr157i4n/PyTmcStepper/commit/5adb9b13e1263ddabae0820300466766002de6c6))
+
+
 ## v0.21.0 (2026-01-28)
 
 ### Bug Fixes
