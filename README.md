@@ -28,7 +28,7 @@
 | src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_pwm\_dir.py       |       37 |        6 |     84% |22, 43-44, 51, 56, 77 |
 | src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_reg.py            |       17 |        0 |    100% |           |
 | src/tmc\_driver/motion\_control/\_tmc\_mc\_vactual.py              |       82 |       17 |     79% |37-38, 137, 139-143, 145-147, 149-151, 155, 159, 203, 212, 221 |
-| src/tmc\_driver/platform\_utils.py                                 |       10 |        2 |     80% |    13, 15 |
+| src/tmc\_driver/platform\_utils.py                                 |       14 |        5 |     64% |13, 15, 21-24 |
 | src/tmc\_driver/reg/\_\_init\_\_.py                                |        0 |        0 |    100% |           |
 | src/tmc\_driver/reg/\_tmc220x\_reg.py                              |       61 |        1 |     98% |       197 |
 | src/tmc\_driver/reg/\_tmc224x\_reg.py                              |       98 |       12 |     88% |71-81, 315 |
@@ -48,7 +48,7 @@
 | src/tmc\_driver/tmc\_logger/\_\_init\_\_.py                        |        8 |        1 |     88% |        13 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       28 |        5 |     82% |31, 36, 41, 46, 64 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |30, 94-97, 105, 121-125, 135-137, 140 |
-| **TOTAL**                                                          | **2605** |  **490** | **81%** |           |
+| **TOTAL**                                                          | **2609** |  **493** | **81%** |           |
 
 
 ## Setup coverage badge
