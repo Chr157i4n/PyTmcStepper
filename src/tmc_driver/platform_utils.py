@@ -14,3 +14,11 @@ def get_time_us():
     if CIRCUITPYTHON:
         return time.monotonic_ns() // 1000  # pylint: disable=no-member
     return time.time_ns() // 1000
+
+
+def sleep_us(microseconds: int):
+    """Sleep for specified microseconds, compatible with CPython, MicroPython and CircuitPython"""
+    if MICROPYTHON:
+        time.sleep_us(microseconds)  # pylint: disable=no-member
+    else:
+        time.sleep(microseconds / 1_000_000)

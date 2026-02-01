@@ -6,17 +6,18 @@
 # pyright: reportUndefinedVariable=false
 """
 STEP/DIR Motion Control module using PIO (Programmable I/O)
-for Raspberry Pi Pico (RP2040/RP2350) under MicroPython
+for Raspberry Pi Pico (RP2040/RP2350) under MicroPython and CircuitPython
 
 This module provides precise step pulse generation using the PIO hardware
 of the RP2040/RP2350 microcontroller. The PIO generates step pulses with
 consistent timing, independent of Python execution.
+
+Supports both MicroPython (using rp2 module) and CircuitPython (using
+rp2pio and adafruit_pioasm modules).
 """
 
 import time
 import math
-from machine import Pin
-import rp2
 
 from ._tmc_mc import (
     TmcMotionControl,
@@ -29,7 +30,14 @@ from ..tmc_logger import TmcLogger, Loglevel
 from ..tmc_gpio import GpioMode
 from .. import tmc_gpio
 from .._tmc_exceptions import TmcMotionControlException
-from ..platform_utils import get_time_us
+from ..platform_utils import sleep_us, MICROPYTHON, CIRCUITPYTHON
+from ._tmc_mc_step_pio_base import BasePioWrapper, PIO_MAGIC_PATTERN
+
+# Import platform-specific PIO wrapper
+if MICROPYTHON:
+    from ._tmc_mc_step_pio_micropython import MicroPythonPioWrapper
+elif CIRCUITPYTHON:
+    from ._tmc_mc_step_pio_circuitpython import CircuitPythonPioWrapper
 
 
 class PioData:
@@ -45,12 +53,12 @@ class PioData:
         self.steps = min(steps, 0xFFFF)
         self.delay = min(delay, 0xFFFF)
 
-    def put(self, sm: rp2.StateMachine, pio_freq=2000):
+    def put(self, sm: BasePioWrapper, pio_freq=2000):
         """
         Put the steps and delay into the PIO state machine FIFO
 
         Args:
-            sm (rp2.StateMachine): The PIO state machine
+            sm (BasePioWrapper): The PIO state machine wrapper
             pio_freq (int): Frequency of the PIO state machine in Hz
         """
         if self.steps == 0:
@@ -65,39 +73,6 @@ class PioData:
         # )
         data = ((steps_adjusted & 0xFFFF) << 16) | (delay & 0xFFFF)
         sm.put(data)
-
-
-@rp2.asm_pio(set_init=rp2.PIO.OUT_LOW)
-def step_pulse_pio():
-    wrap_target()
-    # Pull data (steps << 16 | delay) from FIFO into OSR
-    pull(block)
-    # Shift right 16 bits and move to Y (step count)
-    out(y, 16)
-    # Move remaining 16 bits to ISR (delay value)
-    out(isr, 16)
-
-    # Main loop - repeat for Y toggle cycles
-    label("step_loop")
-
-    # Set pin high for one cycle only
-    set(pins, 1)  # pyright: ignore[reportCallIssue]
-    # Set pin low immediately (no delay while high)
-    set(pins, 0)  # pyright: ignore[reportCallIssue]
-
-    # Trigger IRQ 0 to notify controller about step
-    irq(0)
-
-    # Delay countdown - restore delay from ISR to X, then count down
-    mov(x, isr)
-    label("low_delay")
-    jmp(x_dec, "low_delay")
-
-    # Decrement remaining steps (Y) and repeat if not zero
-    jmp(y_dec, "step_loop")
-
-    # All steps done, wrap to beginning for next data
-    wrap()
 
 
 class TmcMotionControlStepPio(TmcMotionControl):
@@ -163,16 +138,16 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
     def __init__(
         self,
-        pin_step: int,
-        pin_dir: int | None,
+        pin_step,
+        pin_dir=None,
         pio_id: int = 0,
         sm_id: int = 0,
     ):
         """constructor
 
         Args:
-            pin_step: GPIO pin number for step signal
-            pin_dir: GPIO pin number for direction signal (None if not used)
+            pin_step: GPIO pin for step signal (int for MicroPython, board.GPxx for CircuitPython)
+            pin_dir: GPIO pin for direction signal (None if not used)
             pio_id: PIO block to use (0 or 1), default 0
             sm_id: State machine ID within the PIO block (0-3), default 0
         """
@@ -182,9 +157,10 @@ class TmcMotionControlStepPio(TmcMotionControl):
         self._pio_id = pio_id
         self._sm_id = sm_id
 
-        self._sm: rp2.StateMachine | None = None
+        self._sm: BasePioWrapper
         self._pio_frequency: int = 20000  # PIO frequency in Hz
         self._steps_completed: int = 0
+        self._total_steps_sent: int = 0  # Track total steps sent for FIFO completion
         self._sqrt_twoa: float = 1.0
         self._step_interval: int = 0
         self._min_pulse_width: int = 1
@@ -213,27 +189,37 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
     def _init_pio(self):
         """Initialize or reinitialize the PIO state machine"""
-        if self._sm is not None:
+        if hasattr(self, "_sm") and self._sm is not None:
             self._sm.active(0)
+            self._sm.deinit()
 
-        # Fixed high frequency - speed control via delay values
-        self._sm = rp2.StateMachine(
-            self._pio_id * 4 + self._sm_id,
-            step_pulse_pio,
-            freq=self._pio_frequency,
-            set_base=Pin(self._pin_step),
-        )
-
-        # Register IRQ handler once for step counting
-        self._sm.irq(handler=self.pio_irq_handler)
+        # Create platform-specific PIO wrapper
+        if MICROPYTHON:
+            self._sm = MicroPythonPioWrapper(
+                self._pio_id,
+                self._sm_id,
+                self._pin_step,
+                self._pio_frequency,
+            )
+            # Register IRQ handler for step counting (MicroPython only)
+            self._sm.irq(handler=self.pio_irq_handler)
+        elif CIRCUITPYTHON:
+            self._sm = CircuitPythonPioWrapper(
+                self._pio_id,
+                self._sm_id,
+                self._pin_step,
+                self._pio_frequency,
+            )
+            # CircuitPython does not support IRQ handlers
 
         self._sm.active(1)
 
     def deinit(self):
         """destructor"""
-        if self._sm is not None:
+        if hasattr(self, "_sm") and self._sm is not None:
             self._sm.active(0)
-            self._sm = None
+            self._sm.deinit()
+            del self._sm
 
         if hasattr(self, "_pin_dir") and self._pin_dir is not None:
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_dir)
@@ -252,10 +238,16 @@ class TmcMotionControlStepPio(TmcMotionControl):
         # Restart the state machine to reset its state
         self._sm.active(0)
         # Brief delay to ensure clean stop
-        time.sleep_ms(1)
+        if MICROPYTHON:
+            time.sleep_ms(1)
+        else:
+            time.sleep(0.001)
+        # Drain RX FIFO before restarting
+        self._drain_rx_fifo()
         self._sm.restart()
         self._sm.active(1)
         self._steps_completed = 0
+        self._total_steps_sent = 0
 
     def _drain_rx_fifo(self):
         """Drain the RX FIFO to clear old data"""
@@ -304,6 +296,8 @@ class TmcMotionControlStepPio(TmcMotionControl):
         if steps == 0:
             return StopMode.NO
 
+        self._stop = StopMode.NO
+
         # Set direction based on steps
         self.set_direction(Direction.CW if steps > 0 else Direction.CCW)
         steps = abs(steps)
@@ -345,7 +339,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
             # Wait for FIFO space (max 4 entries)
             while self._sm.tx_fifo() >= 4:
-                time.sleep_us(100)
+                sleep_us(100)
                 if self._stop != StopMode.NO:
                     break
 
@@ -411,43 +405,52 @@ class TmcMotionControlStepPio(TmcMotionControl):
             pio_data.put(self._sm, self._pio_frequency)
 
             steps_sent += block_steps
+            self._total_steps_sent += block_steps
 
-        # Wait for all steps to complete
+        # Wait for all steps to complete using RX FIFO completion signals
+        # The PIO pushes magic pattern to RX FIFO after each block completes
         self._tmc_logger.log(
-            f"Waiting for completion: sent={steps_sent}, target={steps}, stopmode={self._stop}",
+            f"Waiting for completion: sent={steps_sent} | target={steps} | stopmode={self._stop}",
             Loglevel.MOVEMENT,
         )
+
         timeout_counter = 0
-        while self._steps_completed < steps and self._stop == StopMode.NO:
-            time.sleep_us(100)
-            timeout_counter += 1
-            if timeout_counter % 1000 == 0:  # Every second
+
+        while self._stop == StopMode.NO:
+            has_results = self._sm.rx_fifo() > 0
+
+            # Check for completion signals in RX FIFO
+            if has_results:
+                self._sm.get()  # Read and discard the value
                 self._tmc_logger.log(
-                    f"Still waiting: completed={self._steps_completed}/{steps}, sent={steps_sent}",
+                    f"FIFO received completion signal",
                     Loglevel.MOVEMENT,
                 )
-            if timeout_counter > 10000:  # 10 second timeout
+                break
+            else:
+                sleep_us(100)
+                timeout_counter += 1
+
+            if timeout_counter % 10000 == 0 and timeout_counter > 0:  # Every second
                 self._tmc_logger.log(
-                    f"TIMEOUT! completed={self._steps_completed}/{steps}",
+                    f"Still waiting: completed={self._steps_completed} | sent={self._total_steps_sent} | target={steps}",
+                    Loglevel.MOVEMENT,
+                )
+            if timeout_counter > 100000:  # 10 second timeout
+                self._tmc_logger.log(
+                    f"TIMEOUT! completed={self._steps_completed} | sent={self._total_steps_sent} | target={steps}",
                     Loglevel.ERROR,
                 )
                 break
 
         self._tmc_logger.log(
-            f"Movement complete: completed={self._steps_completed}, target={steps}",
+            f"Movement complete: target_steps={steps} | completed_steps={self._steps_completed}",
             Loglevel.MOVEMENT,
         )
 
-        # Don't unregister IRQ handler - it stays registered from _init_pio()
-        # self._sm.irq(handler=None)
         self._movement_phase = MovementPhase.STANDSTILL
 
-        if self._stop != StopMode.NO:
-            stop_mode = self._stop
-            self._stop = StopMode.NO
-            return stop_mode
-
-        return StopMode.NO
+        return self._stop
 
     def stop(self, stop_mode: StopMode = StopMode.HARDSTOP):
         """stop the current movement
