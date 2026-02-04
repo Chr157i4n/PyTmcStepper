@@ -19,6 +19,27 @@ jobs:
           docs/*.md
 
 
+  url_check:
+    name: URL Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: urls-checker
+      uses: urlstechie/urlchecker-action@master
+      with:
+        # A comma-separated list of file types to cover in the URL checks
+        file_types: .md
+        # Choose whether to include file with no URLs in the prints.
+        print_all: false
+        # The timeout seconds to provide to requests, defaults to 5 seconds
+        timeout: 5
+        # How many times to retry a failed request (each is logged, defaults to 1)
+        retry_count: 2
+        # A comma separated patterns to exclude during URL checks
+        exclude_patterns: https://github.com/Chr157i4n/PyTmcStepper
+
+
   pylint:
     name: Pylint
     runs-on: ubuntu-latest
