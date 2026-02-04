@@ -52,6 +52,23 @@ jobs:
         pylint $(find -wholename './src/*.py')
 
 
+  docstring_lint:
+    name: Docstring Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pydocstyle
+    - name: Run docstring lint
+      run: |
+        python -m pydocstyle --convention=google src/tmc_driver --match='(?!.*(_micropython|_circuitpython|rpi_gpio)\.py$).*\.py$' --count
+
+
   unittest_cpython:
     name: Unittests CPython
     runs-on: ubuntu-latest
