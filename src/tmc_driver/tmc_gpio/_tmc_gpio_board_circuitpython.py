@@ -1,7 +1,5 @@
 # pylint: skip-file
-"""
-CircuitPython GPIO module
-"""
+"""CircuitPython GPIO module."""
 
 import digitalio
 import pwmio
@@ -19,7 +17,7 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
     """
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         self._pins = {}  # pin -> DigitalInOut object
         self._pwms = {}  # pin -> PWMOut object
 
@@ -27,14 +25,14 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
         """initialize GPIO library - not needed for CircuitPython"""
 
     def deinit(self):
-        """deinitialize GPIO library"""
+        """Deinitialize GPIO library."""
         for pin in list(self._pwms.keys()):
             self.gpio_cleanup(pin)
         for pin in list(self._pins.keys()):
             self.gpio_cleanup(pin)
 
     def gpio_setup(self, pin, mode, initial=0, pull_up_down=0):
-        """setup GPIO pin
+        """Setup GPIO pin.
 
         Args:
             pin: Board pin object (e.g., board.D17) or microcontroller pin
@@ -60,7 +58,7 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
         self._pins[pin] = pin_obj
 
     def gpio_cleanup(self, pin):
-        """cleanup GPIO pin"""
+        """Cleanup GPIO pin."""
         if pin in self._pwms:
             self._pwms[pin].deinit()
             del self._pwms[pin]
@@ -69,7 +67,7 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
             del self._pins[pin]
 
     def gpio_input(self, pin):
-        """read GPIO pin
+        """Read GPIO pin.
 
         Returns:
             1 if HIGH, 0 if LOW
@@ -79,12 +77,12 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
         return 0
 
     def gpio_output(self, pin, value):
-        """write GPIO pin"""
+        """Write GPIO pin."""
         if pin in self._pins:
             self._pins[pin].value = bool(value)
 
     def gpio_pwm_setup(self, pin, frequency=10, duty_cycle=0):
-        """setup PWM
+        """Setup PWM.
 
         Args:
             pin: Board pin object (e.g., board.D17)
@@ -96,12 +94,12 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
         self._pwms[pin] = pwmio.PWMOut(pin, frequency=frequency, duty_cycle=duty_u16)
 
     def gpio_pwm_set_frequency(self, pin, frequency):
-        """set PWM frequency"""
+        """Set PWM frequency."""
         if pin in self._pwms:
             self._pwms[pin].frequency = frequency
 
     def gpio_pwm_set_duty_cycle(self, pin, duty_cycle):
-        """set PWM duty cycle
+        """Set PWM duty cycle.
 
         Args:
             pin: Board pin object
@@ -112,13 +110,13 @@ class CircuitPythonGPIOWrapper(BaseGPIOWrapper):
             self._pwms[pin].duty_cycle = int(duty_cycle * 655.35)
 
     def gpio_add_event_detect(self, pin, callback):
-        """add event detect (rising edge interrupt)"""
+        """Add event detect (rising edge interrupt)"""
         # CircuitPython doesn't have Pin.irq() - would need asyncio
         raise NotImplementedError(
             "GPIO interrupts not directly supported in CircuitPython."
         )
 
     def gpio_remove_event_detect(self, pin):
-        """remove event detect"""
+        """Remove event detect."""
         # Not implemented - see gpio_add_event_detect
         pass

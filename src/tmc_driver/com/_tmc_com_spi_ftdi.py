@@ -1,8 +1,6 @@
 # pylint: disable=unused-import
 # pylint: disable=too-few-public-methods
-"""
-TmcComSpiFtdi stepper driver spi module
-"""
+"""TmcComSpiFtdi stepper driver spi module."""
 
 from pyftdi.spi import SpiPort
 from .._tmc_exceptions import TmcComException, TmcDriverException
@@ -10,15 +8,15 @@ from ._tmc_com_spi_base import TmcComSpiBase, TmcLogger
 
 
 class TmcComSpiFtdi(TmcComSpiBase):
-    """TmcComSpiFtdi
+    """TmcComSpiFtdi.
 
-    this class is used to communicate with the TMC via SPI via FT232H USB adapter
-    it can be used to change the settings of the TMC.
-    like the current or the microsteppingmode
+    this class is used to communicate with the TMC via SPI via FT232H
+    USB adapter it can be used to change the settings of the TMC. like
+    the current or the microsteppingmode
     """
 
     def __init__(self, spi_port: SpiPort):
-        """constructor
+        """constructor.
 
         Args:
             spi_port (SpiPort): pyftdi SpiPort object
@@ -28,16 +26,17 @@ class TmcComSpiFtdi(TmcComSpiBase):
         self.spi = spi_port
 
     def init(self):
-        """init - SPI port is already configured via pyftdi"""
+        """Init - SPI port is already configured via pyftdi."""
 
     def __del__(self):
+        """Destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """Destructor."""
 
     def _spi_transfer(self, data: list) -> list:
-        """Perform SPI transfer using pyftdi
+        """Perform SPI transfer using pyftdi.
 
         Args:
             data: Data to send

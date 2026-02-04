@@ -14,7 +14,7 @@ from .._tmc_exceptions import TmcComException
 
 
 class TmcComSpiMicroPython(TmcComSpiBase):
-    """SPI Communication class for MicroPython
+    """SPI Communication class for MicroPython.
 
     RP2040 SPI Pins (default):
     - SPI0: SCK=GP18, MOSI=GP19, MISO=GP16
@@ -32,7 +32,7 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         miso_pin=16,
         baudrate=1000000,
     ):
-        """Initialize SPI communication
+        """Initialize SPI communication.
 
         Args:
             spi_id: SPI bus ID (0 or 1)
@@ -55,7 +55,7 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         self._cs = None
 
     def init(self):
-        """Initialize SPI hardware"""
+        """Initialize SPI hardware."""
         # TMC2240 uses SPI Mode 3: CPOL=1, CPHA=1
         self._spi = SPI(
             self._spi_id,
@@ -71,14 +71,14 @@ class TmcComSpiMicroPython(TmcComSpiBase):
         self._cs = Pin(self._cs_pin, Pin.OUT, value=1)
 
     def deinit(self):
-        """Deinitialize SPI hardware"""
+        """Deinitialize SPI hardware."""
         if self._spi is not None:
             self._spi.deinit()
             self._spi = None
         self._cs = None
 
     def _spi_transfer(self, data):
-        """Perform SPI transfer
+        """Perform SPI transfer.
 
         Args:
             data: List of bytes to send

@@ -1,16 +1,14 @@
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-"""
-Register module
-"""
+"""Register module."""
 
 from ._tmc220x_reg import *
 from . import _tmc_shared_regs as shared
 
 
 class TCoolThrs(shared.TCoolThrs):
-    """TCOOLTHRS register class"""
+    """TCOOLTHRS register class."""
 
     ADDR = 0x14
 
@@ -19,7 +17,7 @@ class TCoolThrs(shared.TCoolThrs):
 
 
 class SgThrs(shared.SgThrs):
-    """SGTHRS register class"""
+    """SGTHRS register class."""
 
     ADDR = 0x40
 
@@ -28,7 +26,7 @@ class SgThrs(shared.SgThrs):
 
 
 class SgResult(shared.SgResult):
-    """SGRESULT register class"""
+    """SGRESULT register class."""
 
     ADDR = 0x41
 
@@ -37,7 +35,7 @@ class SgResult(shared.SgResult):
 
 
 class CoolConf(shared.CoolConf):
-    """COOLCONF register class"""
+    """COOLCONF register class."""
 
     ADDR = 0x42
 

@@ -1,7 +1,5 @@
 # pylint: disable=too-many-instance-attributes
-"""
-Register module
-"""
+"""Register module."""
 
 import math
 from ._tmc_reg import TmcRegField
@@ -10,7 +8,7 @@ from .._tmc_exceptions import TmcDriverException
 
 
 class GConf(shared.GConf):
-    """GCONF register class"""
+    """GCONF register class."""
 
     ADDR = 0x0
 
@@ -49,7 +47,7 @@ class GConf(shared.GConf):
 
 
 class GStat(shared.GStat):
-    """GSTAT register class"""
+    """GSTAT register class."""
 
     ADDR = 0x1
 
@@ -67,7 +65,7 @@ class GStat(shared.GStat):
     )
 
     def check(self):
-        """check if the driver is ok"""
+        """Check if the driver is ok."""
         self.read()
         if self.vm_uvlo:
             raise TmcDriverException("TMC224X: Vmotor undervoltage detected")
@@ -82,7 +80,7 @@ class GStat(shared.GStat):
 
 
 class IfCnt(shared.IfCnt):
-    """IFCNT register class"""
+    """IFCNT register class."""
 
     ADDR = 0x2
 
@@ -91,7 +89,7 @@ class IfCnt(shared.IfCnt):
 
 
 class Ioin(shared.Ioin):
-    """IOIN register class"""
+    """IOIN register class."""
 
     ADDR = 0x4
     DRIVER_NAME = "TMC2240"
@@ -135,7 +133,7 @@ class Ioin(shared.Ioin):
 
 
 class DrvConf(shared.DrvConf):
-    """DRV_CONF register class"""
+    """DRV_CONF register class."""
 
     ADDR = 0x6
 
@@ -148,7 +146,7 @@ class DrvConf(shared.DrvConf):
 
 
 class GlobalScaler(shared.GlobalScaler):
-    """GLOBAL_SCALER register class"""
+    """GLOBAL_SCALER register class."""
 
     ADDR = 0xB
 
@@ -157,7 +155,7 @@ class GlobalScaler(shared.GlobalScaler):
 
 
 class IHoldIRun(shared.IHoldIRun):
-    """IHOLD_IRUN register class"""
+    """IHOLD_IRUN register class."""
 
     ADDR = 0x10
 
@@ -174,7 +172,7 @@ class IHoldIRun(shared.IHoldIRun):
 
 
 class TPowerDown(shared.TPowerDown):
-    """TPOWERDOWN register class"""
+    """TPOWERDOWN register class."""
 
     ADDR = 0x11
 
@@ -183,7 +181,7 @@ class TPowerDown(shared.TPowerDown):
 
 
 class TStep(shared.TStep):
-    """TSTEP register class"""
+    """TSTEP register class."""
 
     ADDR = 0x12
 
@@ -192,7 +190,7 @@ class TStep(shared.TStep):
 
 
 class TPwmThrs(shared.TPwmThrs):
-    """TCOOLTHRS register class"""
+    """TCOOLTHRS register class."""
 
     ADDR = 0x13
 
@@ -201,7 +199,7 @@ class TPwmThrs(shared.TPwmThrs):
 
 
 class TCoolThrs(shared.TCoolThrs):
-    """TCOOLTHRS register class"""
+    """TCOOLTHRS register class."""
 
     ADDR = 0x14
 
@@ -210,7 +208,7 @@ class TCoolThrs(shared.TCoolThrs):
 
 
 class THigh(shared.THigh):
-    """THIGH register class"""
+    """THIGH register class."""
 
     ADDR = 0x15
 
@@ -219,7 +217,7 @@ class THigh(shared.THigh):
 
 
 class ADCVSupplyAIN(shared.ADCVSupplyAIN):
-    """ADCV_SUPPLY_AIN register class"""
+    """ADCV_SUPPLY_AIN register class."""
 
     ADDR = 0x50
 
@@ -232,17 +230,17 @@ class ADCVSupplyAIN(shared.ADCVSupplyAIN):
 
     @property
     def adc_vsupply_v(self) -> float:
-        """return Supplyvoltage in V"""
+        """Return Supplyvoltage in V."""
         return round(self.adc_vsupply * 9.732 / 1000, 2)
 
     @property
     def adc_ain_v(self) -> float:
-        """return voltage on AIN in V"""
+        """Return voltage on AIN in V."""
         return round(self.adc_ain * 305.2 / 1000 / 1000, 2)
 
 
 class ADCTemp(shared.ADCTemp):
-    """ADC_TEMP register class"""
+    """ADC_TEMP register class."""
 
     ADDR = 0x51
 
@@ -251,12 +249,12 @@ class ADCTemp(shared.ADCTemp):
 
     @property
     def adc_temp_c(self) -> float:
-        """return temperature in °C"""
+        """Return temperature in °C."""
         return round((self.adc_temp - 2038) / 7.7, 1)
 
 
 class MsCnt(shared.MsCnt):
-    """MSCNT register class"""
+    """MSCNT register class."""
 
     ADDR = 0x6A
 
@@ -265,7 +263,7 @@ class MsCnt(shared.MsCnt):
 
 
 class ChopConf(shared.ChopConf):
-    """CHOPCONF register class"""
+    """CHOPCONF register class."""
 
     ADDR = 0x6C
 
@@ -304,12 +302,12 @@ class ChopConf(shared.ChopConf):
 
     @property
     def mres_ms(self) -> int:
-        """return µstep resolution"""
+        """Return µstep resolution."""
         return int(math.pow(2, 8 - self.mres))
 
     @mres_ms.setter
     def mres_ms(self, mres: int):
-        """set µstep resolution"""
+        """Set µstep resolution."""
         mres_to_bit = {1: 8, 2: 7, 4: 6, 8: 5, 16: 4, 32: 3, 64: 2, 128: 1, 256: 0}
         if mres not in mres_to_bit:
             raise ValueError(
@@ -319,7 +317,7 @@ class ChopConf(shared.ChopConf):
 
 
 class CoolConf(shared.CoolConf):
-    """COOLCONF register class"""
+    """COOLCONF register class."""
 
     ADDR = 0x6D
 
@@ -342,7 +340,7 @@ class CoolConf(shared.CoolConf):
 
 
 class DrvStatus(shared.DrvStatus):
-    """DRVSTATUS register class"""
+    """DRVSTATUS register class."""
 
     ADDR = 0x6F
 
@@ -379,7 +377,7 @@ class DrvStatus(shared.DrvStatus):
 
 
 class SgThrs(shared.SgThrs):
-    """SGTHRS register class"""
+    """SGTHRS register class."""
 
     ADDR = 0x74
 
@@ -394,7 +392,7 @@ class SgThrs(shared.SgThrs):
 
 
 class SgResult(shared.SgResult):
-    """SGRESULT register class"""
+    """SGRESULT register class."""
 
     ADDR = 0x75
 
@@ -403,7 +401,7 @@ class SgResult(shared.SgResult):
 
 
 class SgInd(shared.SgInd):
-    """SGIND register class"""
+    """SGIND register class."""
 
     ADDR = 0x76
 

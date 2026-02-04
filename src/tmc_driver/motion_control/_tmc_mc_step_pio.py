@@ -4,13 +4,13 @@
 # pylint: disable=too-many-positional-arguments
 # pylint: skip-file
 # pyright: reportUndefinedVariable=false
-"""
-STEP/DIR Motion Control module using PIO (Programmable I/O)
-for Raspberry Pi Pico (RP2040/RP2350) under MicroPython and CircuitPython
+"""STEP/DIR Motion Control module using PIO for Raspberry Pi Pico.
 
-This module provides precise step pulse generation using the PIO hardware
-of the RP2040/RP2350 microcontroller. The PIO generates step pulses with
-consistent timing, independent of Python execution.
+Uses Programmable I/O for RP2040/RP2350 under MicroPython and CircuitPython.
+
+This module provides precise step pulse generation using the PIO
+hardware of the RP2040/RP2350 microcontroller. The PIO generates step
+pulses with consistent timing, independent of Python execution.
 
 Supports both MicroPython (using rp2 module) and CircuitPython (using
 rp2pio and adafruit_pioasm modules).
@@ -41,10 +41,10 @@ elif CIRCUITPYTHON:
 
 
 class PioData:
+    """PIO data structure for step and delay."""
 
     def __init__(self, steps=0, delay=0):
-        """
-        PIO data structure to hold steps and delay
+        """PIO data structure to hold steps and delay.
 
         Args:
             steps (int): Number of step cycles (16 bits; max 65535)
@@ -54,13 +54,7 @@ class PioData:
         self.delay = min(delay, 0xFFFF)
 
     def put(self, sm: BasePioWrapper, pio_freq=2000):
-        """
-        Put the steps and delay into the PIO state machine FIFO
-
-        Args:
-            sm (BasePioWrapper): The PIO state machine wrapper
-            pio_freq (int): Frequency of the PIO state machine in Hz
-        """
+        """Put the data into the PIO state machine's TX FIFO."""
         if self.steps == 0:
             return  # Nothing to do
 
@@ -76,7 +70,7 @@ class PioData:
 
 
 class TmcMotionControlStepPio(TmcMotionControl):
-    """STEP/DIR Motion Control class using PIO
+    """STEP/DIR Motion Control class using PIO.
 
     Uses the Programmable I/O (PIO) hardware of the RP2040/RP2350
     to generate precise step pulses. This provides more accurate
@@ -91,12 +85,12 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
     @property
     def max_speed(self):
-        """_max_speed property"""
+        """_max_speed property."""
         return self._max_speed
 
     @max_speed.setter
     def max_speed(self, speed: int):
-        """_max_speed setter"""
+        """_max_speed setter."""
         speed = abs(speed)
         if self._max_speed != speed:
             self._max_speed = speed
@@ -107,12 +101,12 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
     @property
     def acceleration(self):
-        """_acceleration property"""
+        """_acceleration property."""
         return self._acceleration
 
     @acceleration.setter
     def acceleration(self, acceleration: int):
-        """_acceleration setter"""
+        """_acceleration setter."""
         acceleration = abs(acceleration)
         if acceleration == 0:
             return
@@ -122,11 +116,11 @@ class TmcMotionControlStepPio(TmcMotionControl):
 
     @property
     def pio_frequency(self):
-        """Current PIO state machine frequency"""
+        """Current PIO state machine frequency."""
         return self._pio_frequency
 
     def pio_irq_handler(self, sm):
-        """IRQ handler called by PIO after each step"""
+        """IRQ handler called by PIO after each step."""
         # Only increment position, don't double-count
         if self._direction == Direction.CW:
             self.current_pos += 1
@@ -143,7 +137,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
         pio_id: int = 0,
         sm_id: int = 0,
     ):
-        """constructor
+        """constructor.
 
         Args:
             pin_step: GPIO pin for step signal (int for MicroPython, board.GPxx for CircuitPython)
@@ -171,7 +165,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
         self._cmin: int = 0
 
     def init(self, tmc_logger: TmcLogger):
-        """init: called by the Tmc class"""
+        """Init: called by the Tmc class."""
         super().init(tmc_logger)
         self._tmc_logger.log(f"STEP Pin (PIO): {self._pin_step}", Loglevel.DEBUG)
         self._tmc_logger.log(
@@ -188,7 +182,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
             )
 
     def _init_pio(self):
-        """Initialize or reinitialize the PIO state machine"""
+        """Initialize or reinitialize the PIO state machine."""
         if hasattr(self, "_sm") and self._sm is not None:
             self._sm.active(0)
             self._sm.deinit()
@@ -215,7 +209,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
         self._sm.active(1)
 
     def deinit(self):
-        """destructor"""
+        """destructor."""
         if hasattr(self, "_sm") and self._sm is not None:
             self._sm.active(0)
             self._sm.deinit()
@@ -226,7 +220,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
             del self._pin_dir
 
     def _start_pio_movement(self, steps: int):
-        """Start the PIO with the given number of steps
+        """Start the PIO with the given number of steps.
 
         Args:
             steps: Number of steps to execute (must be positive)
@@ -250,14 +244,14 @@ class TmcMotionControlStepPio(TmcMotionControl):
         self._total_steps_sent = 0
 
     def _drain_rx_fifo(self):
-        """Drain the RX FIFO to clear old data"""
+        """Drain any remaining data from the RX FIFO."""
         if self._sm is None:
             return
         while self._sm.rx_fifo() > 0:
             self._sm.get()
 
     def set_direction(self, direction: Direction):
-        """sets the motor shaft direction to the given value: 0 = CCW; 1 = CW
+        """Sets the motor shaft direction to the given value: 0 = CCW; 1 = CW.
 
         Args:
             direction (bool): motor shaft direction: False = CCW; True = CW
@@ -270,18 +264,7 @@ class TmcMotionControlStepPio(TmcMotionControl):
     def run_to_position_steps(
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
-        """runs the motor to the given position using PIO.
-        Sends total step count to PIO and dynamically adjusts frequency
-        for acceleration and deceleration.
-        Blocks the code until finished or stopped from a different thread!
-
-        Args:
-            steps (int): amount of steps; can be negative
-            movement_abs_rel (enum): whether the movement should be absolute or relative
-
-        Returns:
-            stop (enum): how the movement was finished
-        """
+        """Runs to a given position in steps."""
         if self._sm is None:
             return StopMode.HARDSTOP
 
@@ -453,9 +436,10 @@ class TmcMotionControlStepPio(TmcMotionControl):
         return self._stop
 
     def stop(self, stop_mode: StopMode = StopMode.HARDSTOP):
-        """stop the current movement
-        SOFTSTOP in PIO is delayed until the current queued blocks are done, this
-        can be up to several hundred steps depending on the FIFO state.
+        """Stop the current movement.
+
+        SOFTSTOP in PIO is delayed until the current queued blocks are done.
+        This can be up to several hundred steps depending on the FIFO state.
         HARDSTOP immediately stops the PIO state machine.
 
         Args:

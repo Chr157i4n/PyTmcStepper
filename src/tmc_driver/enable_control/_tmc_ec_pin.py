@@ -1,6 +1,4 @@
-"""
-Enable Control base module
-"""
+"""Enable Control base module."""
 
 from ._tmc_ec import TmcEnableControl
 from ..tmc_gpio import Gpio, GpioMode
@@ -9,36 +7,37 @@ from ..tmc_logger import TmcLogger, Loglevel
 
 
 class TmcEnableControlPin(TmcEnableControl):
-    """Enable Control base class"""
+    """Enable Control base class."""
 
     @property
     def pin_en(self):
-        """pin_en property"""
+        """pin_en property."""
         return self._pin_en
 
     def __init__(self, pin_en: int):
-        """constructor"""
+        """constructor."""
         super().__init__()
         self._pin_en = pin_en
 
     def init(self, tmc_logger: TmcLogger):
-        """init: called by the Tmc class"""
+        """Init: called by the Tmc class."""
         super().init(tmc_logger)
         self._tmc_logger.log(f"EN Pin: {self._pin_en}", Loglevel.DEBUG)
         tmc_gpio.tmc_gpio.gpio_setup(self._pin_en, GpioMode.OUT, initial=Gpio.HIGH)
 
     def __del__(self):
+        """Destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """Destructor."""
         super().deinit()
         if hasattr(self, "_pin_en"):
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_en)
             del self._pin_en
 
     def set_motor_enabled(self, en):
-        """enables or disables the motor current output
+        """Enables or disables the motor current output.
 
         Args:
             en (bool): whether the motor current output should be enabled

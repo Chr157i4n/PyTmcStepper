@@ -2,7 +2,7 @@
 # pylint: disable=unused-wildcard-import
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
-"""Tmc2209 stepper driver module
+"""Tmc2209 stepper driver module.
 
 this module has two different functions:
 1. access register via tmc_com (UART, SPI)
@@ -16,7 +16,7 @@ from .reg._tmc2209_reg import *
 
 
 class Tmc2209(Tmc220x, StallGuard):
-    """Tmc2209"""
+    """Tmc2209."""
 
     DRIVER_FAMILY = "TMC2209"
 
@@ -34,7 +34,7 @@ class Tmc2209(Tmc220x, StallGuard):
         log_handlers: list | None = None,
         log_formatter: logging.Formatter | None = None,
     ):
-        """constructor
+        """constructor.
 
         Args:
             tmc_ec (TmcEnableControl): enable control object
@@ -70,6 +70,6 @@ class Tmc2209(Tmc220x, StallGuard):
             self.sgresult: SgResult = SgResult(self.tmc_com)
 
     def deinit(self):
-        """destructor"""
+        """destructor."""
         super().deinit()
         StallGuard.deinit(self)

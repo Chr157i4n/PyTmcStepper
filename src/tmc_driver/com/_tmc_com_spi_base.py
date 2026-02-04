@@ -1,9 +1,9 @@
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-"""
-TmcComSpiBase - Abstract base class for SPI communication
-This class contains no hardware-specific imports (no spidev, no pyftdi)
+"""TmcComSpiBase - Abstract base class for SPI communication.
+
+This class contains no hardware-specific imports (no spidev, no pyftdi).
 """
 
 from abc import abstractmethod
@@ -13,15 +13,15 @@ from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 class TmcComSpiBase(TmcCom):
-    """TmcComSpiBase
+    """TmcComSpiBase.
 
-    Abstract base class for SPI communication with TMC drivers.
-    This class contains common SPI functionality without hardware-specific imports.
-    Subclasses must implement the actual SPI transfer methods.
+    Abstract base class for SPI communication with TMC drivers. This
+    class contains common SPI functionality without hardware-specific
+    imports. Subclasses must implement the actual SPI transfer methods.
     """
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         super().__init__()
 
         self.spi = None  # To be set by subclass
@@ -31,15 +31,15 @@ class TmcComSpiBase(TmcCom):
 
     @abstractmethod
     def init(self):
-        """init - to be implemented by subclass"""
+        """Init - to be implemented by subclass."""
 
     @abstractmethod
     def deinit(self):
-        """destructor - to be implemented by subclass"""
+        """Destructor - to be implemented by subclass."""
 
     @abstractmethod
     def _spi_transfer(self, data: list) -> list:
-        """Perform SPI transfer - to be implemented by subclass
+        """Perform SPI transfer - to be implemented by subclass.
 
         Args:
             data: Data to send
@@ -49,8 +49,9 @@ class TmcComSpiBase(TmcCom):
         """
 
     def read_reg(self, addr: int) -> tuple[list, dict]:
-        """reads the registry on the TMC with a given address.
-        returns the binary value of that register
+        """Reads the registry on the TMC with a given address.
+
+        returns the binary value of that register.
 
         Args:
             addr (int): HEX, which register to read
@@ -83,12 +84,14 @@ class TmcComSpiBase(TmcCom):
         return rtn[1:], flags
 
     def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict]:
-        """this function tries to read the registry of the TMC 10 times
-        if a valid answer is returned, this function returns it as an integer
+        """Tries to read the registry of the TMC up to 10 times.
+
+        If a valid answer is returned, this function returns it as an integer.
 
         Args:
             addr (int): HEX, which register to read
             tries (int): how many tries, before error is raised (Default value = 10)
+
         Returns:
             int: register value
             Dict: flags
@@ -97,10 +100,11 @@ class TmcComSpiBase(TmcCom):
         return int.from_bytes(bytes(data), "big"), flags
 
     def write_reg(self, addr: int, val: int) -> bool:
-        """this function can write a value to the register of the tmc
-        1. use read_int to get the current setting of the TMC
-        2. then modify the settings as wished
-        3. write them back to the driver with this function
+        """Writes a value to the register of the TMC.
+
+        1. Use read_int to get the current setting of the TMC.
+        2. Then modify the settings as wished.
+        3. Write them back to the driver with this function.
 
         Args:
             addr (int): HEX, which register to write
@@ -122,6 +126,7 @@ class TmcComSpiBase(TmcCom):
 
     def write_reg_check(self, addr: int, val: int, tries: int = 10) -> bool:
         """IFCNT is disabled in SPI mode. Therefore, no check is possible.
+
         This only calls the write_reg function
 
         Args:
@@ -136,10 +141,10 @@ class TmcComSpiBase(TmcCom):
         return True
 
     def flush_com_buffer(self):
-        """this function clear the communication buffers of the Raspberry Pi"""
+        """Clears the communication buffers of the Raspberry Pi."""
 
     def test_com(self, ioin: tmc_shared_reg.Ioin):
-        """test com connection
+        """Test com connection.
 
         Args:
             ioin: IOIN register instance

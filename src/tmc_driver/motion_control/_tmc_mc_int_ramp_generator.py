@@ -3,9 +3,7 @@
 # pylint: disable=too-many-public-methods
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-positional-arguments
-"""
-TMC internal Ramp Generator Motion Control module
-"""
+"""TMC internal Ramp Generator Motion Control module."""
 
 import time
 from enum import IntEnum
@@ -17,7 +15,7 @@ from ..reg import _tmc5160_reg as tmc5160_reg
 
 
 class RampMode(IntEnum):
-    """Ramp modes of the TMC internal ramp generator"""
+    """Ramp modes of the TMC internal ramp generator."""
 
     POSITIONING_MODE = 0
     VELOCITY_MODE_POS = 1
@@ -26,11 +24,11 @@ class RampMode(IntEnum):
 
 
 class TmcMotionControlIntRampGenerator(TmcMotionControl):
-    """TMC internal Ramp Generator Motion Control class"""
+    """TMC internal Ramp Generator Motion Control class."""
 
     @property
     def current_pos(self):
-        """_current_pos property"""
+        """_current_pos property."""
         xactual: tmc5160_reg.XActual = self.get_register("xactual")
         xactual.read()
         self._current_pos = xactual.xactual
@@ -38,7 +36,7 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
 
     @current_pos.setter
     def current_pos(self, current_pos: int):
-        """_current_pos setter"""
+        """_current_pos setter."""
         self._current_pos = current_pos
         xactual: tmc5160_reg.XActual = self.get_register("xactual")
         xactual.xactual = current_pos
@@ -46,7 +44,7 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
 
     @property
     def target_pos(self):
-        """_target_pos property"""
+        """_target_pos property."""
         xtarget: tmc5160_reg.XTarget = self.get_register("xtarget")
         xtarget.read()
         self._target_pos = xtarget.xtarget
@@ -54,19 +52,19 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
 
     @target_pos.setter
     def target_pos(self, target_pos: int):
-        """_target_pos setter"""
+        """_target_pos setter."""
         self._target_pos = target_pos
         xtarget: tmc5160_reg.XTarget = self.get_register("xtarget")
         xtarget.xtarget = target_pos
         xtarget.write()
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         super().__init__()
         self._starttime: int = 0
 
     def set_ramp_mode(self, ramp_mode: RampMode):
-        """sets the ramp mode of the internal ramp generator
+        """Sets the ramp mode of the internal ramp generator.
 
         Args:
             ramp_mode (enum): the ramp mode to set
@@ -76,7 +74,8 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         rampmode.write()
 
     def set_motion_profile(self, max_speed: int, acceleration: int, deceleration: int):
-        """sets the motion profile of the internal ramp generator
+        """Sets the motion profile of the internal ramp generator.
+
         Args:
             max_speed (int): maximum speed in µsteps/s
             acceleration (int): acceleration in µsteps/s²
@@ -118,11 +117,11 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
         dmax.write()
 
     def make_a_step(self):
-        """method that makes on step"""
+        """Method that makes on step."""
         raise NotImplementedError
 
     def stop(self, stop_mode=StopMode.HARDSTOP):
-        """stop the current movement
+        """Stop the current movement.
 
         Args:
             stop_mode (enum): whether the movement should be stopped immediately or softly
@@ -141,7 +140,10 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
             amax.write()
 
     def wait_until_stop(self):
-        """blocks the code until the movement is finished or stopped from a different thread!"""
+        """Blocks the code until the movement is finished.
+
+        Can also be stopped from a different thread.
+        """
         rampstat: tmc5160_reg.RampStat = self.get_register("rampstat")
         while True:
             # self._tmc_logger.log(f"current pos: {self.current_pos}", Loglevel.MOVEMENT)
@@ -166,7 +168,8 @@ class TmcMotionControlIntRampGenerator(TmcMotionControl):
     def run_to_position_steps(
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
-        """runs the motor to the given position.
+        """Runs the motor to the given position.
+
         with acceleration and deceleration
         blocks the code until finished or stopped from a different thread!
         returns true when the movement if finished normally and false,

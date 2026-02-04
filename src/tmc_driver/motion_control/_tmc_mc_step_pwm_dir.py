@@ -2,9 +2,7 @@
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-positional-arguments
-"""
-STEP_PWM/DIR Motion Control module
-"""
+"""STEP_PWM/DIR Motion Control module."""
 
 from ._tmc_mc import Direction, StopMode
 from ._tmc_mc_step_dir import TmcMotionControlStepDir
@@ -14,27 +12,27 @@ from .._tmc_exceptions import TmcMotionControlException
 
 
 class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
-    """STEP_PWM/DIR Motion Control class"""
+    """STEP_PWM/DIR Motion Control class."""
 
     @property
     def speed(self):
-        """_speed property"""
+        """_speed property."""
         return self._speed
 
     @speed.setter
     def speed(self, speed: int):
-        """_speed setter"""
+        """_speed setter."""
         self._speed = speed
         tmc_gpio.tmc_gpio.gpio_pwm_set_frequency(self._pin_step, self._speed)
         self._tmc_logger.log(f"Speed: {self._speed} msteps/s", Loglevel.DEBUG)
 
     def init(self, tmc_logger: TmcLogger):
-        """init: called by the Tmc class"""
+        """Init: called by the Tmc class."""
         super().init(tmc_logger)
         tmc_gpio.tmc_gpio.gpio_pwm_setup(self._pin_step, 1, 0)
 
     def stop(self, stop_mode=StopMode.HARDSTOP):
-        """stop the current movement
+        """Stop the current movement.
 
         Args:
             stop_mode (enum): whether the movement should be stopped immediately or softly
@@ -44,9 +42,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
         tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 0)
 
     def run_speed_pwm(self, speed: int | None = None):
-        """runs the motor
-        does not block the code
-        """
+        """Runs the motor at a given speed using PWM."""
         if self._pin_step is None:
             raise TmcMotionControlException(
                 "Step pin not set for STEP_PWM/DIR motion control"
@@ -70,9 +66,7 @@ class TmcMotionControlStepPwmDir(TmcMotionControlStepDir):
             tmc_gpio.tmc_gpio.gpio_pwm_set_duty_cycle(self._pin_step, 50)
 
     def run_speed_pwm_fullstep(self, speed: int | None = None):
-        """runs the motor
-        does not block the code
-        """
+        """Runs the motor does not block the code."""
         if speed is None:
             speed = self.max_speed_fullstep
         self.run_speed_pwm(speed * self.mres)

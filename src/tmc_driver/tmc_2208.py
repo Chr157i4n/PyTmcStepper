@@ -1,6 +1,6 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-"""Tmc2208 stepper driver module
+"""Tmc2208 stepper driver module.
 
 this module has two different functions:
 1. access register via tmc_com (UART, SPI)
@@ -12,6 +12,6 @@ from .tmc_220x import *
 
 
 class Tmc2208(Tmc220x):
-    """Tmc2208"""
+    """Tmc2208."""
 
     DRIVER_FAMILY = "TMC2208"

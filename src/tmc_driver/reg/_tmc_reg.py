@@ -1,16 +1,14 @@
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=unused-import
 
-"""
-Register module
-"""
+"""Register module."""
 
 from ..tmc_logger import TmcLogger, Loglevel
 from ..com._tmc_com import TmcCom
 
 
 class TmcRegField:
-    """Register field class"""
+    """Register field class."""
 
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-positional-arguments
@@ -27,7 +25,7 @@ class TmcRegField:
         clear_value: int | None = None,
         signed: bool = False,
     ):
-        """Constructor
+        """Constructor.
 
         Args:
             name (str): field name
@@ -49,7 +47,7 @@ class TmcRegField:
         self.signed = signed
 
     def get_bit_width(self) -> int:
-        """Get the bit width of this field based on the mask"""
+        """Get the bit width of this field based on the mask."""
         width = 0
         mask = self.mask
         while mask:
@@ -59,7 +57,7 @@ class TmcRegField:
 
 
 class TmcReg:
-    """Register class"""
+    """Register class."""
 
     ADDR: int
     _REG_MAP: tuple[TmcRegField, ...] = ()
@@ -68,28 +66,27 @@ class TmcReg:
 
     @property
     def reg_map(self) -> tuple[TmcRegField, ...]:
-        """returns the register map"""
+        """Returns the register map."""
         return self._REG_MAP
 
     @property
     def data_int(self) -> int:
-        """returns the raw register data as integer"""
+        """Returns the raw register data as integer."""
         return self._data_int
 
     @property
     def flags(self) -> dict | None:
-        """returns the flags from the last read operation"""
+        """Returns the flags from the last read operation."""
         return self._flags
 
     def __init__(self, tmc_com: TmcCom):
-        """Constructor"""
-
+        """Constructor."""
         self._tmc_com = tmc_com
 
         self.deserialise(0)
 
     def deserialise(self, data: int):
-        """Deserialises the register value
+        """Deserialises the register value.
 
         Args:
             data (int): register value
@@ -104,7 +101,7 @@ class TmcReg:
             setattr(self, reg.name, reg.reg_class(value))
 
     def serialise(self) -> int:
-        """Serialises the object to a register value
+        """Serialises the object to a register value.
 
         Returns:
             int: register value
@@ -123,7 +120,7 @@ class TmcReg:
         return data
 
     def __str__(self) -> str:
-        """string representation of this register"""
+        """String representation of this register."""
         out_string = f"{self.__class__.__name__.upper()} | {hex(self.ADDR)} | {bin(self._data_int)}\n"
         for reg in self._REG_MAP:
             value = getattr(self, reg.name)
@@ -134,13 +131,13 @@ class TmcReg:
         return out_string
 
     def log(self, logger: TmcLogger | None):
-        """log this register"""
+        """Log this register."""
         if logger is None:
             return
         logger.log(str(self), Loglevel.INFO)
 
     def read(self) -> tuple[int, dict | None]:
-        """read this register"""
+        """Read this register."""
         data, flags = self._tmc_com.read_int(self.ADDR)
 
         self._data_int = data
@@ -150,17 +147,17 @@ class TmcReg:
         return data, flags
 
     def write(self):
-        """write this register"""
+        """Write this register."""
         data = self.serialise()
         self._tmc_com.write_reg(self.ADDR, data)
 
     def write_check(self):
-        """write this register and checks that the write was successful"""
+        """Write this register and checks that the write was successful."""
         data = self.serialise()
         self._tmc_com.write_reg_check(self.ADDR, data)
 
     def modify(self, name: str, value):
-        """modify a register value
+        """Modify a register value.
 
         Args:
             name (str): register name
@@ -171,7 +168,7 @@ class TmcReg:
         self.write_check()
 
     def get(self, name: str):
-        """get a register value
+        """Get a register value.
 
         Args:
             name (str): register name
@@ -183,7 +180,7 @@ class TmcReg:
         return getattr(self, name)
 
     def clear(self):
-        """clear this register (set to 0)"""
+        """Clear this register (set to 0)."""
         self._data_int = 0
         for reg in self._REG_MAP:
             if reg.clear_value is not None:
@@ -191,7 +188,7 @@ class TmcReg:
         self.write_check()
 
     def clear_verify(self) -> bool:
-        """clear this register and verify that it was cleared"""
+        """Clear this register and verify that it was cleared."""
         self.clear()
         self.read()
         for reg in self._REG_MAP:

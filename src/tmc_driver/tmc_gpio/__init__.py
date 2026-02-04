@@ -1,8 +1,9 @@
 # pylint: disable=unused-import
 # pylint: disable=import-outside-toplevel
-"""
-Module for GPIO handling across different boards and libraries.
-Automatically detects the board type and imports the appropriate GPIO library.
+"""Module for GPIO handling across different boards and libraries.
+
+Automatically detects the board type and imports the appropriate GPIO
+library.
 """
 
 import sys
@@ -66,14 +67,14 @@ else:
 
     # Determine the board and instantiate the appropriate GPIO class
     def get_board_model_name():
-        """get board model name from /proc/device-tree/model file"""
+        """Get board model name from /proc/device-tree/model file."""
         if not os.path.exists("/proc/device-tree/model"):  # type: ignore[attr-defined]
             return "mock"
         with open("/proc/device-tree/model", encoding="utf-8") as f:
             return f.readline().lower()
 
     def initialize_gpio():
-        """initialize GPIO"""
+        """Initialize GPIO."""
         from importlib import import_module
 
         model = get_board_model_name()
@@ -108,7 +109,7 @@ else:
 
     # Lazy import for FtdiWrapper to avoid importing pyftdi unless needed
     def __getattr__(name):
-        """lazy import FtdiWrapper when accessed"""
+        """Lazy import FtdiWrapper when accessed."""
         if name == "FtdiWrapper":
             from ._tmc_gpio_board_ftdi import FtdiWrapper
 

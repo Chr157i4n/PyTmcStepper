@@ -7,7 +7,7 @@
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-"""StallGuard mixin"""
+"""StallGuard mixin."""
 
 import types
 from ._tmc_stepperdriver import *
@@ -27,10 +27,11 @@ _CB_SENTINEL = object()
 
 
 class StallGuard:
-    """StallGuard
+    """StallGuard.
 
-    This class is used to control the stallguard feature of the TMC stepper driver.
-    The drivers class needs to inherit from this class to use the stallguard feature (mixin).
+    This class is used to control the stallguard feature of the TMC
+    stepper driver. The drivers class needs to inherit from this class
+    to use the stallguard feature (mixin).
     """
 
     tmc_logger: TmcLogger
@@ -45,18 +46,24 @@ class StallGuard:
 
     # Stub methods - implemented by the driver class (Tmc2209, Tmc2240, Tmc5160)
     def set_spreadcycle(self, en: bool) -> None:
-        """Set spreadcycle mode. Implemented by driver class."""
+        """Set spreadcycle mode.
+
+        Implemented by driver class.
+        """
         raise NotImplementedError("set_spreadcycle must be implemented by driver class")
 
     def get_microstepping_resolution(self) -> int:
-        """Get microstepping resolution. Implemented by driver class."""
+        """Get microstepping resolution.
+
+        Implemented by driver class.
+        """
         raise NotImplementedError(
             "get_microstepping_resolution must be implemented by driver class"
         )
 
     @property
     def sg_callback(self):
-        """stallguard callback function"""
+        """Stallguard callback function."""
         return self._sg_callback
 
     @sg_callback.setter
@@ -71,15 +78,16 @@ class StallGuard:
             tmc_gpio.tmc_gpio.gpio_add_event_detect(self._pin_stallguard, callback)
 
     def __init__(self):
-        """initialize StallGuard instance variables"""
+        """Initialize StallGuard instance variables."""
         self._pin_stallguard: int | None = None
         self._sg_threshold: int = 100  # threshold for stallguard
 
     def __del__(self):
+        """Destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """Destructor."""
         if hasattr(self, "_pin_stallguard") and self._pin_stallguard is not None:
             tmc_gpio.tmc_gpio.gpio_remove_event_detect(self._pin_stallguard)
             tmc_gpio.tmc_gpio.gpio_cleanup(self._pin_stallguard)
@@ -88,9 +96,10 @@ class StallGuard:
     def set_stallguard_callback(
         self, pin_stallguard, threshold, callback, min_speed=100
     ):
-        """set a function to call back, when the driver detects a stall
-        via stallguard
-        high value on the diag pin can also mean a driver error
+        """Set a function to call back when the driver detects a stall.
+
+        Uses StallGuard. A high value on the DIAG pin can also mean a
+        driver error.
 
         Args:
             pin_stallguard (int): pin needs to be connected to DIAG
@@ -128,14 +137,17 @@ class StallGuard:
         sedn: int = 3,
         min_speed: int = 100,
     ):
-        """enables coolstep and sets the parameters for coolstep
-        The values for semin etc. can be tested with the test_stallguard_threshold function
+        """Enables CoolStep and sets the parameters.
+
+        The values for semin etc. can be tested with the
+        test_stallguard_threshold function.
 
         Args:
             semin_sg (int): lower threshold. Current will be increased if SG_Result goes below this
             semax_sg (int): upper threshold. Current will be decreased if SG_Result goes above this
             seup (int): current increment step
             sedn (int): number of SG_Result readings for each current decrement
+            min_speed (int): min speed [steps/s] for CoolStep
         """
         semax_sg = semax_sg - semin_sg
 
@@ -152,9 +164,10 @@ class StallGuard:
         )
 
     def get_stallguard_result(self):
-        """return the current stallguard result
-        its will be calculated with every fullstep
-        higher values means a lower motor load
+        """Return the current StallGuard result.
+
+        It is calculated with every fullstep.
+        Higher values means a lower motor load.
 
         Returns:
             sgresult (int): StallGuard Result
@@ -163,10 +176,11 @@ class StallGuard:
         return self.sgresult.sgresult
 
     def _set_stallguard_threshold(self, threshold):
-        """sets the register bit "SGTHRS" to to a given value
-        this is needed for the stallguard interrupt callback
+        """Sets the register bit 'SGTHRS' to a given value.
+
+        This is needed for the StallGuard interrupt callback.
         SGRESULT becomes compared to the double of this threshold.
-        SGRESULT ≤ SGTHRS*2
+        SGRESULT ≤ SGTHRS*2.
 
         Args:
             threshold (int): value for SGTHRS
@@ -174,8 +188,9 @@ class StallGuard:
         self.sgthrs.modify("sgthrs", int(threshold))
 
     def _set_coolstep_threshold(self, threshold):
-        """This  is  the  lower  threshold  velocity  for  switching
-        on  smart energy CoolStep and StallGuard to DIAG output. (unsigned)
+        """Lower threshold velocity for switching on smart energy CoolStep.
+
+        Also enables StallGuard to DIAG output (unsigned).
 
         Args:
             threshold (int): threshold velocity for coolstep
@@ -183,7 +198,7 @@ class StallGuard:
         self.tcoolthrs.modify("tcoolthrs", int(threshold))
 
     def _reset_current_pos(self):
-        """resets the current position of the motor to 0"""
+        """Resets the current position of the motor to 0."""
         if self.tmc_mc is None:
             raise TmcMotionControlException("tmc_mc is None; cannot reset current pos")
         self.tmc_mc.current_pos = 0
@@ -193,7 +208,8 @@ class StallGuard:
         threshold: int,
         min_speed: int,
     ):
-        """internal setup for stallguard
+        """Internal setup for stallguard.
+
         Args:
             threshold (int): value for SGTHRS
             min_speed (int): min speed [steps/s] for StallGuard
@@ -215,7 +231,8 @@ class StallGuard:
         cb_success: types.FunctionType | object | None = _CB_SENTINEL,
         cb_failure: types.FunctionType | object | None = None,
     ) -> bool:
-        """homes the motor in the given direction using stallguard.
+        """Homes the motor in the given direction using stallguard.
+
         this method is using vactual to move the motor and an interrupt on the DIAG pin
 
         Args:
@@ -267,14 +284,14 @@ class StallGuard:
 
         return homing_succeeded
 
-    def test_stallguard_threshold(self, steps):
-        """test method for tuning stallguard threshold
+    def test_stallguard_threshold(self, steps: int):
+        """Test method for tuning stallguard threshold.
 
         run this function with your motor settings and your motor load
         the function will determine the minimum stallguard results for each movement phase
 
         Args:
-            steps (int):
+            steps (int): number of steps to move
         """
         if not isinstance(self.tmc_mc, TmcMotionControlStepDir):
             raise TmcMotionControlException(

@@ -1,9 +1,9 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=unused-import
-"""
-TmcComUartBase - Abstract base class for UART communication
-This class contains no hardware-specific imports (no serial/pyserial)
+"""TmcComUartBase - Abstract base class for UART communication.
+
+This class contains no hardware-specific imports (no serial/pyserial).
 """
 
 from abc import abstractmethod
@@ -13,15 +13,15 @@ from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 class TmcComUartBase(TmcCom):
-    """TmcComUartBase
+    """TmcComUartBase.
 
-    Abstract base class for UART communication with TMC drivers.
-    This class contains common UART functionality without hardware-specific imports.
-    Subclasses must implement the actual UART transfer methods.
+    Abstract base class for UART communication with TMC drivers. This
+    class contains common UART functionality without hardware-specific
+    imports. Subclasses must implement the actual UART transfer methods.
     """
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         super().__init__()
 
         self.ser = None  # To be set by subclass
@@ -31,15 +31,15 @@ class TmcComUartBase(TmcCom):
 
     @abstractmethod
     def init(self):
-        """init - to be implemented by subclass"""
+        """Init - to be implemented by subclass."""
 
     @abstractmethod
     def deinit(self):
-        """destructor - to be implemented by subclass"""
+        """Destructor - to be implemented by subclass."""
 
     @abstractmethod
     def _uart_write(self, data: list) -> int:
-        """Write data to UART - to be implemented by subclass
+        """Write data to UART - to be implemented by subclass.
 
         Args:
             data: Data to send
@@ -50,7 +50,7 @@ class TmcComUartBase(TmcCom):
 
     @abstractmethod
     def _uart_read(self, length: int) -> bytes:
-        """Read data from UART - to be implemented by subclass
+        """Read data from UART - to be implemented by subclass.
 
         Args:
             length: Number of bytes to read
@@ -61,11 +61,12 @@ class TmcComUartBase(TmcCom):
 
     @abstractmethod
     def _uart_flush(self):
-        """Flush UART buffers - to be implemented by subclass"""
+        """Flush UART buffers - to be implemented by subclass."""
 
     def read_reg(self, addr: int) -> tuple[bytes, None]:
-        """reads the registry on the TMC with a given address.
-        returns the binary value of that register
+        """Reads the registry on the TMC with a given address.
+
+        returns the binary value of that register.
 
         Args:
             addr (int): HEX, which register to read
@@ -102,8 +103,9 @@ class TmcComUartBase(TmcCom):
         return rtn, None
 
     def read_int(self, addr: int, tries: int = 10) -> tuple[int, None]:
-        """this function tries to read the registry of the TMC 10 times
-        if a valid answer is returned, this function returns it as an integer
+        """Tries to read the registry of the TMC up to 10 times.
+
+        If a valid answer is returned, this function returns it as an integer.
 
         Args:
             addr (int): HEX, which register to read
@@ -152,10 +154,11 @@ class TmcComUartBase(TmcCom):
         return val, flags
 
     def write_reg(self, addr: int, val: int) -> bool:
-        """this function can write a value to the register of the tmc
-        1. use read_int to get the current setting of the TMC
-        2. then modify the settings as wished
-        3. write them back to the driver with this function
+        """Writes a value to the register of the TMC.
+
+        1. Use read_int to get the current setting of the TMC.
+        2. Then modify the settings as wished.
+        3. Write them back to the driver with this function.
 
         Args:
             addr (int): HEX, which register to write
@@ -194,9 +197,10 @@ class TmcComUartBase(TmcCom):
         return True
 
     def write_reg_check(self, addr: int, val: int, tries: int = 10) -> bool:
-        """this function als writes a value to the register of the TMC
-        but it also checks if the writing process was successfully by checking
-        the InterfaceTransmissionCounter before and after writing
+        """Writes a value to the register of the TMC with verification.
+
+        Checks if the writing process was successful by checking
+        the InterfaceTransmissionCounter before and after writing.
 
         Args:
             addr: HEX, which register to write
@@ -230,13 +234,13 @@ class TmcComUartBase(TmcCom):
                 raise TmcComException("after 10 tries writing not successful")
 
     def flush_com_buffer(self):
-        """this function clear the communication buffers"""
+        """This function clear the communication buffers."""
         if self.ser is None:
             return
         self._uart_flush()
 
     def test_com(self, ioin: tmc_shared_reg.Ioin | None = None) -> bool:
-        """test UART connection
+        """Test UART connection.
 
         Args:
             ioin: pre-created IOIN register instance (optional)
@@ -290,8 +294,8 @@ class TmcComUartBase(TmcCom):
 
         if len(rtn) == 12:
             self.tmc_logger.log(
-                """the Raspberry Pi received the sent
-                                bytes and the answer from the TMC""",
+                """The Raspberry Pi received the sent bytes and the answer from
+                the TMC.""",
                 Loglevel.DEBUG,
             )
         elif len(rtn) == 4:
@@ -313,14 +317,18 @@ class TmcComUartBase(TmcCom):
 
         if snd[0:4] == rtn[0:4]:
             self.tmc_logger.log(
-                """the Raspberry Pi received exactly the bytes it has send.
-                        the first 4 bytes are the same""",
+                """The Raspberry Pi received exactly the bytes it has send.
+
+                the first 4 bytes are the same
+                """,
                 Loglevel.DEBUG,
             )
         else:
             self.tmc_logger.log(
-                """the Raspberry Pi did not received the bytes it has send.
-                        the first 4 bytes are different""",
+                """The Raspberry Pi did not received the bytes it has send.
+
+                the first 4 bytes are different
+                """,
                 Loglevel.DEBUG,
             )
             status = False
@@ -351,7 +359,7 @@ class TmcComUartBase(TmcCom):
         driver_ioin_regs: list | None = None,
         address_range: range = range(0, 8),
     ) -> list[tuple[int, str | None]]:
-        """scan for devices on the UART bus
+        """Scan for devices on the UART bus.
 
         Args:
             driver_ioin_regs: list of IOIN register classes to test (default: None)

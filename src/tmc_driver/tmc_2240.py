@@ -4,7 +4,7 @@
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
-"""Tmc220X stepper driver module
+"""Tmc220X stepper driver module.
 
 this module has two different functions:
 1. access register via tmc_com (UART, SPI)
@@ -30,7 +30,7 @@ if SUBMODULE_VALIDATION:
 
 
 class Tmc2240(TmcXXXX, StallGuard):
-    """Tmc2240"""
+    """Tmc2240."""
 
     if SUBMODULE_VALIDATION:
         SUPPORTED_COM_TYPES = (TmcComSpiBase, TmcComUartBase)
@@ -56,7 +56,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         log_handlers: list | None = None,
         log_formatter: logging.Formatter | None = None,
     ):
-        """constructor
+        """constructor.
 
         Args:
             tmc_ec (TmcEnableControl): enable control object
@@ -113,21 +113,22 @@ class Tmc2240(TmcXXXX, StallGuard):
         super()._init()
 
     def deinit(self):
-        """destructor"""
+        """destructor."""
         super().deinit()
         StallGuard.deinit(self)
 
     # Register Access
     # ----------------------------
     def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int, irundelay: int):
-        """sets the current scale (CS) for Running and Holding
-        and the delay, when to be switched to Holding current
+        """Sets the current scale (CS) for Running and Holding and the delay.
+
+        Specifies when to be switched to Holding current.
 
         Args:
-        ihold (int): multiplicator for current while standstill [0-31]
-        irun (int): current while running [0-31]
-        iholddelay (int): delay after standstill for switching to ihold [0-15]
-
+            ihold (int): multiplicator for current while standstill [0-31]
+            irun (int): current while running [0-31]
+            iholddelay (int): delay after standstill for switching to ihold [0-15]
+            irundelay (int): delay after movement start for switching to irun [0-15]
         """
         self.ihold_irun.read()
 
@@ -139,7 +140,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.ihold_irun.write_check()
 
     def _set_global_scaler(self, scaler: int):
-        """sets the global scaler
+        """Sets the global scaler.
 
         Args:
             scaler (int): global scaler value
@@ -148,7 +149,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         self.global_scaler.write_check()
 
     def _set_current_range(self, current_range: int):
-        """sets the current range
+        """Sets the current range.
 
         0 = 1 A
         1 = 2 A
@@ -169,11 +170,11 @@ class Tmc2240(TmcXXXX, StallGuard):
         run_current_delay: int = 0,
         rref: int = 12,
     ) -> int:
-        """sets the Peak current for the motor.
+        """Sets the Peak current for the motor.
 
         Args:
             run_current (int): current during movement in mA
-            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_multiplier (float):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
             run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
             rref (int): reference resistor in kOhm (Default value = 12)
@@ -247,11 +248,11 @@ class Tmc2240(TmcXXXX, StallGuard):
         run_current_delay: int = 0,
         rref: int = 12,
     ) -> int:
-        """sets the RMS current for the motor.
+        """Sets the RMS current for the motor.
 
         Args:
             run_current (int): current during movement in mA
-            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_multiplier (float):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
             run_current_delay (int): delay after movement start after which cur rises (Default value = 0)
             rref (int): reference resistor in kOhm (Default value = 12)
@@ -269,7 +270,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         return round(peak_current / 1.41421)
 
     def get_spreadcycle(self) -> bool:
-        """reads spreadcycle
+        """Reads spreadcycle.
 
         Returns:
             bool: True = spreadcycle; False = stealthchop
@@ -278,18 +279,18 @@ class Tmc2240(TmcXXXX, StallGuard):
         return not self.gconf.en_pwm_mode
 
     def set_spreadcycle(self, en: bool):
-        """enables spreadcycle (1) or stealthchop (0)
+        """Enables spreadcycle (1) or stealthchop (0).
 
         Args:
         en (bool): true to enable spreadcycle; false to enable stealthchop
-
         """
         self.gconf.modify("en_pwm_mode", not en)
 
     def get_interface_transmission_counter(self) -> int:
-        """reads the interface transmission counter from the tmc register
-        this value is increased on every succesfull write access
-        can be used to verify a write access
+        """Reads the interface transmission counter from the TMC register.
+
+        This value is increased on every successful write access and
+        can be used to verify a write access.
 
         Returns:
             int: 8bit IFCNT Register
@@ -300,7 +301,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         return ifcnt
 
     def get_tstep(self) -> int:
-        """reads the current tstep from the driver register
+        """Reads the current tstep from the driver register.
 
         Returns:
             int: TStep time
@@ -309,7 +310,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         return self.tstep.tstep
 
     def get_vsupply(self) -> float:
-        """reads the ADC_VSUPPLY_AIN register
+        """Reads the ADC_VSUPPLY_AIN register.
 
         Returns:
             int: ADC_VSUPPLY_AIN register value
@@ -318,7 +319,7 @@ class Tmc2240(TmcXXXX, StallGuard):
         return self.adcv_supply_ain.adc_vsupply_v
 
     def get_temperature(self) -> float:
-        """reads the ADC_TEMP register and returns the temperature
+        """Reads the ADC_TEMP register and returns the temperature.
 
         Returns:
             float: temperature in °C
@@ -334,10 +335,12 @@ class Tmc2240(TmcXXXX, StallGuard):
         min_speed: int,
         enable: bool = True,
     ):
-        """internal setup for stallguard
+        """Internal setup for stallguard.
+
         Args:
             threshold (int): value for SGTHRS
             min_speed (int): min speed [steps/s] for StallGuard
+            enable (bool): whether stallguard should be enabled (Default value = True)
         """
         super().stallguard_setup(threshold, min_speed)
         self.gconf.modify("diag0_stall", enable)

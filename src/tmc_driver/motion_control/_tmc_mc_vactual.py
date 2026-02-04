@@ -3,9 +3,7 @@
 # pylint: disable=too-many-public-methods
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-positional-arguments
-"""
-VActual Motion Control module
-"""
+"""VActual Motion Control module."""
 
 import time
 from ._tmc_mc import TmcMotionControl, MovementAbsRel, StopMode
@@ -16,19 +14,19 @@ from ..platform_utils import get_time_us
 
 
 class TmcMotionControlVActual(TmcMotionControl):
-    """VActual Motion Control class"""
+    """VActual Motion Control class."""
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         super().__init__()
         self._starttime: int = 0
 
     def make_a_step(self):
-        """method that makes on step"""
+        """Method that makes on step."""
         raise NotImplementedError
 
     def stop(self, stop_mode=StopMode.HARDSTOP):
-        """stop the current movement
+        """Stop the current movement.
 
         Args:
             stop_mode (enum): whether the movement should be stopped immediately or softly
@@ -40,20 +38,7 @@ class TmcMotionControlVActual(TmcMotionControl):
     def run_to_position_steps(
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
-        """runs the motor to the given position.
-        with acceleration and deceleration
-        blocks the code until finished or stopped from a different thread!
-        returns true when the movement if finished normally and false,
-        when the movement was stopped
-
-        Args:
-            steps (int): amount of steps; can be negative
-            movement_abs_rel (enum): whether the movement should be absolut or relative
-                (Default value = None)
-
-        Returns:
-            stop (enum): how the movement was finished
-        """
+        """Runs to a given position in steps."""
         self._tmc_logger.log(
             f"cur: {self._current_pos} | tar: {self._target_pos}", Loglevel.MOVEMENT
         )
@@ -72,10 +57,11 @@ class TmcMotionControlVActual(TmcMotionControl):
         return self._stop
 
     def set_vactual(self, vactual: int):
-        """sets the register bit "VACTUAL" to to a given value
+        """Sets the register bit 'VACTUAL' to a given value.
+
         VACTUAL allows moving the motor by UART control.
-        It gives the motor velocity in +-(2^23)-1 [μsteps / t]
-        0: Normal operation. Driver reacts to STEP input
+        It gives the motor velocity in +-(2^23)-1 [μsteps / t].
+        0: Normal operation. Driver reacts to STEP input.
 
         Args:
             vactual (int): value for VACTUAL
@@ -91,10 +77,11 @@ class TmcMotionControlVActual(TmcMotionControl):
         show_stallguard_result=False,
         show_tstep=False,
     ) -> StopMode:
-        """sets the register bit "VACTUAL" to to a given value
+        """Sets the register bit 'VACTUAL' to a given value with duration.
+
         VACTUAL allows moving the motor by UART control.
-        It gives the motor velocity in +-(2^23)-1 [μsteps / t]
-        0: Normal operation. Driver reacts to STEP input
+        It gives the motor velocity in +-(2^23)-1 [μsteps / t].
+        0: Normal operation. Driver reacts to STEP input.
 
         Args:
             vactual (int): value for VACTUAL
@@ -164,8 +151,9 @@ class TmcMotionControlVActual(TmcMotionControl):
     def set_vactual_rps(
         self, rps, duration=0, revolutions=0, acceleration=0
     ) -> StopMode:
-        """converts the rps parameter to a vactual value which represents
-        rotation speed in revolutions per second
+        """Converts the rps parameter to a vactual value.
+
+        Represents rotation speed in revolutions per second.
         With internal oscillator:
         VACTUAL[2209] = v[Hz] / 0.715Hz
 
@@ -188,8 +176,9 @@ class TmcMotionControlVActual(TmcMotionControl):
     def set_vactual_rpm(
         self, rpm, duration=0, revolutions=0, acceleration=0
     ) -> StopMode:
-        """converts the rps parameter to a vactual value which represents
-        rotation speed in revolutions per minute
+        """Converts the rpm parameter to a vactual value.
+
+        Represents rotation speed in revolutions per minute.
 
         Args:
             rpm (int): value for vactual in rpm
@@ -203,8 +192,7 @@ class TmcMotionControlVActual(TmcMotionControl):
         return self.set_vactual_rps(rpm / 60, duration, revolutions, acceleration)
 
     def run_speed(self, speed: int):
-        """runs the motor
-        does not block the code
+        """Runs the motor does not block the code.
 
         Args:
             speed (int): speed in µsteps per second
@@ -212,10 +200,5 @@ class TmcMotionControlVActual(TmcMotionControl):
         self.set_vactual(round(speed / 0.715))
 
     def run_speed_fullstep(self, speed: int):
-        """runs the motor
-        does not block the code
-
-        Args:
-            speed (int): speed in fullsteps per second
-        """
+        """Runs the motor at a given speed in fullsteps per second."""
         self.run_speed(speed * self.mres)

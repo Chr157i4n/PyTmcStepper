@@ -4,7 +4,7 @@
 # pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
-"""Tmc220X stepper driver module
+"""Tmc220X stepper driver module.
 
 this module has two different functions:
 1. access register via tmc_com (UART, SPI)
@@ -28,7 +28,7 @@ if SUBMODULE_VALIDATION:
 
 
 class Tmc220x(TmcXXXX):
-    """Tmc220X"""
+    """Tmc220X."""
 
     if SUBMODULE_VALIDATION:
         SUPPORTED_COM_TYPES = (TmcComUartBase,)
@@ -55,7 +55,7 @@ class Tmc220x(TmcXXXX):
         log_handlers: list | None = None,
         log_formatter: logging.Formatter | None = None,
     ):
-        """constructor
+        """constructor.
 
         Args:
             tmc_ec (TmcEnableControl): enable control object
@@ -107,7 +107,7 @@ class Tmc220x(TmcXXXX):
     # Register Access
     # ----------------------------
     def get_iscale_analog(self) -> bool:
-        """return whether Vref (True) or 5V (False) is used for current scale
+        """Return whether Vref (True) or 5V (False) is used for current scale.
 
         Returns:
             en (bool): whether Vref (True) or 5V (False) is used for current scale
@@ -116,7 +116,7 @@ class Tmc220x(TmcXXXX):
         return self.gconf.i_scale_analog
 
     def set_iscale_analog(self, en: bool):
-        """sets Vref (True) or 5V (False) for current scale
+        """Sets Vref (True) or 5V (False) for current scale.
 
         Args:
             en (bool): True=Vref, False=5V
@@ -124,7 +124,8 @@ class Tmc220x(TmcXXXX):
         self.gconf.modify("i_scale_analog", en)
 
     def get_vsense(self) -> bool:
-        """returns which sense resistor voltage is used for current scaling
+        """Returns which sense resistor voltage is used for current scaling.
+
         False: Low sensitivity, high sense resistor voltage
         True: High sensitivity, low sense resistor voltage
 
@@ -135,17 +136,19 @@ class Tmc220x(TmcXXXX):
         return self.chopconf.vsense
 
     def set_vsense(self, en: bool):
-        """sets which sense resistor voltage is used for current scaling
+        """Sets which sense resistor voltage is used for current scaling.
+
         False: Low sensitivity, high sense resistor voltage
         True: High sensitivity, low sense resistor voltage
 
         Args:
-            en (bool):
+            en (bool): whether high sensitivity should be used
         """
         self.chopconf.modify("vsense", en)
 
     def get_internal_rsense(self) -> bool:
-        """returns which sense resistor voltage is used for current scaling
+        """Returns which sense resistor voltage is used for current scaling.
+
         False: Operation with external sense resistors
         True Internal sense resistors. Use current supplied into
         VREF as reference for internal sense resistor. VREF
@@ -158,7 +161,8 @@ class Tmc220x(TmcXXXX):
         return self.gconf.internal_rsense
 
     def set_internal_rsense(self, en: bool):
-        """sets which sense resistor voltage is used for current scaling
+        """Sets which sense resistor voltage is used for current scaling.
+
         False: Operation with external sense resistors
         True: Internal sense resistors. Use current supplied into
         VREF as reference for internal sense resistor. VREF
@@ -181,14 +185,14 @@ class Tmc220x(TmcXXXX):
         self.gconf.modify("internal_rsense", en)
 
     def _set_irun_ihold(self, ihold: int, irun: int, iholddelay: int):
-        """sets the current scale (CS) for Running and Holding
-        and the delay, when to be switched to Holding current
+        """Sets the current scale (CS) for Running and Holding and the delay.
+
+        Specifies when to be switched to Holding current.
 
         Args:
         ihold (int): multiplicator for current while standstill [0-31]
         irun (int): current while running [0-31]
         iholddelay (int): delay after standstill for switching to ihold [0-15]
-
         """
         self.ihold_irun.read()
 
@@ -199,7 +203,8 @@ class Tmc220x(TmcXXXX):
         self.ihold_irun.write_check()
 
     def _set_pdn_disable(self, pdn_disable: bool):
-        """disables PDN on the UART pin
+        """Disables PDN on the UART pin.
+
         False: PDN_UART controls standstill current reduction
         True: PDN_UART input function disabled. Set this bit,
         when using the UART interface!
@@ -216,13 +221,14 @@ class Tmc220x(TmcXXXX):
         hold_current_delay: int = 10,
         pdn_disable: bool = True,
     ) -> int:
-        """sets the Peak current for the motor.
+        """Sets the Peak current for the motor.
 
         Args:
             run_current (int): current during movement in mA
-            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_multiplier (float):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
             pdn_disable (bool): disables PDN on the UART pin (Default value = True)
+
         Returns:
             int: theoretical final current in mA
         """
@@ -235,11 +241,11 @@ class Tmc220x(TmcXXXX):
         self.set_iscale_analog(False)
 
         def calc_cs_irun(run_current: int, rsense: float, vfs: float) -> float:
-            """calculates the current scale value for a given current"""
+            """Calculates the current scale value for a given current."""
             return 32.0 * run_current / 1000.0 * (rsense + 0.02) / vfs - 1
 
         def calc_run_current(cs_irun: float, rsense: float, vfs: float) -> float:
-            """calculates the current for a given current scale value"""
+            """Calculates the current for a given current scale value."""
             return (cs_irun + 1) / 32.0 * vfs / (rsense + 0.02) * 1000
 
         cs_irun = calc_cs_irun(run_current, rsense, vfs)
@@ -287,11 +293,11 @@ class Tmc220x(TmcXXXX):
         hold_current_delay: int = 10,
         pdn_disable: bool = True,
     ) -> int:
-        """sets the RMS current for the motor.
+        """Sets the RMS current for the motor.
 
         Args:
             run_current (int): current during movement in mA
-            hold_current_multiplier (int):current multiplier during standstill (Default value = 0.5)
+            hold_current_multiplier (float):current multiplier during standstill (Default value = 0.5)
             hold_current_delay (int): delay after standstill after which cur drops (Default value = 10)
             pdn_disable (bool): disables PDN on the UART pin (Default value = True)
 
@@ -307,7 +313,7 @@ class Tmc220x(TmcXXXX):
         return round(peak_current / 1.41421)
 
     def get_spreadcycle(self) -> bool:
-        """reads spreadcycle
+        """Reads spreadcycle.
 
         Returns:
             bool: True = spreadcycle; False = stealthchop
@@ -316,16 +322,17 @@ class Tmc220x(TmcXXXX):
         return self.gconf.en_spreadcycle
 
     def set_spreadcycle(self, en: bool):
-        """enables spreadcycle (1) or stealthchop (0)
+        """Enables spreadcycle (1) or stealthchop (0).
 
         Args:
         en (bool): true to enable spreadcycle; false to enable stealthchop
-
         """
         self.gconf.modify("en_spreadcycle", en)
 
     def set_microstepping_resolution(self, mres: int):
-        """sets the current native microstep resolution (1,2,4,8,16,32,64,128,256)
+        """Sets the current native microstep resolution (1-256).
+
+        Valid values: 1, 2, 4, 8, 16, 32, 64, 128, 256.
 
         Args:
             mres (int): µstep resolution; has to be a power of 2 or 1 for fullstep
@@ -334,9 +341,10 @@ class Tmc220x(TmcXXXX):
         self.set_mstep_resolution_reg_select(True)
 
     def set_mstep_resolution_reg_select(self, en: bool):
-        """sets the register bit "mstep_reg_select" to 1 or 0 depending to the given value.
-        this is needed to set the microstep resolution via UART
-        this method is called by "set_microstepping_resolution"
+        """Sets the register bit 'mstep_reg_select' to 1 or 0.
+
+        This is needed to set the microstep resolution via UART.
+        This method is called by 'set_microstepping_resolution'.
 
         Args:
             en (bool): true to set µstep resolution via UART
@@ -344,9 +352,10 @@ class Tmc220x(TmcXXXX):
         self.gconf.modify("mstep_reg_select", en)
 
     def get_interface_transmission_counter(self) -> int:
-        """reads the interface transmission counter from the tmc register
-        this value is increased on every succesfull write access
-        can be used to verify a write access
+        """Reads the interface transmission counter from the TMC register.
+
+        This value is increased on every successful write access and
+        can be used to verify a write access.
 
         Returns:
             int: 8bit IFCNT Register
@@ -357,7 +366,7 @@ class Tmc220x(TmcXXXX):
         return ifcnt
 
     def get_tstep(self) -> int:
-        """reads the current tstep from the driver register
+        """Reads the current tstep from the driver register.
 
         Returns:
             int: TStep time
@@ -366,7 +375,7 @@ class Tmc220x(TmcXXXX):
         return self.tstep.tstep
 
     def set_tpwmthrs(self, tpwmthrs: int):
-        """sets the current tpwmthrs
+        """Sets the current tpwmthrs.
 
         Args:
             tpwmthrs (int): value for tpwmthrs
@@ -375,10 +384,11 @@ class Tmc220x(TmcXXXX):
         self.tpwmthrs.write_check()
 
     def set_vactual(self, vactual: int):
-        """sets the register bit "VACTUAL" to to a given value
+        """Sets the register bit 'VACTUAL' to a given value.
+
         VACTUAL allows moving the motor by UART control.
-        It gives the motor velocity in +-(2^23)-1 [μsteps / t]
-        0: Normal operation. Driver reacts to STEP input
+        It gives the motor velocity in +-(2^23)-1 [μsteps / t].
+        0: Normal operation. Driver reacts to STEP input.
 
         Args:
             vactual (int): value for VACTUAL

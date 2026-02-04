@@ -1,9 +1,8 @@
 # pylint: skip-file
-"""
-CircuitPython PIO implementation for STEP/DIR Motion Control
+"""CircuitPython PIO implementation for STEP/DIR Motion Control.
 
-This module provides the CircuitPython-specific PIO wrapper
-for the RP2040/RP2350 microcontroller using rp2pio and adafruit_pioasm.
+This module provides the CircuitPython-specific PIO wrapper for the
+RP2040/RP2350 microcontroller using rp2pio and adafruit_pioasm.
 """
 
 import rp2pio
@@ -55,10 +54,10 @@ done:
 
 
 class CircuitPythonPioWrapper(BasePioWrapper):
-    """PIO wrapper for CircuitPython using rp2pio.StateMachine"""
+    """PIO wrapper for CircuitPython using rp2pio.StateMachine."""
 
     def __init__(self, pio_id: int, sm_id: int, pin_step, frequency: int):
-        """Initialize CircuitPython PIO state machine
+        """Initialize CircuitPython PIO state machine.
 
         Args:
             pio_id: PIO block (0 or 1)
@@ -69,23 +68,23 @@ class CircuitPythonPioWrapper(BasePioWrapper):
         raise NotImplementedError
 
     def deinit(self):
-        """Deinitialize the state machine"""
+        """Deinitialize the state machine."""
         raise NotImplementedError
 
     def put(self, data: int):
-        """Put data into TX FIFO"""
+        """Put data into TX FIFO."""
         raise NotImplementedError
 
     def get(self) -> int:
-        """Get data from RX FIFO"""
+        """Get data from RX FIFO."""
         raise NotImplementedError
 
     def active(self, value: int):
-        """Set state machine active state"""
+        """Set state machine active state."""
         raise NotImplementedError
 
     def restart(self):
-        """Restart the state machine"""
+        """Restart the state machine."""
         raise NotImplementedError
 
     def tx_fifo(self) -> int:

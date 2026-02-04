@@ -1,12 +1,10 @@
-"""
-Tmc logger module for MicroPython
-"""
+"""Tmc logger module for MicroPython."""
 
 from ._tmc_logger_base import Loglevel, TmcLoggerBase
 
 
 class TmcLogger(TmcLoggerBase):
-    """minimal logger for MicroPython"""
+    """Minimal logger for MicroPython."""
 
     def __init__(
         self,
@@ -15,7 +13,7 @@ class TmcLogger(TmcLoggerBase):
         handlers=None,
         formatter=None,
     ):
-        """constructor
+        """constructor.
 
         Args:
             loglevel (enum): level for which to log

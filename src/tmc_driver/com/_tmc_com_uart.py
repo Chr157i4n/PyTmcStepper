@@ -1,8 +1,6 @@
 # pylint: disable=broad-exception-caught
 # pylint: disable=unused-import
-"""
-TmcComUart stepper driver uart module
-"""
+"""TmcComUart stepper driver uart module."""
 
 import serial
 from ._tmc_com_uart_base import TmcComUartBase, TmcLogger, Loglevel
@@ -10,15 +8,15 @@ from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
 class TmcComUart(TmcComUartBase):
-    """TmcComUart
+    """TmcComUart.
 
-    this class is used to communicate with the TMC via UART using pyserial
-    it can be used to change the settings of the TMC.
-    like the current or the microsteppingmode
+    this class is used to communicate with the TMC via UART using
+    pyserial it can be used to change the settings of the TMC. like the
+    current or the microsteppingmode
     """
 
     def __init__(self, serialport: str, baudrate: int = 11520):
-        """constructor
+        """constructor.
 
         Args:
             serialport (string): serialport path
@@ -35,7 +33,7 @@ class TmcComUart(TmcComUartBase):
         self.ser.baudrate = baudrate
 
     def init(self):
-        """init"""
+        """init."""
         try:
             self.ser.open()
         except Exception as e:
@@ -51,9 +49,11 @@ class TmcComUart(TmcComUartBase):
 
             if errnum == 13:
                 self._tmc_logger.log(
-                    """you have no permission to use the serial port.
-                                    You may need to add your user to the dialout group
-                                    with \"sudo usermod -a -G dialout pi\"""",
+                    """You have no permission to use the serial port.
+
+                    You may need to add your user to the dialout group
+                    with \"sudo usermod -a -G dialout pi\"
+                    """,
                     Loglevel.ERROR,
                 )
                 raise SystemExit from e
@@ -77,15 +77,16 @@ class TmcComUart(TmcComUartBase):
         self._uart_flush()
 
     def __del__(self):
+        """Destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """Destructor."""
         if self.ser is not None and isinstance(self.ser, serial.Serial):
             self.ser.close()
 
     def _uart_write(self, data: list) -> int:
-        """Write data to UART using pyserial
+        """Write data to UART using pyserial.
 
         Args:
             data: Data to send
@@ -96,18 +97,11 @@ class TmcComUart(TmcComUartBase):
         return self.ser.write(data)
 
     def _uart_read(self, length: int) -> bytes:
-        """Read data from UART using pyserial
-
-        Args:
-            length: Number of bytes to read
-
-        Returns:
-            Received data
-        """
+        """Read data from UART using pyserial."""
         return self.ser.read(length)
 
     def _uart_flush(self):
-        """Flush UART buffers"""
+        """Flush UART buffers."""
         if self.ser is not None:
             self.ser.reset_output_buffer()
             self.ser.reset_input_buffer()

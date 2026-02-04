@@ -1,7 +1,5 @@
 # pylint: disable=too-many-instance-attributes
-"""
-Register module
-"""
+"""Register module."""
 
 import math
 from ._tmc_reg import TmcRegField
@@ -10,7 +8,7 @@ from .._tmc_exceptions import TmcDriverException
 
 
 class GConf(shared.GConf):
-    """GCONF register class"""
+    """GCONF register class."""
 
     ADDR = 0x0
 
@@ -39,7 +37,7 @@ class GConf(shared.GConf):
 
 
 class GStat(shared.GStat):
-    """GSTAT register class"""
+    """GSTAT register class."""
 
     ADDR = 0x1
 
@@ -53,7 +51,7 @@ class GStat(shared.GStat):
     )
 
     def check(self):
-        """check if the driver is ok"""
+        """Check if the driver is ok."""
         self.read()
         if self.uv_cp:
             raise TmcDriverException("TMC220X: undervoltage detected")
@@ -64,7 +62,7 @@ class GStat(shared.GStat):
 
 
 class IfCnt(shared.IfCnt):
-    """IFCNT register class"""
+    """IFCNT register class."""
 
     ADDR = 0x2
 
@@ -73,7 +71,7 @@ class IfCnt(shared.IfCnt):
 
 
 class Ioin(shared.Ioin):
-    """IOIN register class"""
+    """IOIN register class."""
 
     ADDR = 0x6
     DRIVER_NAME = "TMC220X"
@@ -97,7 +95,7 @@ class Ioin(shared.Ioin):
 
 
 class IHoldIRun(shared.IHoldIRun):
-    """IHOLD_IRUN register class"""
+    """IHOLD_IRUN register class."""
 
     ADDR = 0x10
 
@@ -112,7 +110,7 @@ class IHoldIRun(shared.IHoldIRun):
 
 
 class TPowerDown(shared.TPowerDown):
-    """TPowerDown register class"""
+    """TPowerDown register class."""
 
     ADDR = 0x11
 
@@ -121,7 +119,7 @@ class TPowerDown(shared.TPowerDown):
 
 
 class TStep(shared.TStep):
-    """TSTEP register class"""
+    """TSTEP register class."""
 
     ADDR = 0x12
 
@@ -130,7 +128,7 @@ class TStep(shared.TStep):
 
 
 class TPwmThrs(shared.TPwmThrs):
-    """TPWMTHRS register class"""
+    """TPWMTHRS register class."""
 
     ADDR = 0x13
 
@@ -139,7 +137,7 @@ class TPwmThrs(shared.TPwmThrs):
 
 
 class VActual(shared.VActual):
-    """VACTUAL register class"""
+    """VACTUAL register class."""
 
     ADDR = 0x22
 
@@ -148,7 +146,7 @@ class VActual(shared.VActual):
 
 
 class MsCnt(shared.MsCnt):
-    """MSCNT register class"""
+    """MSCNT register class."""
 
     ADDR = 0x6A
 
@@ -157,7 +155,7 @@ class MsCnt(shared.MsCnt):
 
 
 class ChopConf(shared.ChopConf):
-    """CHOPCONF register class"""
+    """CHOPCONF register class."""
 
     ADDR = 0x6C
 
@@ -186,12 +184,12 @@ class ChopConf(shared.ChopConf):
 
     @property
     def mres_ms(self) -> int:
-        """return µstep resolution"""
+        """Return µstep resolution."""
         return int(math.pow(2, 8 - self.mres))
 
     @mres_ms.setter
     def mres_ms(self, mres: int):
-        """set µstep resolution"""
+        """Set µstep resolution."""
         mres_to_bit = {1: 8, 2: 7, 4: 6, 8: 5, 16: 4, 32: 3, 64: 2, 128: 1, 256: 0}
         if mres not in mres_to_bit:
             raise ValueError(
@@ -201,7 +199,7 @@ class ChopConf(shared.ChopConf):
 
 
 class PwmConf(shared.PwmConf):
-    """PWMCONF register class"""
+    """PWMCONF register class."""
 
     ADDR = 0x70
 
@@ -226,7 +224,7 @@ class PwmConf(shared.PwmConf):
 
 
 class DrvStatus(shared.DrvStatus):
-    """DRVSTATUS register class"""
+    """DRVSTATUS register class."""
 
     ADDR = 0x6F
 

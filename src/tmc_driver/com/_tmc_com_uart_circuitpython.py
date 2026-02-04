@@ -31,7 +31,7 @@ class TmcComUartCircuitPython(TmcComUartBase):
     """
 
     def __init__(self, tx, rx, baudrate=115200, timeout=1.0):
-        """Initialize UART communication
+        """Initialize UART communication.
 
         Args:
             tx: TX board pin (e.g., board.TX or board.GP0)
@@ -49,7 +49,7 @@ class TmcComUartCircuitPython(TmcComUartBase):
         self._uart = None
 
     def init(self):
-        """Initialize UART hardware"""
+        """Initialize UART hardware."""
         self._uart = busio.UART(
             tx=self._tx_pin,
             rx=self._rx_pin,
@@ -60,14 +60,14 @@ class TmcComUartCircuitPython(TmcComUartBase):
         self.ser = _FakeSerial(self._uart)
 
     def deinit(self):
-        """Deinitialize UART hardware"""
+        """Deinitialize UART hardware."""
         if self._uart is not None:
             self._uart.deinit()
             self._uart = None
         self.ser = None
 
     def _uart_write(self, data):
-        """Write data to UART
+        """Write data to UART.
 
         Args:
             data: Bytes to write
@@ -86,7 +86,7 @@ class TmcComUartCircuitPython(TmcComUartBase):
         return len(data_bytes)
 
     def _uart_read(self, length):
-        """Read data from UART
+        """Read data from UART.
 
         Args:
             length: Number of bytes to read
@@ -106,7 +106,7 @@ class TmcComUartCircuitPython(TmcComUartBase):
         return bytes(result)
 
     def _uart_flush(self):
-        """Flush UART receive buffer"""
+        """Flush UART receive buffer."""
         if self._uart is None:
             raise TmcComException("UART not initialized")
 
@@ -115,13 +115,13 @@ class TmcComUartCircuitPython(TmcComUartBase):
 
 
 class _FakeSerial:
-    """Fake serial object for compatibility with base class"""
+    """Fake serial object for compatibility with base class."""
 
     def __init__(self, uart):
-        """Constructor for fake serial object"""
+        """Constructor for fake serial object."""
         self._uart = uart
         self.is_open = True
 
     def close(self):
-        """Close the fake serial port"""
+        """Close the fake serial port."""
         self.is_open = False

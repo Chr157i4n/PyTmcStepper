@@ -1,5 +1,5 @@
 # pylint: disable=import-outside-toplevel
-"""Communication module for TMC stepper drivers
+"""Communication module for TMC stepper drivers.
 
 Provides UART and SPI communication implementations for different platforms:
 - TmcComUart: Standard UART communication (CPython with pyserial)
@@ -36,7 +36,7 @@ except ImportError:
 
 def __getattr__(name):
     # pylint: disable=too-many-return-statements
-    """Lazy import of communication classes to avoid circular imports"""
+    """Lazy import of communication classes to avoid circular imports."""
     if name == "TmcComUart":
         from ._tmc_com_uart import TmcComUart
 

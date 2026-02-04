@@ -1,5 +1,5 @@
 # pylint: disable=import-outside-toplevel
-"""Motion control module for TMC stepper drivers
+"""Motion control module for TMC stepper drivers.
 
 Provides various motion control strategies:
 - TmcMotionControlStepDir: STEP/DIR pin-based control
@@ -49,7 +49,7 @@ except ImportError:
 
 def __getattr__(name):
     # pylint: disable=too-many-return-statements
-    """Lazy import of motion control classes to avoid circular imports"""
+    """Lazy import of motion control classes to avoid circular imports."""
     if name == "TmcMotionControl":
         from ._tmc_mc import TmcMotionControl
 

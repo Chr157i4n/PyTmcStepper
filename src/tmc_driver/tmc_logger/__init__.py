@@ -1,7 +1,5 @@
 # pylint: disable=unused-import
-"""
-Tmc logger module
-"""
+"""Tmc logger module."""
 
 import sys
 from ._tmc_logger_base import Loglevel

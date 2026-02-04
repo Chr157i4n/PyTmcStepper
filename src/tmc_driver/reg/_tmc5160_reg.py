@@ -1,7 +1,5 @@
 # pylint: disable=too-many-instance-attributes
-"""
-Register module
-"""
+"""Register module."""
 
 import math
 from ._tmc_reg import TmcRegField
@@ -10,7 +8,7 @@ from .._tmc_exceptions import TmcDriverException
 
 
 class GConf(shared.GConf):
-    """GCONF register class"""
+    """GCONF register class."""
 
     ADDR = 0x0
 
@@ -53,7 +51,7 @@ class GConf(shared.GConf):
 
 
 class GStat(shared.GStat):
-    """GSTAT register class"""
+    """GSTAT register class."""
 
     ADDR = 0x1
 
@@ -67,7 +65,7 @@ class GStat(shared.GStat):
     )
 
     def check(self):
-        """check if the driver is ok"""
+        """Check if the driver is ok."""
         self.read()
         if self.uv_cp:
             raise TmcDriverException("TMC224X: Charge Pump undervoltage detected")
@@ -78,7 +76,7 @@ class GStat(shared.GStat):
 
 
 class IfCnt(shared.IfCnt):
-    """IFCNT register class"""
+    """IFCNT register class."""
 
     ADDR = 0x2
 
@@ -87,7 +85,7 @@ class IfCnt(shared.IfCnt):
 
 
 class Ioin(shared.Ioin):
-    """IOIN register class"""
+    """IOIN register class."""
 
     ADDR = 0x4
     DRIVER_NAME = "TMC5160"
@@ -115,7 +113,7 @@ class Ioin(shared.Ioin):
 
 
 class DrvConf(shared.DrvConf):
-    """DRV_CONF register class"""
+    """DRV_CONF register class."""
 
     ADDR = 0xA
 
@@ -134,7 +132,7 @@ class DrvConf(shared.DrvConf):
 
 
 class GlobalScaler(shared.GlobalScaler):
-    """GLOBAL_SCALER register class"""
+    """GLOBAL_SCALER register class."""
 
     ADDR = 0xB
 
@@ -143,7 +141,7 @@ class GlobalScaler(shared.GlobalScaler):
 
 
 class IHoldIRun(shared.IHoldIRun):
-    """IHOLD_IRUN register class"""
+    """IHOLD_IRUN register class."""
 
     ADDR = 0x10
 
@@ -158,7 +156,7 @@ class IHoldIRun(shared.IHoldIRun):
 
 
 class TPowerDown(shared.TPowerDown):
-    """TPOWERDOWN register class"""
+    """TPOWERDOWN register class."""
 
     ADDR = 0x11
 
@@ -167,7 +165,7 @@ class TPowerDown(shared.TPowerDown):
 
 
 class TStep(shared.TStep):
-    """TSTEP register class"""
+    """TSTEP register class."""
 
     ADDR = 0x12
 
@@ -176,7 +174,7 @@ class TStep(shared.TStep):
 
 
 class TPwmThrs(shared.TPwmThrs):
-    """TCOOLTHRS register class"""
+    """TCOOLTHRS register class."""
 
     ADDR = 0x13
 
@@ -185,7 +183,7 @@ class TPwmThrs(shared.TPwmThrs):
 
 
 class TCoolThrs(shared.TCoolThrs):
-    """TCOOLTHRS register class"""
+    """TCOOLTHRS register class."""
 
     ADDR = 0x14
 
@@ -194,7 +192,7 @@ class TCoolThrs(shared.TCoolThrs):
 
 
 class THigh(shared.THigh):
-    """THIGH register class"""
+    """THIGH register class."""
 
     ADDR = 0x15
 
@@ -203,7 +201,7 @@ class THigh(shared.THigh):
 
 
 class VDcMin(shared.VDcMin):
-    """VDCMIN register class"""
+    """VDCMIN register class."""
 
     ADDR = 0x33
 
@@ -212,7 +210,7 @@ class VDcMin(shared.VDcMin):
 
 
 class RampMode(shared.RampMode):
-    """RAMPMODE register class"""
+    """RAMPMODE register class."""
 
     ADDR = 0x20
 
@@ -221,7 +219,7 @@ class RampMode(shared.RampMode):
 
 
 class XActual(shared.XActual):
-    """XACTUAL register class - Actual motor position (signed)"""
+    """XACTUAL register class - Actual motor position (signed)."""
 
     ADDR = 0x21
 
@@ -230,7 +228,7 @@ class XActual(shared.XActual):
 
 
 class VActual(shared.VActual):
-    """VACTUAL register class - Actual motor velocity (signed)"""
+    """VACTUAL register class - Actual motor velocity (signed)."""
 
     ADDR = 0x22
 
@@ -239,7 +237,7 @@ class VActual(shared.VActual):
 
 
 class VStart(shared.VStart):
-    """VSTART register class"""
+    """VSTART register class."""
 
     ADDR = 0x23
 
@@ -248,7 +246,7 @@ class VStart(shared.VStart):
 
 
 class A1(shared.A1):
-    """A1 register class"""
+    """A1 register class."""
 
     ADDR = 0x24
 
@@ -257,7 +255,7 @@ class A1(shared.A1):
 
 
 class V1(shared.V1):
-    """V1 register class"""
+    """V1 register class."""
 
     ADDR = 0x25
 
@@ -266,7 +264,7 @@ class V1(shared.V1):
 
 
 class AMax(shared.AMax):
-    """AMAX register class"""
+    """AMAX register class."""
 
     ADDR = 0x26
 
@@ -275,7 +273,7 @@ class AMax(shared.AMax):
 
 
 class VMax(shared.VMax):
-    """VMAX register class"""
+    """VMAX register class."""
 
     ADDR = 0x27
 
@@ -284,7 +282,7 @@ class VMax(shared.VMax):
 
 
 class DMax(shared.DMax):
-    """DMAX register class"""
+    """DMAX register class."""
 
     ADDR = 0x28
 
@@ -293,7 +291,7 @@ class DMax(shared.DMax):
 
 
 class D1(shared.D1):
-    """D1 register class"""
+    """D1 register class."""
 
     ADDR = 0x2A
 
@@ -302,7 +300,7 @@ class D1(shared.D1):
 
 
 class VStop(shared.VStop):
-    """VSTOP register class"""
+    """VSTOP register class."""
 
     ADDR = 0x2B
 
@@ -311,7 +309,7 @@ class VStop(shared.VStop):
 
 
 class TZeroWait(shared.TZeroWait):
-    """TZEROWAIT register class"""
+    """TZEROWAIT register class."""
 
     ADDR = 0x2C
 
@@ -320,7 +318,7 @@ class TZeroWait(shared.TZeroWait):
 
 
 class XTarget(shared.XTarget):
-    """XTARGET register class - Target position for ramp mode (signed)"""
+    """XTARGET register class - Target position for ramp mode (signed)."""
 
     ADDR = 0x2D
 
@@ -329,7 +327,7 @@ class XTarget(shared.XTarget):
 
 
 class SWMode(shared.SWMode):
-    """SW_MODE register class"""
+    """SW_MODE register class."""
 
     ADDR = 0x34
 
@@ -362,7 +360,7 @@ class SWMode(shared.SWMode):
 
 
 class RampStat(shared.RampStat):
-    """RAMP_STAT register class"""
+    """RAMP_STAT register class."""
 
     ADDR = 0x35
 
@@ -398,7 +396,7 @@ class RampStat(shared.RampStat):
 
 
 class MsCnt(shared.MsCnt):
-    """MSCNT register class"""
+    """MSCNT register class."""
 
     ADDR = 0x6A
 
@@ -407,7 +405,7 @@ class MsCnt(shared.MsCnt):
 
 
 class ChopConf(shared.ChopConf):
-    """CHOPCONF register class"""
+    """CHOPCONF register class."""
 
     ADDR = 0x6C
 
@@ -446,12 +444,12 @@ class ChopConf(shared.ChopConf):
 
     @property
     def mres_ms(self) -> int:
-        """return µstep resolution"""
+        """Return µstep resolution."""
         return int(math.pow(2, 8 - self.mres))
 
     @mres_ms.setter
     def mres_ms(self, mres: int):
-        """set µstep resolution"""
+        """Set µstep resolution."""
         mres_to_bit = {1: 8, 2: 7, 4: 6, 8: 5, 16: 4, 32: 3, 64: 2, 128: 1, 256: 0}
         if mres not in mres_to_bit:
             raise ValueError(
@@ -461,7 +459,7 @@ class ChopConf(shared.ChopConf):
 
 
 class CoolConf(shared.CoolConf):
-    """COOLCONF register class"""
+    """COOLCONF register class."""
 
     ADDR = 0x6D
 
@@ -484,7 +482,7 @@ class CoolConf(shared.CoolConf):
 
 
 class DrvStatus(shared.DrvStatus):
-    """DRVSTATUS register class"""
+    """DRVSTATUS register class."""
 
     ADDR = 0x6F
 
@@ -521,7 +519,7 @@ class DrvStatus(shared.DrvStatus):
 
 
 class LostSteps(shared.LostSteps):
-    """LOST_STEPS register class"""
+    """LOST_STEPS register class."""
 
     ADDR = 0x73
 

@@ -1,4 +1,4 @@
-"""Platform utility functions for TMC Driver library"""
+"""Platform utility functions for TMC Driver library."""
 
 import sys
 import time
@@ -8,7 +8,10 @@ CIRCUITPYTHON = sys.implementation.name == "circuitpython"
 
 
 def get_time_us():
-    """Get current time in microseconds, compatible with CPython, MicroPython and CircuitPython"""
+    """Get current time in microseconds.
+
+    Compatible with CPython, MicroPython and CircuitPython.
+    """
     if MICROPYTHON:
         return time.ticks_us()  # pylint: disable=no-member
     if CIRCUITPYTHON:
@@ -17,7 +20,10 @@ def get_time_us():
 
 
 def sleep_us(microseconds: int):
-    """Sleep for specified microseconds, compatible with CPython, MicroPython and CircuitPython"""
+    """Sleep for specified microseconds.
+
+    Compatible with CPython, MicroPython and CircuitPython.
+    """
     if MICROPYTHON:
         time.sleep_us(microseconds)  # pylint: disable=no-member
     else:

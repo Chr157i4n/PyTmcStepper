@@ -1,6 +1,6 @@
-"""
-Many boards have RaspberryPI-compatible PinOut,
-but require to import special GPIO module instead RPI.GPIO
+"""Base GPIO wrapper for boards with RaspberryPi-compatible PinOut.
+
+Many boards require importing a special GPIO module instead of RPi.GPIO.
 """
 
 from enum import IntEnum
@@ -10,7 +10,7 @@ from ..tmc_logger import TmcLogger, Loglevel
 
 
 class Board(IntEnum):
-    """board"""
+    """board."""
 
     UNKNOWN = 0
     RASPBERRY_PI = 1  # all except Pi 5
@@ -23,21 +23,21 @@ class Board(IntEnum):
 
 
 class Gpio(IntEnum):
-    """GPIO value"""
+    """GPIO value."""
 
     LOW = 0
     HIGH = 1
 
 
 class GpioMode(IntEnum):
-    """GPIO mode"""
+    """GPIO mode."""
 
     OUT = 0
     IN = 1
 
 
 class GpioPUD(IntEnum):
-    """Pull up Down"""
+    """Pull up Down."""
 
     PUD_OFF = 20
     PUD_UP = 22
@@ -49,15 +49,15 @@ dependencies_logger = TmcLogger(Loglevel.DEBUG, "DEPENDENCIES")
 
 
 class BaseGPIOWrapper:
-    """Base class for GPIO wrappers"""
+    """Base class for GPIO wrappers."""
 
     @abstractmethod
     def init(self, gpio_mode=None):
-        """initialize GPIO library"""
+        """Initialize GPIO library."""
 
     @abstractmethod
     def deinit(self):
-        """deinitialize GPIO library"""
+        """Deinitialize GPIO library."""
 
     @abstractmethod
     def gpio_setup(
@@ -67,31 +67,31 @@ class BaseGPIOWrapper:
         initial: Gpio = Gpio.LOW,
         pull_up_down: GpioPUD = GpioPUD.PUD_OFF,
     ):
-        """setup GPIO pin"""
+        """Setup GPIO pin."""
 
     @abstractmethod
     def gpio_cleanup(self, pin: int):
-        """cleanup GPIO pin"""
+        """Cleanup GPIO pin."""
 
     @abstractmethod
     def gpio_input(self, pin: int) -> int:
-        """read GPIO pin"""
+        """Read GPIO pin."""
 
     @abstractmethod
     def gpio_output(self, pin: int, value):
-        """write GPIO pin"""
+        """Write GPIO pin."""
 
     @abstractmethod
     def gpio_pwm_setup(self, pin: int, frequency: int = 10, duty_cycle: int = 0):
-        """setup PWM"""
+        """Setup PWM."""
 
     @abstractmethod
     def gpio_pwm_set_frequency(self, pin: int, frequency: int):
-        """set PWM frequency"""
+        """Set PWM frequency."""
 
     @abstractmethod
     def gpio_pwm_set_duty_cycle(self, pin: int, duty_cycle: int):
-        """set PWM duty cycle
+        """Set PWM duty cycle.
 
         Args:
             pin (int): pin number
@@ -100,8 +100,8 @@ class BaseGPIOWrapper:
 
     @abstractmethod
     def gpio_add_event_detect(self, pin: int, callback: types.FunctionType):
-        """add event detect"""
+        """Add event detect."""
 
     @abstractmethod
     def gpio_remove_event_detect(self, pin: int):
-        """remove event detect"""
+        """Remove event detect."""

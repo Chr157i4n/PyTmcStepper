@@ -1,6 +1,4 @@
-"""
-Enable Control base module
-"""
+"""Enable Control base module."""
 
 from ._tmc_ec import TmcEnableControl
 from ..tmc_logger import Loglevel
@@ -8,15 +6,15 @@ from ..reg import _tmc_shared_regs as tmc_shared_reg
 
 
 class TmcEnableControlToff(TmcEnableControl):
-    """Enable Control base class"""
+    """Enable Control base class."""
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         super().__init__()
         self._default_toff = 3
 
     def set_motor_enabled(self, en):
-        """enables or disables the motor current output
+        """Enables or disables the motor current output.
 
         Args:
             en (bool): whether the motor current output should be enabled

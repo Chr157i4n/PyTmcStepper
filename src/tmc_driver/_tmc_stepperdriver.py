@@ -6,7 +6,7 @@
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-"""TmcStepperDriver module
+"""TmcStepperDriver module.
 
 this module has the function to move the motor via STEP/DIR pins
 """
@@ -33,7 +33,7 @@ from . import _tmc_math as tmc_math
 
 
 class TmcStepperDriver:
-    """TmcStepperDriver
+    """TmcStepperDriver.
 
     this class has two different functions:
     1. change setting in the TMC-driver via UART
@@ -88,7 +88,7 @@ class TmcStepperDriver:
         log_handlers: list | None = None,
         log_formatter: logging.Formatter | None = None,
     ):
-        """constructor
+        """constructor.
 
         Args:
             tmc_ec (TmcEnableControl): TMC Enable Control object
@@ -123,10 +123,11 @@ class TmcStepperDriver:
             self.tmc_ec.init(self.tmc_logger)
 
     def __del__(self):
+        """Destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """Destructor."""
         if hasattr(self, "tmc_ec") and self.tmc_ec is not None:
             self.tmc_ec.deinit()
             self.tmc_ec = None
@@ -140,7 +141,7 @@ class TmcStepperDriver:
     # Attribute Forwarding
     # ----------------------------
     def __getattr__(self, name):
-        """Forward attribute access to tmc_mc submodule dynamically"""
+        """Forward attribute access to tmc_mc submodule dynamically."""
         if name in self._MC_FORWARDED_ATTRS:
             if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
                 raise AttributeError(
@@ -153,7 +154,7 @@ class TmcStepperDriver:
         )
 
     def __setattr__(self, name, value):
-        """Forward attribute setting to tmc_mc submodule dynamically"""
+        """Forward attribute setting to tmc_mc submodule dynamically."""
         # Forward to tmc_mc if it's a forwarded attribute and tmc_mc exists
         if name in self._MC_FORWARDED_ATTRS:
             # Only forward if tmc_mc is already initialized (not during __init__)
@@ -168,7 +169,7 @@ class TmcStepperDriver:
     # TmcEnableControl Wrapper
     # ----------------------------
     def set_motor_enabled(self, en: bool):
-        """enable control wrapper"""
+        """Enable control wrapper."""
         if self.tmc_ec is not None:
             self.tmc_ec.set_motor_enabled(en)
 
@@ -177,7 +178,7 @@ class TmcStepperDriver:
     def run_to_position_steps(
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
-        """motioncontrol wrapper"""
+        """Motioncontrol wrapper."""
         if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         return self.tmc_mc.run_to_position_steps(steps, movement_abs_rel)
@@ -185,23 +186,23 @@ class TmcStepperDriver:
     def run_to_position_fullsteps(
         self, steps, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
-        """motioncontrol wrapper"""
+        """Motioncontrol wrapper."""
         return self.run_to_position_steps(steps * self.mres, movement_abs_rel)
 
     def run_to_position_revolutions(
         self, revs, movement_abs_rel: MovementAbsRel | None = None
     ) -> StopMode:
-        """motioncontrol wrapper"""
+        """Motioncontrol wrapper."""
         return self.run_to_position_steps(revs * self.steps_per_rev, movement_abs_rel)
 
     def reset_position(self):
-        """resets the current position to 0"""
+        """Resets the current position to 0."""
         self.current_pos_fullstep = 0
 
     # Test Methods
     # ----------------------------
     def test_step(self):
-        """test method"""
+        """Test method."""
         if not hasattr(self, "tmc_mc") or self.tmc_mc is None:
             raise AttributeError("TmcMotionControl is not set")
         for _ in range(100):

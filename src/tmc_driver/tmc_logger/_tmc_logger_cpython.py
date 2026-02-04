@@ -1,13 +1,11 @@
-"""
-Tmc logger module for CPython
-"""
+"""Tmc logger module for CPython."""
 
 import logging
 from ._tmc_logger_base import Loglevel, TmcLoggerBase
 
 
 class TmcLogger(TmcLoggerBase):
-    """Tmc2209_logger
+    """Tmc2209_logger.
 
     this class has the function:
     log messages from the Tmc2209 lib
@@ -15,23 +13,23 @@ class TmcLogger(TmcLoggerBase):
 
     @property
     def loglevel(self):
-        """get the loglevel"""
+        """Get the loglevel."""
         return self._loglevel
 
     @loglevel.setter
     def loglevel(self, loglevel: Loglevel):
-        """set the loglevel"""
+        """Set the loglevel."""
         self._loglevel = loglevel
         self.logger.setLevel(int(loglevel))
 
     @property
     def logprefix(self):
-        """get the logprefix"""
+        """Get the logprefix."""
         return self._logprefix
 
     @logprefix.setter
     def logprefix(self, logprefix: str):
-        """set the logprefix"""
+        """Set the logprefix."""
         self._logprefix = logprefix
         self.logger.name = logprefix
 
@@ -42,7 +40,7 @@ class TmcLogger(TmcLoggerBase):
         handlers: list | None = None,
         formatter: logging.Formatter | None = None,
     ):
-        """constructor
+        """constructor.
 
         Args:
             loglevel (enum): level for which to log
@@ -50,7 +48,6 @@ class TmcLogger(TmcLoggerBase):
             handlers (list): list of logging handlers, see logging.handlers (default: None)
             formatter (logging.Formatter): formatter for the log messages (default: None)
         """
-
         # Add our custom log levels to the logger
         for level in [Loglevel.ALL, Loglevel.MOVEMENT, Loglevel.NONE]:
             self._add_logging_level(level.name, int(level))
@@ -76,15 +73,15 @@ class TmcLogger(TmcLoggerBase):
         super().__init__(loglevel, logprefix)
 
     def __del__(self):
-        """destructor"""
+        """destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """destructor."""
         self.remove_all_handlers()
 
     def add_handler(self, handler, formatter=None):
-        """add a handler to the logger
+        """Add a handler to the logger.
 
         Args:
             handler (logging.Handler): handler to add
@@ -97,20 +94,16 @@ class TmcLogger(TmcLoggerBase):
         self.logger.addHandler(handler)
 
     def remove_handler(self, handler):
-        """remove a handler from the logger
-
-        Args:
-            handler (logging.Handler): handler to remove
-        """
+        """Remove a handler from the logger."""
         self.logger.removeHandler(handler)
 
     def remove_all_handlers(self):
-        """remove all handlers from the logger"""
+        """Remove all handlers from the logger."""
         for handler in self.logger.handlers:
             self.logger.removeHandler(handler)
 
     def set_formatter(self, formatter, handlers=None):
-        """set a new formatter for the log messages
+        """Set a new formatter for the log messages.
 
         Args:
             formatter (logging.Formatter): new formatter
@@ -145,7 +138,7 @@ class TmcLogger(TmcLoggerBase):
         setattr(logging, method_name, logToRoot)
 
     def log(self, message, loglevel: Loglevel = Loglevel.INFO):
-        """logs a message
+        """Logs a message.
 
         Args:
             message (string): message to log

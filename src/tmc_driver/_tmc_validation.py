@@ -1,5 +1,4 @@
-"""
-TMC validation module
+"""TMC validation module.
 
 This module provides validation functions for TMC driver components.
 """

@@ -1,13 +1,11 @@
-"""
-Tmc logger module base
-"""
+"""Tmc logger module base."""
 
 from enum import IntEnum
 from abc import abstractmethod
 
 
 class Loglevel(IntEnum):
-    """Loglevel"""
+    """Loglevel."""
 
     ALL = 1  # all messages will be logged
     MOVEMENT = 5  # error, warning, info, debug and movement messages will be logged
@@ -19,7 +17,7 @@ class Loglevel(IntEnum):
 
 
 class TmcLoggerBase:
-    """Tmc2209_logger
+    """Tmc2209_logger.
 
     this class has the function:
     log messages from the Tmc2209 lib
@@ -27,22 +25,22 @@ class TmcLoggerBase:
 
     @property
     def loglevel(self):
-        """get the loglevel"""
+        """Get the loglevel."""
         return self._loglevel
 
     @loglevel.setter
     def loglevel(self, loglevel: Loglevel):
-        """set the loglevel"""
+        """Set the loglevel."""
         self._loglevel = loglevel
 
     @property
     def logprefix(self):
-        """get the logprefix"""
+        """Get the logprefix."""
         return self._logprefix
 
     @logprefix.setter
     def logprefix(self, logprefix: str):
-        """set the logprefix"""
+        """Set the logprefix."""
         self._logprefix = logprefix
 
     def __init__(
@@ -50,7 +48,7 @@ class TmcLoggerBase:
         loglevel: Loglevel = Loglevel.INFO,
         logprefix: str = "TMCXXXX",
     ):
-        """constructor
+        """Constructor.
 
         Args:
             loglevel (enum): level for which to log
@@ -60,17 +58,17 @@ class TmcLoggerBase:
         self.loglevel = loglevel
 
     def __del__(self):
-        """destructor"""
+        """Destructor."""
         self.deinit()
 
     @abstractmethod
     def deinit(self):
-        """destructor"""
+        """destructor."""
         self.remove_all_handlers()
 
     @abstractmethod
     def add_handler(self, handler, formatter=None):
-        """add a handler to the logger
+        """Add a handler to the logger.
 
         Args:
             handler (logging.Handler): handler to add
@@ -80,19 +78,15 @@ class TmcLoggerBase:
 
     @abstractmethod
     def remove_handler(self, handler):
-        """remove a handler from the logger
-
-        Args:
-            handler (logging.Handler): handler to remove
-        """
+        """Remove a handler from the logger."""
 
     @abstractmethod
     def remove_all_handlers(self):
-        """remove all handlers from the logger"""
+        """Remove all handlers from the logger."""
 
     @abstractmethod
     def set_formatter(self, formatter, handlers=None):
-        """set a new formatter for the log messages
+        """Set a new formatter for the log messages.
 
         Args:
             formatter (logging.Formatter): new formatter
@@ -103,7 +97,7 @@ class TmcLoggerBase:
 
     @abstractmethod
     def log(self, message, loglevel: Loglevel = Loglevel.INFO):
-        """logs a message
+        """Logs a message.
 
         Args:
             message (string): message to log

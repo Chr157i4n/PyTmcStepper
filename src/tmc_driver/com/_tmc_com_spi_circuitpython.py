@@ -39,7 +39,7 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
         miso,
         baudrate=1000000,
     ):
-        """Initialize SPI communication
+        """Initialize SPI communication.
 
         Args:
             cs: Chip select board pin (e.g., board.D17)
@@ -60,7 +60,7 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
         self._cs = None
 
     def init(self):
-        """Initialize SPI hardware"""
+        """Initialize SPI hardware."""
         # Create SPI bus
         self._spi = busio.SPI(
             clock=self._clock_pin, MOSI=self._mosi_pin, MISO=self._miso_pin
@@ -72,7 +72,7 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
         self._cs.value = True  # CS high (inactive)
 
     def deinit(self):
-        """Deinitialize SPI hardware"""
+        """Deinitialize SPI hardware."""
         if self._spi is not None:
             self._spi.deinit()
             self._spi = None
@@ -81,7 +81,7 @@ class TmcComSpiCircuitPython(TmcComSpiBase):
             self._cs = None
 
     def _spi_transfer(self, data):
-        """Perform SPI transfer
+        """Perform SPI transfer.
 
         Args:
             data: List of bytes to send

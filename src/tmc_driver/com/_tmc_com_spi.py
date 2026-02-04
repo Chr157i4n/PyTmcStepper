@@ -3,9 +3,7 @@
 # pylint: disable=too-few-public-methods
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-positional-arguments
-"""
-TmcComSpi stepper driver spi module
-"""
+"""TmcComSpi stepper driver spi module."""
 
 import spidev
 from ._tmc_com_spi_base import TmcComSpiBase, TmcLogger, Loglevel
@@ -13,11 +11,11 @@ from .._tmc_exceptions import TmcComException, TmcDriverException
 
 
 class TmcComSpi(TmcComSpiBase):
-    """TmcComSpi
+    """TmcComSpi.
 
-    this class is used to communicate with the TMC via SPI
-    it can be used to change the settings of the TMC.
-    like the current or the microsteppingmode
+    this class is used to communicate with the TMC via SPI it can be
+    used to change the settings of the TMC. like the current or the
+    microsteppingmode
     """
 
     def __init__(
@@ -26,7 +24,7 @@ class TmcComSpi(TmcComSpiBase):
         spi_dev: int,
         spi_speed: int = 8000000,
     ):
-        """constructor
+        """constructor.
 
         Args:
             spi_bus (int): SPI bus number
@@ -42,7 +40,7 @@ class TmcComSpi(TmcComSpiBase):
         self._spi_speed = spi_speed
 
     def init(self):
-        """init"""
+        """init."""
         try:
             self.spi.open(self._spi_bus, self._spi_dev)
         except Exception as e:
@@ -64,13 +62,14 @@ class TmcComSpi(TmcComSpiBase):
         self.spi.lsbfirst = False
 
     def __del__(self):
+        """Destructor."""
         self.deinit()
 
     def deinit(self):
-        """destructor"""
+        """Destructor."""
 
     def _spi_transfer(self, data: list) -> list:
-        """Perform SPI transfer using spidev
+        """Perform SPI transfer using spidev.
 
         Args:
             data: Data to send

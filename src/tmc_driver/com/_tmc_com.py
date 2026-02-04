@@ -1,7 +1,5 @@
 # pylint: disable=unused-import
-"""
-TmcCom stepper driver communication module
-"""
+"""TmcCom stepper driver communication module."""
 
 import time
 import struct
@@ -11,7 +9,7 @@ from .._tmc_exceptions import TmcComException
 
 
 def compute_crc8_atm(datagram, initial_value=0):
-    """this function calculates the crc8 parity bit
+    """This function calculates the crc8 parity bit.
 
     Args:
         datagram (list): datagram
@@ -32,30 +30,30 @@ def compute_crc8_atm(datagram, initial_value=0):
 
 
 class TmcCom:
-    """TmcCom"""
+    """TmcCom."""
 
     @property
     def tmc_logger(self) -> TmcLogger:
-        """get the tmc_logger"""
+        """Get the tmc_logger."""
         return self._tmc_logger
 
     @tmc_logger.setter
     def tmc_logger(self, tmc_logger: TmcLogger):
-        """set the tmc_logger"""
+        """Set the tmc_logger."""
         self._tmc_logger = tmc_logger
 
     @property
     def driver_address(self) -> int:
-        """get the driver address"""
+        """Get the driver address."""
         return self._driver_address
 
     @driver_address.setter
     def driver_address(self, address: int):
-        """set the driver address"""
+        """Set the driver address."""
         self._driver_address = address
 
     def __init__(self):
-        """constructor"""
+        """constructor."""
         self._tmc_logger: TmcLogger
         self._driver_address: int = 0
         self.communication_pause: int = 0
@@ -63,14 +61,14 @@ class TmcCom:
 
     @abstractmethod
     def init(self):
-        """init communication"""
+        """Init communication."""
 
     @abstractmethod
     def deinit(self):
-        """deinit communication"""
+        """Deinit communication."""
 
     def set_get_register_callback(self, callback):
-        """Set callback to get registers from parent TMC class
+        """Set callback to get registers from parent TMC class.
 
         Args:
             callback: Function that takes register name (str) and returns register object
@@ -78,13 +76,13 @@ class TmcCom:
         self._get_register_callback = callback
 
     def get_register(self, name: str):
-        """Get register by name from parent TMC class
+        """Get register by name using callback.
 
         Args:
-            name: Register name (e.g. 'gconf', 'chopconf')
+            name (str): Name of the register
 
         Returns:
-            Register object or None if callback not set
+            Register object
         """
         if self._get_register_callback is None:
             raise TmcComException("Get register callback not set in communication")
@@ -92,11 +90,13 @@ class TmcCom:
 
     @abstractmethod
     def read_reg(self, addr: int) -> tuple[int, dict | None]:
-        """reads the registry on the TMC with a given address.
-        returns the binary value of that register
+        """Reads the registry on the TMC with a given address.
+
+        returns the binary value of that register.
 
         Args:
             addr (int): HEX, which register to read
+
         Returns:
             int: register value
             Dict: flags
@@ -104,23 +104,15 @@ class TmcCom:
 
     @abstractmethod
     def read_int(self, addr: int, tries: int = 10) -> tuple[int, dict | None]:
-        """this function tries to read the registry of the TMC 10 times
-        if a valid answer is returned, this function returns it as an integer
-
-        Args:
-            addr (int): HEX, which register to read
-            tries (int): how many tries, before error is raised (Default value = 10)
-        Returns:
-            int: register value
-            Dict: flags
-        """
+        """Read integer value from register."""
 
     @abstractmethod
     def write_reg(self, addr: int, val: int):
-        """this function can write a value to the register of the tmc
-        1. use read_int to get the current setting of the TMC
-        2. then modify the settings as wished
-        3. write them back to the driver with this function
+        """Writes a value to the register of the TMC.
+
+        1. Use read_int to get the current setting of the TMC.
+        2. Then modify the settings as wished.
+        3. Write them back to the driver with this function.
 
         Args:
             addr (int): HEX, which register to write
@@ -129,20 +121,12 @@ class TmcCom:
 
     @abstractmethod
     def write_reg_check(self, addr: int, val: int, tries: int = 10):
-        """this function als writes a value to the register of the TMC
-        but it also checks if the writing process was successfully by checking
-        the InterfaceTransmissionCounter before and after writing
-
-        Args:
-            addr: HEX, which register to write
-            val: value for that register
-            tries: how many tries, before error is raised (Default value = 10)
-        """
+        """Writes a value to the register of the TMC and checks that it was written."""
 
     @abstractmethod
     def flush_com_buffer(self):
-        """this function clear the communication buffers of the Raspberry Pi"""
+        """Clears the communication buffers of the Raspberry Pi."""
 
     @abstractmethod
     def test_com(self, ioin) -> bool:
-        """test com connection"""
+        """Test com connection."""

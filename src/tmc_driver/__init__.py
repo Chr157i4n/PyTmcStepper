@@ -1,5 +1,4 @@
-"""
-PyTmcStepper - Python library for Trinamic TMC stepper motor drivers
+"""PyTmcStepper - Python library for Trinamic TMC stepper motor drivers.
 
 This package provides a high-level interface for controlling TMC stepper motor drivers
 via UART or SPI communication on various platforms including Raspberry Pi, Jetson, and MicroPython.
