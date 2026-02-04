@@ -7,47 +7,47 @@
 | src/tmc\_driver/\_\_init\_\_.py                                    |       17 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_exceptions.py                               |        5 |        0 |    100% |           |
 | src/tmc\_driver/\_tmc\_math.py                                     |       26 |        0 |    100% |           |
-| src/tmc\_driver/\_tmc\_stallguard.py                               |      123 |       23 |     81% |61, 65-72, 80, 141-151, 189, 235, 237, 267, 281, 318 |
-| src/tmc\_driver/\_tmc\_stepperdriver.py                            |       72 |       10 |     86% |17-18, 147, 183, 200, 206-210 |
+| src/tmc\_driver/\_tmc\_stallguard.py                               |      123 |       23 |     81% |67, 71-78, 87, 152-162, 203, 251, 253, 283, 297, 334 |
+| src/tmc\_driver/\_tmc\_stepperdriver.py                            |       72 |       10 |     86% |16-17, 147, 183, 200, 206-210 |
 | src/tmc\_driver/\_tmc\_validation.py                               |        7 |        0 |    100% |           |
-| src/tmc\_driver/\_tmc\_xxxx.py                                     |      175 |       52 |     70% |145-149, 159, 175, 203-204, 212, 220-221, 229, 237-238, 246, 271, 322-325, 354-355, 367-374, 380-391, 399-400, 419, 423, 427, 429, 431, 442, 450, 461, 465, 484-490 |
+| src/tmc\_driver/\_tmc\_xxxx.py                                     |      175 |       52 |     70% |146-150, 161, 177, 204-205, 213, 221-222, 230, 238-239, 247, 274, 319-322, 352-353, 366-373, 379-390, 398-399, 418, 422, 426, 428, 430, 441, 449, 460, 464, 483-489 |
 | src/tmc\_driver/com/\_\_init\_\_.py                                |       28 |       18 |     36% |33-34, 48-68 |
-| src/tmc\_driver/com/\_tmc\_com.py                                  |       38 |        2 |     95% |    40, 90 |
-| src/tmc\_driver/com/\_tmc\_com\_spi.py                             |       28 |        7 |     75% |     48-60 |
-| src/tmc\_driver/com/\_tmc\_com\_spi\_base.py                       |       50 |       13 |     74% |75, 77, 79, 81, 150-159 |
-| src/tmc\_driver/com/\_tmc\_com\_uart.py                            |       46 |       12 |     74% |41-59, 62, 68, 85 |
-| src/tmc\_driver/com/\_tmc\_com\_uart\_base.py                      |      156 |       85 |     46% |81, 83, 93, 120, 122, 128, 140, 147, 171, 173, 189-190, 218, 227-230, 235, 252-347, 363-386 |
+| src/tmc\_driver/com/\_tmc\_com.py                                  |       38 |        2 |     95% |    38, 88 |
+| src/tmc\_driver/com/\_tmc\_com\_spi.py                             |       28 |        7 |     75% |     46-58 |
+| src/tmc\_driver/com/\_tmc\_com\_spi\_base.py                       |       50 |       13 |     74% |76, 78, 80, 82, 155-164 |
+| src/tmc\_driver/com/\_tmc\_com\_uart.py                            |       46 |       12 |     74% |39-59, 62, 68, 86 |
+| src/tmc\_driver/com/\_tmc\_com\_uart\_base.py                      |      156 |       85 |     46% |82, 84, 94, 122, 124, 130, 142, 149, 174, 176, 192-193, 222, 231-234, 239, 256-355, 371-394 |
 | src/tmc\_driver/enable\_control/\_\_init\_\_.py                    |       13 |        3 |     77% | 30-31, 44 |
-| src/tmc\_driver/enable\_control/\_tmc\_ec.py                       |       20 |        1 |     95% |        40 |
+| src/tmc\_driver/enable\_control/\_tmc\_ec.py                       |       20 |        1 |     95% |        38 |
 | src/tmc\_driver/enable\_control/\_tmc\_ec\_pin.py                  |       26 |        0 |    100% |           |
 | src/tmc\_driver/enable\_control/\_tmc\_ec\_toff.py                 |       12 |        0 |    100% |           |
 | src/tmc\_driver/motion\_control/\_\_init\_\_.py                    |       43 |       10 |     77% |46-47, 54-56, 86-88, 97-101 |
-| src/tmc\_driver/motion\_control/\_tmc\_mc.py                       |      135 |       13 |     90% |61, 66, 87, 92-93, 98, 113, 118, 123, 128, 158, 236, 296 |
-| src/tmc\_driver/motion\_control/\_tmc\_mc\_int\_ramp\_generator.py |      117 |       31 |     74% |42-45, 50-53, 131-141, 152-164, 209 |
-| src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_dir.py            |      186 |       18 |     90% |42, 47-50, 55, 76, 81-90, 163, 246, 260, 355, 369 |
-| src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_pwm\_dir.py       |       37 |        6 |     84% |22, 43-44, 51, 56, 77 |
+| src/tmc\_driver/motion\_control/\_tmc\_mc.py                       |      135 |       13 |     90% |59, 64, 85, 90-91, 96, 111, 116, 121, 126, 156, 235, 283 |
+| src/tmc\_driver/motion\_control/\_tmc\_mc\_int\_ramp\_generator.py |      117 |       31 |     74% |40-43, 48-51, 130-140, 154-166, 212 |
+| src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_dir.py            |      186 |       18 |     90% |40, 45-48, 53, 74, 79-88, 162, 234, 248, 343, 357 |
+| src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_pwm\_dir.py       |       37 |        6 |     84% |20, 41-42, 47, 52, 71 |
 | src/tmc\_driver/motion\_control/\_tmc\_mc\_step\_reg.py            |       17 |        0 |    100% |           |
-| src/tmc\_driver/motion\_control/\_tmc\_mc\_vactual.py              |       82 |       17 |     79% |37-38, 137, 139-143, 145-147, 149-151, 155, 159, 203, 212, 221 |
-| src/tmc\_driver/platform\_utils.py                                 |       14 |        5 |     64% |13, 15, 21-24 |
+| src/tmc\_driver/motion\_control/\_tmc\_mc\_vactual.py              |       82 |       17 |     79% |35-36, 124, 126-130, 132-134, 136-138, 142, 146, 192, 200, 204 |
+| src/tmc\_driver/platform\_utils.py                                 |       14 |        5 |     64% |16, 18, 27-30 |
 | src/tmc\_driver/reg/\_\_init\_\_.py                                |        0 |        0 |    100% |           |
-| src/tmc\_driver/reg/\_tmc220x\_reg.py                              |       61 |        1 |     98% |       197 |
-| src/tmc\_driver/reg/\_tmc224x\_reg.py                              |       98 |       12 |     88% |71-81, 315 |
+| src/tmc\_driver/reg/\_tmc220x\_reg.py                              |       61 |        1 |     98% |       195 |
+| src/tmc\_driver/reg/\_tmc224x\_reg.py                              |       98 |       12 |     88% |69-79, 313 |
 | src/tmc\_driver/reg/\_tmc2209\_reg.py                              |       14 |        0 |    100% |           |
-| src/tmc\_driver/reg/\_tmc5160\_reg.py                              |      121 |        8 |     93% |71-77, 457 |
-| src/tmc\_driver/reg/\_tmc\_reg.py                                  |       98 |       17 |     83% |72, 77, 82, 103, 127-134, 138-140, 182-183 |
+| src/tmc\_driver/reg/\_tmc5160\_reg.py                              |      121 |        8 |     93% |69-75, 455 |
+| src/tmc\_driver/reg/\_tmc\_reg.py                                  |       98 |       17 |     83% |70, 75, 80, 100, 124-131, 135-137, 179-180 |
 | src/tmc\_driver/reg/\_tmc\_shared\_regs.py                         |       40 |        0 |    100% |           |
-| src/tmc\_driver/tmc\_220x.py                                       |      124 |       24 |     81% |115-116, 134-135, 157-158, 171-181, 315-316, 354-357, 365-366, 374-375, 386-387 |
+| src/tmc\_driver/tmc\_220x.py                                       |      124 |       24 |     81% |115-116, 135-136, 160-161, 175-185, 321-322, 363-366, 374-375, 383-384, 396-397 |
 | src/tmc\_driver/tmc\_2208.py                                       |        3 |        0 |    100% |           |
 | src/tmc\_driver/tmc\_2209.py                                       |       15 |        0 |    100% |           |
-| src/tmc\_driver/tmc\_2240.py                                       |      123 |       17 |     86% |262-269, 277-278, 297-300, 308-309, 317-318, 326-327, 342-344 |
-| src/tmc\_driver/tmc\_5160.py                                       |      134 |       25 |     81% |261-262, 281-284, 292-293, 316-332, 339-341, 347-350 |
-| src/tmc\_driver/tmc\_gpio/\_\_init\_\_.py                          |       46 |       24 |     48% |30-33, 35-38, 72-73, 87-105, 112-116 |
+| src/tmc\_driver/tmc\_2240.py                                       |      123 |       17 |     86% |263-270, 278-279, 298-301, 309-310, 318-319, 327-328, 345-347 |
+| src/tmc\_driver/tmc\_5160.py                                       |      134 |       25 |     81% |261-262, 281-284, 292-293, 316-332, 340-342, 349-352 |
+| src/tmc\_driver/tmc\_gpio/\_\_init\_\_.py                          |       46 |       24 |     48% |31-34, 36-39, 73-74, 88-106, 113-117 |
 | src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_base.py              |       26 |        0 |    100% |           |
-| src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_gpiozero.py          |       72 |       12 |     83% |63-64, 68-71, 77, 79, 103, 120, 127, 134 |
+| src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_gpiozero.py          |       72 |       12 |     83% |68-69, 73-76, 82, 84, 109, 126, 133, 140 |
 | src/tmc\_driver/tmc\_gpio/\_tmc\_gpio\_board\_rpi\_gpio.py         |       58 |        7 |     88% |81, 107, 123, 135, 172, 177, 182 |
-| src/tmc\_driver/tmc\_logger/\_\_init\_\_.py                        |        8 |        1 |     88% |        13 |
-| src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       28 |        5 |     82% |31, 36, 41, 46, 64 |
-| src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |30, 94-97, 105, 121-125, 135-137, 140 |
+| src/tmc\_driver/tmc\_logger/\_\_init\_\_.py                        |        8 |        1 |     88% |        11 |
+| src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       28 |        5 |     82% |29, 34, 39, 44, 62 |
+| src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |28, 91-94, 98, 114-118, 128-130, 133 |
 | **TOTAL**                                                          | **2609** |  **493** | **81%** |           |
 
 
