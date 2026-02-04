@@ -3,7 +3,6 @@
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-positional-arguments
-# pylint: disable=bare-except
 # pylint: disable=no-member
 # pylint: disable=unused-import
 # pylint: disable=wildcard-import
