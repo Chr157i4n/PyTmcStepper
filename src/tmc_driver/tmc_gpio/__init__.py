@@ -40,7 +40,7 @@ else:
     import os
 
     # Board mapping: (module_path, class_name, Board enum)
-    board_mapping = {
+    BOARD_MAPPING = {
         "raspberry pi 5": (
             "._tmc_gpio_board_gpiozero",
             "GpiozeroWrapper",
@@ -84,7 +84,7 @@ else:
 
             return MockGPIOWrapper(), Board.UNKNOWN
 
-        for key, (module_path, class_name, board_enum) in board_mapping.items():
+        for key, (module_path, class_name, board_enum) in BOARD_MAPPING.items():
             if key in model:
                 # Import module dynamically only when needed
                 module = import_module(module_path, package=__name__)
