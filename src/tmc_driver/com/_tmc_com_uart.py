@@ -15,7 +15,7 @@ class TmcComUart(TmcComUartBase):
     current or the microsteppingmode
     """
 
-    def __init__(self, serialport: str, baudrate: int = 11520):
+    def __init__(self, serialport: str, baudrate: int = 115200):
         """constructor.
 
         Args:
