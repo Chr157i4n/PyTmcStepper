@@ -2,6 +2,33 @@
 
 <!-- version list -->
 
+## v0.21.2 (2026-03-27)
+
+### Bug Fixes
+
+- Correct default baudrate in TmcComUart constructor
+  ([`617e5da`](https://github.com/Chr157i4n/PyTmcStepper/commit/617e5dafd69f4324b39b7d2996840ee790b35664))
+
+### Chores
+
+- Fix docstring (google style)
+  ([`c7e3a60`](https://github.com/Chr157i4n/PyTmcStepper/commit/c7e3a60e9f919bb254c51f6b634fd79e03ec6fd4))
+
+- Remove bare-except pylint disable from StallGuard and TmcStepperDriver
+  ([`a6a3d17`](https://github.com/Chr157i4n/PyTmcStepper/commit/a6a3d1773d2c0c9fe693c9d7445c0602283f3e0e))
+
+- Update variable name for board mapping to follow naming conventions
+  ([`777e859`](https://github.com/Chr157i4n/PyTmcStepper/commit/777e8591a1aab5f40b6f18e69cfcbc749b1dd54b))
+
+### Continuous Integration
+
+- Add docstring linting step to CI pipeline
+  ([`9fb0320`](https://github.com/Chr157i4n/PyTmcStepper/commit/9fb0320c2dc5469db164844fad0de6a990b50346))
+
+- Simplify CI CodeQL step
+  ([`35edc16`](https://github.com/Chr157i4n/PyTmcStepper/commit/35edc1664988b890e21fb5a4bbeae46b32b1ff6a))
+
+
 ## v0.21.1 (2026-02-01)
 
 ### Bug Fixes
