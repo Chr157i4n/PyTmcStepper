@@ -15,8 +15,8 @@
 | src/tmc\_driver/com/\_tmc\_com.py                                  |       38 |        2 |     95% |    38, 88 |
 | src/tmc\_driver/com/\_tmc\_com\_spi.py                             |       28 |        7 |     75% |     46-58 |
 | src/tmc\_driver/com/\_tmc\_com\_spi\_base.py                       |       50 |       13 |     74% |76, 78, 80, 82, 155-164 |
-| src/tmc\_driver/com/\_tmc\_com\_uart.py                            |       46 |       12 |     74% |39-59, 62, 68, 86 |
-| src/tmc\_driver/com/\_tmc\_com\_uart\_base.py                      |      156 |       85 |     46% |82, 84, 94, 122, 124, 130, 142, 149, 174, 176, 192-193, 222, 231-234, 239, 256-355, 371-394 |
+| src/tmc\_driver/com/\_tmc\_com\_uart.py                            |       46 |       12 |     74% |39-59, 62, 68, 84 |
+| src/tmc\_driver/com/\_tmc\_com\_uart\_base.py                      |      160 |       89 |     44% |82, 84, 94, 122, 124, 130, 142, 149, 174, 176, 192-193, 222, 231-234, 239, 256-366, 382-405 |
 | src/tmc\_driver/enable\_control/\_\_init\_\_.py                    |       13 |        3 |     77% | 30-31, 44 |
 | src/tmc\_driver/enable\_control/\_tmc\_ec.py                       |       20 |        1 |     95% |        38 |
 | src/tmc\_driver/enable\_control/\_tmc\_ec\_pin.py                  |       26 |        0 |    100% |           |
@@ -48,7 +48,7 @@
 | src/tmc\_driver/tmc\_logger/\_\_init\_\_.py                        |        8 |        1 |     88% |        11 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_base.py                 |       28 |        5 |     82% |29, 34, 39, 44, 62 |
 | src/tmc\_driver/tmc\_logger/\_tmc\_logger\_cpython.py              |       67 |       14 |     79% |28, 91-94, 98, 114-118, 128-130, 133 |
-| **TOTAL**                                                          | **2609** |  **493** | **81%** |           |
+| **TOTAL**                                                          | **2613** |  **497** | **81%** |           |
 
 
 ## Setup coverage badge
