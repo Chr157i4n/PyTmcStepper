@@ -258,6 +258,17 @@ class TmcComUartBase(TmcCom):
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
+        self._tmc_logger.log(f"Serialport: {self.ser.port}", Loglevel.DEBUG)
+        self._tmc_logger.log(f"Baudrate: {self.ser.baudrate}", Loglevel.DEBUG)
+        self._tmc_logger.log(
+            f"Timeout: {self.ser.timeout:.4f} s | {self.ser.timeout*1000:.2f} ms",
+            Loglevel.DEBUG,
+        )
+        self._tmc_logger.log(
+            f"Communication pause: {self.communication_pause:.4f} s | {self.communication_pause*1000:.2f} ms",
+            Loglevel.DEBUG,
+        )
+
         if ioin is None:
             ioin = tmc_shared_reg.Ioin(self)
             setattr(ioin, "ADDR", 0x6)  # Default IOIN address
