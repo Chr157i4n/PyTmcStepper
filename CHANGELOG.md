@@ -2,6 +2,29 @@
 
 <!-- version list -->
 
+## v0.21.3 (2026-08-14)
+
+### Bug Fixes
+
+- Add detailed logging for serial port parameters in TmcComUartBase
+  ([`1af5321`](https://github.com/Chr157i4n/PyTmcStepper/commit/1af5321938d91d4d636ca303ee4bb092f86d06fb))
+
+- Change communication_pause and removed rounding operator (//) for communication_pause and timeout
+  ([`007c2c4`](https://github.com/Chr157i4n/PyTmcStepper/commit/007c2c466b96378d4c51f20c8f290090b3d6ca2b))
+
+- Change SBOM generation to use spec-version 1.6
+  ([`3d644c0`](https://github.com/Chr157i4n/PyTmcStepper/commit/3d644c08a53a93ab40bd0fadcb6cded1201c3ddb))
+
+- Correct serial port reference in error logging
+  ([`079bb32`](https://github.com/Chr157i4n/PyTmcStepper/commit/079bb3241755c068cd286154ce9f187d5a0673ee))
+
+- Set serial timeout to a constant value of 1 second
+  ([`267aeff`](https://github.com/Chr157i4n/PyTmcStepper/commit/267aeff9a158c4ae14346b6815d6f9a610f4ed80))
+
+- Update logger references to use _tmc_logger for consistency
+  ([`d0d898d`](https://github.com/Chr157i4n/PyTmcStepper/commit/d0d898de4aa504b0c743d5b404af21bde3d9bae7))
+
+
 ## v0.21.2 (2026-03-27)
 
 ### Bug Fixes
