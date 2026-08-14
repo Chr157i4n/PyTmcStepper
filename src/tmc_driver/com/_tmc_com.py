@@ -56,7 +56,7 @@ class TmcCom:
         """constructor."""
         self._tmc_logger: TmcLogger
         self._driver_address: int = 0
-        self.communication_pause: int = 0
+        self.communication_pause: float = 0
         self._get_register_callback = None
 
     @abstractmethod
