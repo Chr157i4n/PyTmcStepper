@@ -70,9 +70,7 @@ class TmcComUart(TmcComUartBase):
         self.ser.bytesize = serial.EIGHTBITS
         self.ser.parity = serial.PARITY_NONE
         self.ser.stopbits = serial.STOPBITS_ONE
-
-        # adjust per baud and hardware. Sequential reads without some delay fail.
-        self.ser.timeout = 20000 / self.ser.baudrate
+        self.ser.timeout = 1
 
         self._uart_flush()
 
