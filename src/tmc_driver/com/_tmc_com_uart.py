@@ -41,7 +41,7 @@ class TmcComUart(TmcComUartBase):
             self._tmc_logger.log(f"SERIAL ERROR: {e}")
             if errnum == 2:
                 self._tmc_logger.log(
-                    f""""{self.ser.serialport} does not exist.
+                    f""""{self.ser.port} does not exist.
                       You need to activate the serial port with \"sudo raspi-config\"""",
                     Loglevel.ERROR,
                 )
@@ -62,7 +62,7 @@ class TmcComUart(TmcComUartBase):
             raise TmcComException("Baudrate is not set")
 
         # adjust per baud and hardware. Sequential reads without some delay fail.
-        self.communication_pause = 500 // self.ser.baudrate
+        self.communication_pause = 500 / self.ser.baudrate
 
         if self.ser is None:
             return
@@ -70,9 +70,7 @@ class TmcComUart(TmcComUartBase):
         self.ser.bytesize = serial.EIGHTBITS
         self.ser.parity = serial.PARITY_NONE
         self.ser.stopbits = serial.STOPBITS_ONE
-
-        # adjust per baud and hardware. Sequential reads without some delay fail.
-        self.ser.timeout = 20000 // self.ser.baudrate
+        self.ser.timeout = 1
 
         self._uart_flush()
 

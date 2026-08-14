@@ -258,6 +258,17 @@ class TmcComUartBase(TmcCom):
         if not self.ser.is_open:
             raise TmcComException("Cannot test com, serial port is closed")
 
+        self._tmc_logger.log(f"Serialport: {self.ser.port}", Loglevel.DEBUG)
+        self._tmc_logger.log(f"Baudrate: {self.ser.baudrate}", Loglevel.DEBUG)
+        self._tmc_logger.log(
+            f"Timeout: {self.ser.timeout:.4f} s | {self.ser.timeout*1000:.2f} ms",
+            Loglevel.DEBUG,
+        )
+        self._tmc_logger.log(
+            f"Communication pause: {self.communication_pause:.4f} s | {self.communication_pause*1000:.2f} ms",
+            Loglevel.DEBUG,
+        )
+
         if ioin is None:
             ioin = tmc_shared_reg.Ioin(self)
             setattr(ioin, "ADDR", 0x6)  # Default IOIN address
@@ -279,44 +290,44 @@ class TmcComUartBase(TmcCom):
         )
         self._tmc_logger.log(f"hex: {rtn.hex()}", Loglevel.DEBUG)
 
-        self.tmc_logger.log(f"length snd: {len(snd)}", Loglevel.DEBUG)
-        self.tmc_logger.log(f"length rtn: {len(rtn)}", Loglevel.DEBUG)
+        self._tmc_logger.log(f"length snd: {len(snd)}", Loglevel.DEBUG)
+        self._tmc_logger.log(f"length rtn: {len(rtn)}", Loglevel.DEBUG)
 
-        self.tmc_logger.log("complete messages:", Loglevel.DEBUG)
-        self.tmc_logger.log(str(snd.hex()), Loglevel.DEBUG)
-        self.tmc_logger.log(str(rtn.hex()), Loglevel.DEBUG)
+        self._tmc_logger.log("complete messages:", Loglevel.DEBUG)
+        self._tmc_logger.log(str(snd.hex()), Loglevel.DEBUG)
+        self._tmc_logger.log(str(rtn.hex()), Loglevel.DEBUG)
 
-        self.tmc_logger.log("just the first 4 bytes:", Loglevel.DEBUG)
-        self.tmc_logger.log(str(snd[0:4].hex()), Loglevel.DEBUG)
-        self.tmc_logger.log(str(rtn[0:4].hex()), Loglevel.DEBUG)
+        self._tmc_logger.log("just the first 4 bytes:", Loglevel.DEBUG)
+        self._tmc_logger.log(str(snd[0:4].hex()), Loglevel.DEBUG)
+        self._tmc_logger.log(str(rtn[0:4].hex()), Loglevel.DEBUG)
 
         status = True
 
         if len(rtn) == 12:
-            self.tmc_logger.log(
+            self._tmc_logger.log(
                 """The Raspberry Pi received the sent bytes and the answer from
                 the TMC.""",
                 Loglevel.DEBUG,
             )
         elif len(rtn) == 4:
-            self.tmc_logger.log(
+            self._tmc_logger.log(
                 "the Raspberry Pi received only the sent bytes", Loglevel.ERROR
             )
             status = False
         elif len(rtn) == 0:
-            self.tmc_logger.log(
+            self._tmc_logger.log(
                 "the Raspberry Pi did not receive anything", Loglevel.ERROR
             )
             status = False
         else:
-            self.tmc_logger.log(
+            self._tmc_logger.log(
                 f"the Raspberry Pi received an unexpected amount of bytes: {len(rtn)}",
                 Loglevel.ERROR,
             )
             status = False
 
         if snd[0:4] == rtn[0:4]:
-            self.tmc_logger.log(
+            self._tmc_logger.log(
                 """The Raspberry Pi received exactly the bytes it has send.
 
                 the first 4 bytes are the same
@@ -324,7 +335,7 @@ class TmcComUartBase(TmcCom):
                 Loglevel.DEBUG,
             )
         else:
-            self.tmc_logger.log(
+            self._tmc_logger.log(
                 """The Raspberry Pi did not received the bytes it has send.
 
                 the first 4 bytes are different
@@ -344,13 +355,13 @@ class TmcComUartBase(TmcCom):
                 )
                 status = False
 
-        self.tmc_logger.log("---")
+        self._tmc_logger.log("---")
         if status:
-            self.tmc_logger.log("UART connection: OK", Loglevel.INFO)
+            self._tmc_logger.log("UART connection: OK", Loglevel.INFO)
         else:
-            self.tmc_logger.log("UART connection: not OK", Loglevel.ERROR)
+            self._tmc_logger.log("UART connection: not OK", Loglevel.ERROR)
 
-        self.tmc_logger.log("---")
+        self._tmc_logger.log("---")
 
         return status
 
@@ -374,7 +385,7 @@ class TmcComUartBase(TmcCom):
             self.driver_address = address
             if driver_ioin_regs is None:
                 if self.test_com():
-                    self.tmc_logger.log(
+                    self._tmc_logger.log(
                         f"Found device at address {address}", Loglevel.INFO
                     )
                     found_devices.append((address, None))
@@ -384,7 +395,7 @@ class TmcComUartBase(TmcCom):
                     if self.test_com(ioin):
                         # Get driver name from DRIVER_NAME attribute if available
                         driver_name = getattr(driver_ioin_reg, "DRIVER_NAME", None)
-                        self.tmc_logger.log(
+                        self._tmc_logger.log(
                             f"Found device at address {address}: {driver_name}",
                             Loglevel.INFO,
                         )
