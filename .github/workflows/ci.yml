@@ -201,7 +201,7 @@ jobs:
     - name: Create SBOM
       run: |
         npm install -g @cyclonedx/cdxgen
-        cdxgen -r . -o bom.json
+        cdxgen -r . -o bom.json --spec-version 1.6
     - name: Upload SBOM Artifact
       uses: actions/upload-artifact@v6
       with:
