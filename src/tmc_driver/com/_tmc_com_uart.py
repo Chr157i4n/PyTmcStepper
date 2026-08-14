@@ -41,7 +41,7 @@ class TmcComUart(TmcComUartBase):
             self._tmc_logger.log(f"SERIAL ERROR: {e}")
             if errnum == 2:
                 self._tmc_logger.log(
-                    f""""{self.ser.serialport} does not exist.
+                    f""""{self.ser.port} does not exist.
                       You need to activate the serial port with \"sudo raspi-config\"""",
                     Loglevel.ERROR,
                 )
