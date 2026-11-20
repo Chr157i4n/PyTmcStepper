@@ -302,7 +302,12 @@ class TmcMotionControlStepDir(TmcMotionControl):
                     self._movement_phase = MovementPhase.DECELERATING
             elif self._n < 0:
                 # Currently decelerating, need to accel again?
-                if (steps_to_stop < distance_to) and self._direction == Direction.CW:
+                # Never re-accelerate while a soft stop is pending
+                if (
+                    (steps_to_stop < distance_to)
+                    and self._direction == Direction.CW
+                    and self._stop != StopMode.SOFTSTOP
+                ):
                     self._n = -self._n  # Start acceleration
                     self._movement_phase = MovementPhase.ACCELERATING
         elif distance_to < 0:
@@ -319,7 +324,12 @@ class TmcMotionControlStepDir(TmcMotionControl):
                     self._movement_phase = MovementPhase.DECELERATING
             elif self._n < 0:
                 # Currently decelerating, need to accel again?
-                if (steps_to_stop < -distance_to) and self._direction == Direction.CCW:
+                # Never re-accelerate while a soft stop is pending
+                if (
+                    (steps_to_stop < -distance_to)
+                    and self._direction == Direction.CCW
+                    and self._stop != StopMode.SOFTSTOP
+                ):
                     self._n = -self._n  # Start acceleration
                     self._movement_phase = MovementPhase.ACCELERATING
         # Need to accelerate or decelerate
