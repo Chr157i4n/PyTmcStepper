@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.21.4 (2026-11-20)
+
+### Bug Fixes
+
+- Honor softstop during targeted StepDir moves
+  ([`1dbf63d`](https://github.com/Chr157i4n/PyTmcStepper/commit/1dbf63d3bff55842374cd3e04afcf351fd04c294))
+
+
 ## v0.21.3 (2026-08-14)
 
 ### Bug Fixes
